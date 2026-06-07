@@ -200,7 +200,9 @@ const resultCount = document.getElementById('result-count');
 
 const searchClear = document.getElementById('search-clear');
 
-const updateSearch = () => {
+let activeTagFilter = null;
+
+function updateFilter() {
   const q = searchInput.value.toLowerCase().trim();
   searchClear.style.display = q ? 'block' : 'none';
 
@@ -209,20 +211,41 @@ const updateSearch = () => {
 
   cards.forEach((card, i) => {
     const theme = themes[i];
-    const haystack = `${theme.name} ${theme.desc} ${theme.tags.join(' ')}`.toLowerCase();
-    const match = !q || haystack.includes(q);
+    const searchMatch = !q || `${theme.name} ${theme.desc} ${theme.tags.join(' ')}`.toLowerCase().includes(q);
+    const tagMatch = !activeTagFilter || theme.tags.includes(activeTagFilter);
+    const match = searchMatch && tagMatch;
     card.style.display = match ? '' : 'none';
     if (match) visible++;
   });
 
-  resultCount.textContent = q ? `${visible} of ${themes.length}` : '';
-};
+  // Update active tag highlight
+  document.querySelectorAll('.tag').forEach(tag => {
+    tag.classList.toggle('active', tag.textContent === activeTagFilter);
+  });
 
-searchInput.addEventListener('input', updateSearch);
+  const parts = [];
+  if (activeTagFilter) parts.push(`"${activeTagFilter}"`);
+  if (q) parts.push(q);
+  resultCount.textContent = parts.length ? `${parts.join(' + ')} — ${visible} of ${themes.length}` : '';
+}
+
+// Tag click filter (event delegation)
+document.querySelector('.grid').addEventListener('click', (e) => {
+  const tag = e.target.closest('.tag');
+  if (!tag) return;
+  e.preventDefault();
+  e.stopPropagation();
+
+  const tagText = tag.textContent;
+  activeTagFilter = activeTagFilter === tagText ? null : tagText;
+  updateFilter();
+});
+
+searchInput.addEventListener('input', updateFilter);
 searchClear.addEventListener('click', () => {
   searchInput.value = '';
   searchInput.focus();
-  updateSearch();
+  updateFilter();
 });
 </script>
 </body>

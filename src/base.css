@@ -60,7 +60,10 @@ header.scrolled .header-row { margin-top: 12px; }
   .tag {
     font-family: 'JetBrains Mono', monospace; font-size: 0.6rem;
     padding: 2px 7px; background: var(--surface2); color: var(--accent); border-radius: 3px; letter-spacing: 0.03em;
+    cursor: pointer; transition: background 0.15s, color 0.15s;
   }
+  .tag:hover { background: var(--accent-glow); }
+  .tag.active { background: var(--accent); color: #fff; }
   footer { padding: 32px 0; text-align: center; border-top: 1px solid var(--border); }
   footer p { font-size: 0.8rem; color: var(--text-dim); }
   footer code {
