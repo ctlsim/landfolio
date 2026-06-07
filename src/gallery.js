@@ -102,9 +102,21 @@ function renderResults() {
     </div>
   `).join('');
 
-  // Click handler
+  // Left-click → same tab + close. Middle/Ctrl-click → new tab, modal stays open.
   resultsEl.querySelectorAll('.palette-item').forEach(el => {
+    el.addEventListener('mousedown', (e) => {
+      if (e.button === 1 || e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        el.dataset.handled = '1';
+        const idx = parseInt(el.dataset.index, 10);
+        window.open(filteredThemes[idx].href, '_blank');
+      }
+    });
     el.addEventListener('click', () => {
+      if (el.dataset.handled) {
+        delete el.dataset.handled;
+        return;
+      }
       const idx = parseInt(el.dataset.index, 10);
       selectTheme(filteredThemes[idx], false);
     });
