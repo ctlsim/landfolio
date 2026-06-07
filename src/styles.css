@@ -2642,3 +2642,46 @@ header.scrolled .header-row { margin-top: 12px; }
   .p-final-boss .preview-action { background: #111111; border: 1px solid rgba(240,240,240,0.06); }
   .p-final-boss .preview-action-dot { background: #FF2D87; }
   .p-final-boss .preview-action-line { background: rgba(240,240,240,0.06); }
+
+  .p-prism .preview-mockup { background: rgba(241, 243, 245, 0.8); border: 1px solid rgba(0,0,0,0.06); }
+  .p-embroidery .preview-mockup { background: #F0E8DD; border: 1px solid rgba(0,0,0,0.06); }
+  .p-volumetric-light .preview-mockup { background: #0C0C10; border: 1px solid rgba(255,255,255,0.04); }
+  .p-scandi-wood .preview-mockup { background: #F5F0E8; border: 1px solid rgba(0,0,0,0.06); }
+  .p-pixel-gradient .preview-mockup { background: #16161D; border: 1px solid rgba(255,255,255,0.04); }
+  .p-dark-academia .preview-mockup { background: #1C1712; border: 1px solid rgba(255,255,255,0.04); }
+  .p-neon-gradient .preview-mockup { background: #0D0B18; border: 1px solid rgba(255,255,255,0.04); }
+  .p-terracotta .preview-mockup { background: #F0EBE3; border: 1px solid rgba(0,0,0,0.06); }
+  .p-quantum-particle .preview-mockup { background: #0C1230; border: 1px solid rgba(255,255,255,0.04); }
+  .p-coral-reef .preview-mockup { background: #001F3F; border: 1px solid rgba(255,255,255,0.04); }
+  .p-coral-reef .preview-topbar { background: #001F3F; }
+  .p-minimal-warm .preview-mockup { background: #F5F0E8; border: 1px solid rgba(0,0,0,0.06); }
+  .p-honeycomb-hex .preview-mockup { background: #F7EDD5; border: 1px solid rgba(0,0,0,0.06); }
+  .p-dopamine .preview-mockup { background: rgba(255,45,135,0.1); border: 1px solid rgba(0,0,0,0.06); }
+  .p-silk .preview-mockup { background: rgba(250,248,245,0.8); border: 1px solid rgba(0,0,0,0.06); }
+  .p-barcode-retail .preview-mockup { background: #000; border: 1px solid rgba(255,255,255,0.04); }
+  .p-volcanic .preview-mockup { background: #0A0A0A; border: 1px solid rgba(255,255,255,0.04); }
+  .p-dew-drop .preview-mockup { background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.06); }
+  .p-retro-cassette .preview-mockup { background: #2A2420; border: 1px solid rgba(255,255,255,0.04); }
+  .p-marble-stone .preview-mockup { background: #F3F0EB; border: 1px solid rgba(0,0,0,0.06); }
+  .p-glitch-core .preview-mockup { background: #0e0e0e; border: 1px solid rgba(255,255,255,0.04); }
+  .p-enchanted-forest .preview-mockup { background: #0f200f; border: 1px solid rgba(255,255,255,0.04); }
+  .p-studio-54 .preview-mockup { background: #1a0a2e; border: 1px solid rgba(255,255,255,0.04); }
+  .p-sketchbook .preview-mockup { background: #F5F0E8; border: 1px solid rgba(0,0,0,0.06); }
+  .p-arctic .preview-mockup { background: #E8F4FD; border: 1px solid rgba(0,0,0,0.06); }
+  .p-lounge-speakeasy .preview-mockup { background: #2C1E14; border: 1px solid rgba(255,255,255,0.04); }
+  .p-pixel-wave .preview-mockup { background: #12121f; border: 1px solid rgba(255,255,255,0.04); }
+  .p-terrazzo .preview-mockup { background: #F0EBE3; border: 1px solid rgba(0,0,0,0.06); }
+  .p-mecha-robot .preview-mockup { background: #1A1F2A; border: 1px solid rgba(255,255,255,0.04); }
+  .p-botanical-garden .preview-mockup { background: #F0EBE3; border: 1px solid rgba(0,0,0,0.06); }
+  .p-neon-market .preview-mockup { background: #120E0A; border: 1px solid rgba(255,255,255,0.04); }
+  .p-velvet-noir .preview-mockup { background: #12080F; border: 1px solid rgba(255,255,255,0.04); }
+  .p-aero-flight .preview-mockup { background: rgba(255,255,255,0.15); border: 1px solid rgba(0,0,0,0.06); }
+  .p-lab-scientific .preview-mockup { background: #F7F8FA; border: 1px solid rgba(0,0,0,0.06); }
+  .p-desert-bloom .preview-mockup { background: #F5E6D8; border: 1px solid rgba(0,0,0,0.06); }
+  .p-vhs-retro .preview-mockup { background: #1a1a1a; border: 1px solid rgba(255,255,255,0.04); }
+  .p-opulent-gold .preview-mockup { background: #14110D; border: 1px solid rgba(255,255,255,0.04); }
+  .p-cloud-sky .preview-mockup { background: rgba(255,255,255,0.8); border: 1px solid rgba(0,0,0,0.06); }
+  .p-graffiti-street .preview-mockup { background: #3a3a3a; border: 1px solid rgba(255,255,255,0.04); }
+  .p-tea-house .preview-mockup { background: #F0E8DD; border: 1px solid rgba(0,0,0,0.06); }
+  .p-crystal-gem .preview-mockup { background: #1A1A25; border: 1px solid rgba(255,255,255,0.04); }
+  .p-film-grain .preview-mockup { background: #D8CFC4; border: 1px solid rgba(0,0,0,0.06); }
