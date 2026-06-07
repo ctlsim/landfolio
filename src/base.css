@@ -59,13 +59,8 @@ header.scrolled .header-row { margin-top: 12px; }
   .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
   .tag {
     font-family: 'JetBrains Mono', monospace; font-size: 0.6rem;
-    padding: 2px 7px; background: var(--surface2); color: var(--text-dim); border-radius: 3px; letter-spacing: 0.03em;
+    padding: 2px 7px; background: var(--surface2); color: var(--accent); border-radius: 3px; letter-spacing: 0.03em;
   }
-  .card-link {
-    display: flex; align-items: center; gap: 6px; margin-top: 14px;
-    font-size: 0.78rem; font-weight: 600; color: var(--accent); transition: gap 0.2s;
-  }
-  .card:hover .card-link { gap: 10px; }
   footer { padding: 32px 0; text-align: center; border-top: 1px solid var(--border); }
   footer p { font-size: 0.8rem; color: var(--text-dim); }
   footer code {

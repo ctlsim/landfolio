@@ -2625,7 +2625,6 @@ function renderCards() {
         <div class="card-name">${t.name}</div>
         <div class="card-desc">${t.desc}</div>
         <div class="card-tags">${tagsHtml}</div>
-        <div class="card-link">Open theme \u2192</div>
       </div>
     </a>`;
   }).join('');
