@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #E3000F;
+    --blue: #003582;
+    --yellow: #FFD700;
+    --white: #F5F2EB;
+    --black: #1A1A1A;
+    --grey: #E8E4DD;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+  h1,h2,h3 { font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; }
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  /* Nav */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--white); border-bottom: 4px solid var(--black); }
+  nav .container { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; }
+  .logo { font-weight: 700; font-size: 1.3rem; color: var(--black); text-decoration: none; font-family: 'Space Mono', monospace; }
+  .logo span { color: var(--red); }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a { color: var(--black); text-decoration: none; font-size: 0.85rem; font-weight: 600; font-family: 'Space Mono', monospace; }
+  .btn-nav {
+    background: var(--red); color: var(--white); padding: 10px 20px;
+    font-size: 0.8rem; font-weight: 700; cursor: pointer; text-decoration: none;
+    font-family: 'Space Mono', monospace; border: 3px solid var(--black);
+    transition: transform 0.15s;
+  }
+  .btn-nav:hover { transform: translate(-2px, -2px); }
+
+  /* Geometric decorations */
+  .geo-circle { width: 60px; height: 60px; border-radius: 50%; }
+  .geo-square { width: 40px; height: 40px; }
+  .geo-line { height: 4px; }
+  .geo-rect { width: 80px; height: 30px; }
+
+  /* Mondrian grid layout */
+  .mondrian-section { padding: 100px 0 60px; }
+  .mondrian-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: auto;
+    gap: 0;
+    border: 4px solid var(--black);
+  }
+
+  .cell {
+    border: 4px solid var(--black);
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Hero grid */
+  .hero-title { grid-column: span 8; grid-row: span 2; display: flex; flex-direction: column; justify-content: center; background: var(--white); min-height: 380px; }
+  .hero-shape-1 { grid-column: span 4; grid-row: span 1; background: var(--red); display: flex; align-items: center; justify-content: center; }
+  .hero-shape-2 { grid-column: span 4; grid-row: span 1; background: var(--white); display: flex; align-items: center; justify-content: center; }
+  .hero-cta { grid-column: span 6; grid-row: span 1; background: var(--yellow); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
+  .hero-stat-1 { grid-column: span 3; grid-row: span 1; background: var(--blue); display: flex; flex-direction: column; justify-content: center; align-items: center; }
+  .hero-stat-2 { grid-column: span 3; grid-row: span 1; background: var(--white); display: flex; flex-direction: column; justify-content: center; align-items: center; }
+
+  .hero-title h1 { font-size: clamp(2.4rem, 5vw, 4rem); margin-bottom: 16px; }
+  .hero-title h1 .accent-red { color: var(--red); }
+  .hero-title h1 .accent-blue { color: var(--blue); }
+  .hero-title .subhead { font-size: 1.05rem; max-width: 520px; margin-bottom: 28px; line-height: 1.6; }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--red); color: var(--white); padding: 14px 28px;
+    text-decoration: none; font-weight: 700; font-size: 0.9rem;
+    border: 3px solid var(--black); font-family: 'Space Mono', monospace;
+    transition: transform 0.15s;
+  }
+  .btn-primary:hover { transform: translate(-3px, -3px); }
+  .btn-secondary { color: var(--black); text-decoration: none; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px; }
+
+  .stat-big { font-size: 3rem; font-weight: 700; color: var(--white); letter-spacing: -0.03em; }
+  .stat-big.dark { color: var(--black); }
+  .stat-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; }
+  .stat-label.light { color: rgba(255,255,255,0.7); }
+
+  /* Logos */
+  .logos-cell { grid-column: span 12; background: var(--white); padding: 28px 32px; }
+  .logos-cell .label { font-family: 'Space Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--black); opacity: 0.5; margin-bottom: 16px; }
+  .logos-row { display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 20px; }
+  .logo-item { font-weight: 700; font-size: 0.95rem; opacity: 0.35; }
+
+  /* Features */
+  .feat-header { grid-column: span 12; background: var(--yellow); padding: 36px 32px; }
+  .feat-header .section-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 8px; }
+  .feat-header h2 { font-size: clamp(1.8rem, 3.5vw, 2.6rem); }
+
+  .feat-1 { grid-column: span 3; grid-row: span 2; background: var(--white); }
+  .feat-2 { grid-column: span 3; grid-row: span 2; background: var(--white); }
+  .feat-3 { grid-column: span 4; grid-row: span 2; background: var(--blue); color: var(--white); }
+  .feat-4 { grid-column: span 2; grid-row: span 1; background: var(--red); }
+  .feat-5 { grid-column: span 2; grid-row: span 1; background: var(--white); }
+
+  .feat-icon {
+    width: 44px; height: 44px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center;
+    border: 3px solid var(--black); font-size: 1.2rem;
+  }
+  .feat-icon.circle { border-radius: 50%; }
+  .feat-icon.square { border-radius: 0; }
+  .cell h3 { font-size: 1.15rem; margin-bottom: 10px; }
+  .cell p { font-size: 0.85rem; line-height: 1.6; }
+  .cell.light p { color: rgba(255,255,255,0.8); }
+
+  /* Zigzag */
+  .zigzag-header { grid-column: span 12; background: var(--white); padding: 48px 32px 36px; }
+  .zigzag-header .section-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 8px; }
+  .zigzag-header h2 { font-size: clamp(1.8rem, 3.5vw, 2.6rem); }
+
+  .zigzag-1 { grid-column: span 5; grid-row: span 2; background: var(--white); }
+  .zigzag-2 { grid-column: span 4; grid-row: span 2; background: var(--yellow); }
+  .zigzag-3 { grid-column: span 3; grid-row: span 2; background: var(--white); }
+  .zigzag-4 { grid-column: span 4; grid-row: span 1; background: var(--red); color: var(--white); }
+  .zigzag-5 { grid-column: span 8; grid-row: span 1; background: var(--white); }
+
+  /* Connection list */
+  .conn-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+  .conn-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 3px solid var(--black); }
+  .conn-icon { width: 28px; height: 28px; border: 2px solid var(--black); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 700; font-family: 'Space Mono', monospace; }
+  .conn-line { height: 4px; flex: 1; background: var(--black); }
+  .conn-badge { font-size: 0.55rem; padding: 3px 8px; background: var(--yellow); border: 2px solid var(--black); font-weight: 700; font-family: 'Space Mono', monospace; }
+
+  /* Notion mockup */
+  .notion-mock { margin-top: 16px; display: flex; flex-direction: column; gap: 6px; }
+  .notion-line { height: 6px; background: var(--black); }
+  .notion-line.h1 { height: 8px; width: 45%; }
+  .notion-line.h2 { height: 6px; width: 30%; background: var(--red); }
+
+  /* Testimonial */
+  .test-header { grid-column: span 12; background: var(--blue); color: var(--white); padding: 36px 32px; }
+  .test-header .section-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 8px; opacity: 0.6; }
+  .test-header h2 { font-size: clamp(1.8rem, 3.5vw, 2.6rem); }
+
+  .test-main { grid-column: span 7; grid-row: span 2; background: var(--white); }
+  .test-stat-1 { grid-column: span 2; grid-row: span 1; background: var(--yellow); display: flex; flex-direction: column; justify-content: center; align-items: center; }
+  .test-stat-2 { grid-column: span 3; grid-row: span 1; background: var(--white); display: flex; flex-direction: column; justify-content: center; align-items: center; }
+  .test-stat-3 { grid-column: span 2; grid-row: span 1; background: var(--red); color: var(--white); display: flex; flex-direction: column; justify-content: center; align-items: center; }
+
+  .test-main blockquote { font-size: 1.4rem; font-weight: 600; line-height: 1.35; margin-bottom: 24px; }
+  .author { display: flex; align-items: center; gap: 12px; }
+  .author-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--red); border: 3px solid var(--black); }
+  .author-name { font-weight: 700; font-size: 0.85rem; }
+  .author-role { font-size: 0.75rem; opacity: 0.6; }
+
+  .mini-stat { font-size: 2.4rem; font-weight: 700; letter-spacing: -0.03em; }
+  .mini-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+
+  /* Pricing */
+  .price-header { grid-column: span 12; background: var(--white); padding: 48px 32px 36px; }
+  .price-header .section-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 8px; }
+  .price-header h2 { font-size: clamp(1.8rem, 3.5vw, 2.6rem); }
+
+  .price-1 { grid-column: span 3; grid-row: span 2; background: var(--white); }
+  .price-2 { grid-column: span 6; grid-row: span 2; background: var(--blue); color: var(--white); position: relative; }
+  .price-3 { grid-column: span 3; grid-row: span 2; background: var(--white); }
+
+  .pricing-inner { display: flex; flex-direction: column; height: 100%; }
+  .pricing-inner h3 { font-family: 'Space Mono', monospace; font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; }
+  .pricing-inner .price { font-size: 2.4rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 2px; }
+  .pricing-inner .price span { font-size: 0.9rem; font-weight: 400; }
+  .pricing-inner .period { font-size: 0.7rem; margin-bottom: 20px; opacity: 0.6; }
+  .pricing-inner ul { list-style: none; flex: 1; }
+  .pricing-inner li { padding: 6px 0; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(0,0,0,0.08); }
+  .pricing-inner.light li { border-bottom-color: rgba(255,255,255,0.15); }
+  .pricing-inner li::before { content: '◆'; font-size: 0.5rem; color: var(--red); }
+  .pricing-inner.light li::before { color: var(--yellow); }
+
+  .btn-pricing {
+    display: block; width: 100%; padding: 12px; text-decoration: none;
+    font-weight: 700; font-size: 0.8rem; text-align: center; margin-top: 20px;
+    border: 3px solid var(--black); font-family: 'Space Mono', monospace;
+    cursor: pointer; transition: transform 0.15s;
+  }
+  .btn-pricing:hover { transform: translate(-2px, -2px); }
+  .btn-pricing.outline { background: transparent; color: var(--black); }
+  .btn-pricing.filled { background: var(--red); color: var(--white); }
+  .btn-pricing.light { background: var(--yellow); color: var(--black); }
+
+  .featured-badge {
+    position: absolute; top: 16px; right: 16px;
+    font-size: 0.6rem; font-weight: 700; padding: 5px 12px;
+    background: var(--yellow); color: var(--black); border: 2px solid var(--black);
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* Final CTA */
+  .cta-cell { grid-column: span 12; background: var(--yellow); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 64px 32px; }
+  .cta-cell h2 { font-size: clamp(2rem, 4vw, 3.2rem); margin-bottom: 12px; }
+  .cta-cell p { font-size: 0.95rem; margin-bottom: 28px; max-width: 480px; }
+
+  /* Footer */
+  footer { border-top: 4px solid var(--black); padding: 28px 0; text-align: center; }
+  footer p { font-family: 'Space Mono', monospace; font-size: 0.7rem; opacity: 0.5; }
+
+  /* Decorative shapes */
+  .shape-float {
+    position: absolute; opacity: 0.15;
+  }
+  .shape-float.circle { border-radius: 50%; border: 4px solid var(--black); }
+  .shape-float.square { border: 4px solid var(--black); }
+
+  @media (max-width: 900px) {
+    .mondrian-grid { grid-template-columns: repeat(6, 1fr); }
+    .hero-title { grid-column: span 6; grid-row: span 2; min-height: 280px; }
+    .hero-shape-1, .hero-shape-2 { grid-column: span 3; }
+    .hero-cta { grid-column: span 4; }
+    .hero-stat-1, .hero-stat-2 { grid-column: span 2; }
+    .logos-cell, .feat-header, .zigzag-header, .test-header, .price-header, .cta-cell { grid-column: span 6; }
+    .feat-1, .feat-2 { grid-column: span 3; grid-row: span 1; }
+    .feat-3 { grid-column: span 3; grid-row: span 1; }
+    .feat-4, .feat-5 { grid-column: span 3; }
+    .zigzag-1, .zigzag-2, .zigzag-3 { grid-column: span 3; grid-row: span 1; }
+    .zigzag-4 { grid-column: span 3; }
+    .zigzag-5 { grid-column: span 6; }
+    .test-main { grid-column: span 6; grid-row: span 1; }
+    .test-stat-1, .test-stat-2, .test-stat-3 { grid-column: span 2; }
+    .price-1, .price-2, .price-3 { grid-column: span 3; grid-row: span 1; }
+    .nav-links { display: none; }
+  }
+  @media (max-width: 500px) {
+    .mondrian-grid { grid-template-columns: 1fr; }
+    .hero-title, .hero-shape-1, .hero-shape-2, .hero-cta, .hero-stat-1, .hero-stat-2,
+    .logos-cell, .feat-header, .feat-1, .feat-2, .feat-3, .feat-4, .feat-5,
+    .zigzag-header, .zigzag-1, .zigzag-2, .zigzag-3, .zigzag-4, .zigzag-5,
+    .test-header, .test-main, .test-stat-1, .test-stat-2, .test-stat-3,
+    .price-header, .price-1, .price-2, .price-3, .cta-cell { grid-column: span 1; grid-row: span 1; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="#" class="logo">meet<span>.</span></a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="btn-nav">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<section class="mondrian-section">
+  <div class="container">
+    <div class="mondrian-grid">
+
+      <!-- Hero -->
+      <div class="cell hero-title reveal">
+        <h1>Meetings that don't<br><span class="accent-red">waste</span> your <span class="accent-blue">week</span></h1>
+        <p class="subhead">AI notes that turn transcripts into action items. Syncs to Notion, Linear, Slack — so nothing falls through the cracks.</p>
+        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+          <a href="#" class="btn-primary">Connect calendar →</a>
+          <a href="#features" class="btn-secondary">See how ↓</a>
+        </div>
+      </div>
+
+      <div class="cell hero-shape-1 reveal">
+        <div class="geo-circle" style="background:var(--white); border:4px solid var(--black);"></div>
+      </div>
+      <div class="cell hero-shape-2 reveal">
+        <div class="geo-square" style="background:var(--blue); border:4px solid var(--black);"></div>
+      </div>
+
+      <div class="cell hero-cta reveal">
+        <div style="font-family:'Space Mono',monospace; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.12em; margin-bottom:8px;">Free for 14 days</div>
+        <div style="font-size:1.6rem; font-weight:700; line-height:1.2;">No credit card.<br>No setup.</div>
+      </div>
+      <div class="cell hero-stat-1 reveal">
+        <div class="stat-big">4hrs</div>
+        <div class="stat-label light">Saved / week</div>
+      </div>
+      <div class="cell hero-stat-2 reveal">
+        <div class="stat-big dark">98%</div>
+        <div class="stat-label">Accuracy</div>
+      </div>
+
+      <!-- Logos -->
+      <div class="cell logos-cell reveal">
+        <div class="label">Trusted by teams at</div>
+        <div class="logos-row">
+          <span class="logo-item">Vercel</span><span class="logo-item">Stripe</span><span class="logo-item">Notion</span><span class="logo-item">Linear</span><span class="logo-item">Figma</span><span class="logo-item">Raycast</span>
+        </div>
+      </div>
+
+      <!-- Features Header -->
+      <div class="cell feat-header reveal" id="features">
+        <div class="section-label">Features</div>
+        <h2>Three acts.</h2>
+      </div>
+
+      <!-- Feature 1 -->
+      <div class="cell feat-1 reveal">
+        <div class="feat-icon circle" style="background:var(--red);">🎙</div>
+        <h3>Transcribe</h3>
+        <p>Every word captured. Speaker-labeled. Searchable. Permanent record you can actually find things in.</p>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="cell feat-2 reveal">
+        <div class="feat-icon square" style="background:var(--blue);">✦</div>
+        <h3>Summarize</h3>
+        <p>AI distills 60 minutes into 3 bullet points and 5 action items. Skip the replay. Get the signal.</p>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="cell feat-3 light reveal">
+        <div class="feat-icon square" style="background:var(--yellow); border-color:var(--black);">↗</div>
+        <h3>Sync</h3>
+        <p>Pushes to your tools. Notion pages, Linear tickets, Slack threads. One click. Every tool updated.</p>
+        <div class="conn-list">
+          <div class="conn-row" style="border-color:var(--white);"><div class="conn-icon" style="border-color:var(--white); color:var(--yellow);">N</div><div class="conn-line" style="background:var(--white);"></div><span class="conn-badge" style="border-color:var(--white);">OK</span></div>
+          <div class="conn-row" style="border-color:var(--white);"><div class="conn-icon" style="border-color:var(--white); color:var(--yellow);">L</div><div class="conn-line" style="background:var(--white);"></div><span class="conn-badge" style="border-color:var(--white);">OK</span></div>
+          <div class="conn-row" style="border-color:var(--white);"><div class="conn-icon" style="border-color:var(--white); color:var(--yellow);">S</div><div class="conn-line" style="background:var(--white);"></div><span class="conn-badge" style="border-color:var(--white);">OK</span></div>
+        </div>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="cell feat-4 reveal">
+        <div style="font-size:2.4rem; font-weight:700; color:var(--white);">⚡</div>
+        <div style="font-size:0.75rem; font-weight:600; color:var(--white); margin-top:4px;">Instant</div>
+      </div>
+
+      <!-- Feature 5 -->
+      <div class="cell feat-5 reveal">
+        <div style="font-size:2.4rem; font-weight:700;">10×</div>
+        <div style="font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; margin-top:4px;">Faster search</div>
+      </div>
+
+      <!-- Zigzag Header -->
+      <div class="cell zigzag-header reveal">
+        <div class="section-label">How it works</div>
+        <h2>One click.<br>Every tool updated.</h2>
+      </div>
+
+      <!-- Zigzag 1 -->
+      <div class="cell zigzag-1 reveal">
+        <h3>Connect once</h3>
+        <p>Link your workspace tools. Meet pushes the right content to the right place.</p>
+        <div class="conn-list">
+          <div class="conn-row"><div class="conn-icon" style="background:var(--blue); color:var(--white);">N</div><div class="conn-line"></div><span class="conn-badge">OK</span></div>
+          <div class="conn-row"><div class="conn-icon" style="background:var(--red); color:var(--white);">L</div><div class="conn-line"></div><span class="conn-badge">OK</span></div>
+          <div class="conn-row"><div class="conn-icon" style="background:var(--yellow);">S</div><div class="conn-line"></div><span class="conn-badge">OK</span></div>
+        </div>
+      </div>
+
+      <!-- Zigzag 2 -->
+      <div class="cell zigzag-2 reveal">
+        <h3>Notes that live somewhere useful</h3>
+        <p>Every meeting generates a polished Notion page automatically. Headings, tables, timestamps.</p>
+        <div class="notion-mock">
+          <div class="notion-line h1"></div>
+          <div class="notion-line h2"></div>
+          <div class="notion-line" style="width:100%"></div>
+          <div class="notion-line" style="width:80%"></div>
+          <div class="notion-line" style="width:90%"></div>
+        </div>
+      </div>
+
+      <!-- Zigzag 3 -->
+      <div class="cell zigzag-3 reveal">
+        <div class="geo-circle" style="background:var(--yellow); border:4px solid var(--black); width:50px; height:50px; margin-bottom:16px;"></div>
+        <h3>Search everything</h3>
+        <p>Find any moment from any meeting in seconds.</p>
+      </div>
+
+      <!-- Zigzag 4 -->
+      <div class="cell zigzag-4 reveal">
+        <div style="font-size:2.8rem; font-weight:700; color:var(--white);">10×</div>
+        <div style="font-size:0.75rem; font-weight:600; color:var(--white);">Faster than recordings</div>
+      </div>
+
+      <!-- Zigzag 5 -->
+      <div class="cell zigzag-5 reveal">
+        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+          <div class="geo-rect" style="background:var(--red); border:3px solid var(--black);"></div>
+          <div class="geo-rect" style="background:var(--blue); border:3px solid var(--black);"></div>
+          <div class="geo-rect" style="background:var(--yellow); border:3px solid var(--black);"></div>
+        </div>
+      </div>
+
+      <!-- Testimonial Header -->
+      <div class="cell test-header reveal">
+        <div class="section-label">What people say</div>
+        <h2>Proof, not promises.</h2>
+      </div>
+
+      <!-- Testimonial Main -->
+      <div class="cell test-main reveal">
+        <blockquote>"We went from 4 hours of note-taking per week to zero. Meet just works."</blockquote>
+        <div class="author">
+          <div class="author-avatar"></div>
+          <div>
+            <div class="author-name">Sarah Chen</div>
+            <div class="author-role">VP of Product · Linear</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial Stats -->
+      <div class="cell test-stat-1 reveal">
+        <div class="mini-stat">4.9★</div>
+        <div class="mini-label">Rating</div>
+      </div>
+      <div class="cell test-stat-2 reveal">
+        <div class="mini-stat">12k+</div>
+        <div class="mini-label">Teams</div>
+      </div>
+      <div class="cell test-stat-3 reveal">
+        <div class="mini-stat" style="color:var(--white);">98%</div>
+        <div class="mini-label" style="color:rgba(255,255,255,0.7);">Accuracy</div>
+      </div>
+
+      <!-- Pricing Header -->
+      <div class="cell price-header reveal" id="pricing">
+        <div class="section-label">Pricing</div>
+        <h2>Simple pricing</h2>
+      </div>
+
+      <!-- Free -->
+      <div class="cell price-1 reveal">
+        <div class="pricing-inner">
+          <h3>Free</h3>
+          <div class="price">$0<span>/mo</span></div>
+          <div class="period">10 meetings / month</div>
+          <ul>
+            <li>AI transcription</li>
+            <li>Basic summaries</li>
+            <li>1 integration</li>
+          </ul>
+          <a href="#" class="btn-pricing outline">Get started</a>
+        </div>
+      </div>
+
+      <!-- Pro -->
+      <div class="cell price-2 reveal">
+        <div class="featured-badge">Most Popular</div>
+        <div class="pricing-inner light">
+          <h3>Pro</h3>
+          <div class="price">$12<span>/mo</span></div>
+          <div class="period">Unlimited meetings</div>
+          <ul>
+            <li>Everything in Free</li>
+            <li>AI summaries & action items</li>
+            <li>Unlimited integrations</li>
+            <li>Search across all meetings</li>
+          </ul>
+          <a href="#" class="btn-pricing light">Start free trial</a>
+        </div>
+      </div>
+
+      <!-- Team -->
+      <div class="cell price-3 reveal">
+        <div class="pricing-inner">
+          <h3>Team</h3>
+          <div class="price">$29<span>/mo</span></div>
+          <div class="period">Per seat, min 5</div>
+          <ul>
+            <li>Everything in Pro</li>
+            <li>Shared workspace</li>
+            <li>Admin controls</li>
+            <li>SSO & audit logs</li>
+          </ul>
+          <a href="#" class="btn-pricing outline">Contact sales</a>
+        </div>
+      </div>
+
+      <!-- Final CTA -->
+      <div class="cell cta-cell reveal">
+        <h2>Stop taking notes.<br>Start getting things done.</h2>
+        <p>Your calendar already knows about your meetings. Let Meet handle the rest.</p>
+        <a href="#" class="btn-primary">Start free — no credit card →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© 2024 Meet. Built for people who value their time.</p>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

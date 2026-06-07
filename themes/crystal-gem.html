@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark-deep: #0A0A0F;
+    --dark: #12121A;
+    --dark-mid: #1A1A25;
+    --dark-light: #252535;
+    --gem-ruby: #E01B5F;
+    --gem-sapphire: #1B6FF0;
+    --gem-emerald: #00D68F;
+    --gem-amber: #F0A500;
+    --gem-violet: #8B5CF6;
+    --gem-cyan: #06D6E0;
+    --gem-pink: #FF2D92;
+    --refraction-1: #FF006E;
+    --refraction-2: #8338EC;
+    --refraction-3: #3A86FF;
+    --refraction-4: #06D6E0;
+    --refraction-5: #00D68F;
+    --refraction-6: #F0A500;
+    --text: #F0F0F5;
+    --text-soft: #A0A0B5;
+    --text-muted: #606075;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Instrument Sans', 'Outfit', sans-serif;
+    background: var(--dark-deep);
+    color: var(--text);
+    line-height: 1.65;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .faceted-bg {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0;
+    overflow: hidden;
+  }
+
+  .facet {
+    position: absolute;
+    border: 1px solid rgba(139,92,246,0.06);
+    background: linear-gradient(135deg, rgba(139,92,246,0.02), transparent);
+  }
+
+  .facet-1 { width: 300px; height: 300px; top: 5%; left: -5%; transform: rotate(45deg); }
+  .facet-2 { width: 200px; height: 200px; top: 20%; right: -3%; transform: rotate(30deg); border-color: rgba(6,214,224,0.06); }
+  .facet-3 { width: 250px; height: 250px; bottom: 15%; left: 10%; transform: rotate(60deg); border-color: rgba(224,27,95,0.06); }
+  .facet-4 { width: 180px; height: 180px; bottom: 5%; right: 15%; transform: rotate(15deg); }
+  .facet-5 { width: 150px; height: 150px; top: 50%; left: 50%; transform: rotate(75deg); border-color: rgba(0,214,143,0.06); }
+
+  .refraction-overlay {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 1;
+    background: linear-gradient(125deg, transparent 0%, rgba(255,0,110,0.015) 15%, rgba(131,56,236,0.015) 25%, rgba(58,134,255,0.015) 35%, rgba(6,214,224,0.015) 45%, rgba(0,214,143,0.015) 55%, rgba(240,165,0,0.015) 65%, transparent 80%);
+    animation: refraction-shift 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes refraction-shift {
+    0% { transform: translateX(-10%) rotate(-2deg); }
+    100% { transform: translateX(10%) rotate(2deg); }
+  }
+
+  .gem-shard {
+    position: fixed;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.08;
+  }
+
+  .shard-1 { width: 80px; height: 80px; top: 12%; right: 20%; animation: shard-float 18s ease-in-out infinite; }
+  .shard-2 { width: 60px; height: 60px; top: 40%; left: 8%; animation: shard-float 22s ease-in-out infinite reverse; }
+  .shard-3 { width: 100px; height: 100px; bottom: 25%; right: 12%; animation: shard-float 25s ease-in-out infinite; }
+  .shard-4 { width: 50px; height: 50px; top: 65%; left: 25%; animation: shard-float 20s ease-in-out infinite reverse; }
+
+  @keyframes shard-float {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(10px, -15px) rotate(5deg); }
+    50% { transform: translate(-8px, -25px) rotate(-3deg); }
+    75% { transform: translate(15px, -10px) rotate(8deg); }
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 2;
+  }
+
+  section { padding: 100px 0; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 16px 0;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(139,92,246,0.1);
+    transition: all 0.3s ease;
+  }
+
+  nav .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-decoration: none;
+    background: linear-gradient(135deg, var(--gem-violet), var(--gem-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.03em;
+  }
+
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a {
+    color: var(--text-soft);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.3s;
+    font-family: 'Instrument Sans', sans-serif;
+  }
+  .nav-links a:hover {
+    color: var(--gem-cyan);
+    text-shadow: 0 0 20px rgba(6,214,224,0.3);
+  }
+
+  .nav-cta {
+    background: linear-gradient(135deg, var(--gem-violet), var(--gem-cyan)) !important;
+    color: white !important;
+    padding: 10px 28px !important;
+    clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+    font-weight: 600 !important;
+    font-family: 'Outfit', sans-serif !important;
+    transition: all 0.3s ease !important;
+  }
+  .nav-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(139,92,246,0.4) !important;
+  }
+
+  /* HERO */
+  .hero {
+    padding-top: 160px;
+    padding-bottom: 80px;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 24px;
+    background: rgba(139,92,246,0.08);
+    border: 1px solid rgba(139,92,246,0.2);
+    clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+    font-size: 0.85rem;
+    color: var(--gem-violet);
+    margin-bottom: 36px;
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 500;
+    animation: crystal-in 0.8s ease-out;
+  }
+
+  .hero-badge .dot {
+    width: 8px; height: 8px;
+    background: var(--gem-cyan);
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.3); }
+  }
+
+  @keyframes crystal-in {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .hero h1 {
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    color: var(--text);
+    margin-bottom: 28px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    animation: crystal-in 0.8s ease-out 0.1s both;
+  }
+
+  .hero h1 .highlight {
+    background: linear-gradient(135deg, var(--refraction-1), var(--refraction-2), var(--refraction-3), var(--refraction-4));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 200%;
+    animation: gradient-shift 4s ease-in-out infinite alternate;
+  }
+
+  @keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+  }
+
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--text-soft);
+    max-width: 540px;
+    margin: 0 auto 44px;
+    line-height: 1.75;
+    animation: crystal-in 0.8s ease-out 0.2s both;
+    font-family: 'Instrument Sans', sans-serif;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: crystal-in 0.8s ease-out 0.3s both;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 36px;
+    background: linear-gradient(135deg, var(--gem-violet), var(--gem-cyan));
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.05rem;
+    border: none;
+    cursor: pointer;
+    clip-path: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+    font-family: 'Outfit', sans-serif;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(139,92,246,0.3);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(139,92,246,0.5);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 36px;
+    background: transparent;
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.05rem;
+    border: 1px solid rgba(139,92,246,0.3);
+    cursor: pointer;
+    clip-path: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+    font-family: 'Outfit', sans-serif;
+    transition: all 0.3s ease;
+  }
+  .btn-secondary:hover {
+    border-color: var(--gem-cyan);
+    color: var(--gem-cyan);
+    background: rgba(6,214,224,0.05);
+  }
+
+  .hero-screenshot {
+    margin-top: 70px;
+    overflow: hidden;
+    clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+    box-shadow: 0 8px 40px rgba(139,92,246,0.15);
+    animation: crystal-in 1s ease-out 0.4s both;
+    border: 1px solid rgba(139,92,246,0.1);
+  }
+
+  .hero-screenshot .mockup {
+    background: var(--dark);
+    padding: 0;
+    aspect-ratio: 16/9;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mockup-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 20px;
+    background: var(--dark-mid);
+    border-bottom: 1px solid rgba(139,92,246,0.1);
+  }
+
+  .mockup-dot {
+    width: 10px; height: 10px;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  }
+  .mockup-dot:nth-child(1) { background: var(--gem-ruby); opacity: 0.6; }
+  .mockup-dot:nth-child(2) { background: var(--gem-amber); opacity: 0.6; }
+  .mockup-dot:nth-child(3) { background: var(--gem-emerald); opacity: 0.6; }
+
+  .mockup-body {
+    flex: 1;
+    padding: 24px;
+    display: flex;
+    gap: 20px;
+  }
+
+  .mockup-sidebar {
+    width: 180px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mockup-sidebar-item {
+    height: 10px;
+    background: var(--dark-mid);
+    clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+  }
+  .mockup-sidebar-item.active {
+    background: linear-gradient(90deg, var(--gem-violet), var(--gem-cyan));
+    opacity: 0.4;
+  }
+
+  .mockup-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .mockup-line {
+    height: 10px;
+    background: var(--dark-mid);
+  }
+  .mockup-line.title {
+    height: 14px;
+    width: 40%;
+    background: linear-gradient(90deg, rgba(139,92,246,0.2), rgba(6,214,224,0.2));
+  }
+
+  .mockup-cards {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .mockup-card {
+    flex: 1;
+    height: 70px;
+    background: var(--dark-mid);
+    border: 1px solid rgba(139,92,246,0.08);
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  }
+
+  /* LOGOS */
+  .logos {
+    text-align: center;
+    padding: 60px 0;
+    border-top: 1px solid rgba(139,92,246,0.08);
+    border-bottom: 1px solid rgba(139,92,246,0.08);
+  }
+
+  .logos p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 500;
+  }
+
+  .logo-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    opacity: 0.3;
+  }
+
+  .logo-item {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.2rem;
+    color: var(--text-soft);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  /* FEATURES */
+  .features { text-align: center; }
+
+  .section-label {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.8rem;
+    color: var(--gem-cyan);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: inline-block;
+    font-weight: 600;
+    position: relative;
+  }
+
+  .section-label::before {
+    content: '\25C6';
+    margin-right: 10px;
+    font-size: 0.5rem;
+    vertical-align: middle;
+    color: var(--gem-violet);
+  }
+
+  .section-label::after {
+    content: '\25C6';
+    margin-left: 10px;
+    font-size: 0.5rem;
+    vertical-align: middle;
+    color: var(--gem-violet);
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .section-desc {
+    font-size: 1.05rem;
+    color: var(--text-soft);
+    max-width: 520px;
+    margin: 0 auto 60px;
+    line-height: 1.75;
+    font-family: 'Instrument Sans', sans-serif;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+
+  .feature-card {
+    background: var(--dark);
+    border: 1px solid rgba(139,92,246,0.1);
+    clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+    padding: 36px 28px;
+    text-align: left;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--gem-violet), var(--gem-cyan), var(--gem-emerald));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+
+  .feature-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .feature-card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 60px; height: 60px;
+    background: linear-gradient(225deg, rgba(139,92,246,0.05), transparent);
+    pointer-events: none;
+  }
+
+  .feature-card:hover {
+    border-color: rgba(139,92,246,0.25);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(139,92,246,0.1);
+  }
+
+  .feature-icon {
+    width: 52px; height: 52px;
+    background: rgba(139,92,246,0.08);
+    border: 1px solid rgba(139,92,246,0.15);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+
+  .feature-card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 10px;
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .feature-card p {
+    font-size: 0.9rem;
+    color: var(--text-soft);
+    line-height: 1.65;
+    font-family: 'Instrument Sans', sans-serif;
+  }
+
+  /* ZIGZAG */
+  .zigzag-section { padding: 80px 0; }
+
+  .zigzag {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    margin-bottom: 80px;
+  }
+  .zigzag:nth-child(even) { flex-direction: row-reverse; }
+
+  .zigzag-visual {
+    flex: 1;
+    min-height: 300px;
+    background: var(--dark);
+    border: 1px solid rgba(139,92,246,0.1);
+    clip-path: polygon(24px 0, 100% 0, 100% calc(100% - 24px), calc(100% - 24px) 100%, 0 100%, 0 24px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .zigzag-visual::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 30% 40%, rgba(139,92,246,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 70% 60%, rgba(6,214,224,0.04) 0%, transparent 40%);
+    pointer-events: none;
+  }
+
+  .zigzag-visual .icon-large {
+    font-size: 4rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .zigzag-content { flex: 1; }
+
+  .zigzag-content h2 {
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+
+  .zigzag-content p {
+    color: var(--text-soft);
+    margin-bottom: 24px;
+    font-size: 1rem;
+    line-height: 1.75;
+    font-family: 'Instrument Sans', sans-serif;
+  }
+
+  .feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .feature-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-soft);
+    font-size: 0.95rem;
+    font-family: 'Instrument Sans', sans-serif;
+  }
+
+  .feature-list .check {
+    width: 28px; height: 28px;
+    background: rgba(139,92,246,0.1);
+    border: 1px solid rgba(139,92,246,0.2);
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: var(--gem-cyan);
+    flex-shrink: 0;
+  }
+
+  /* TESTIMONIAL */
+  .testimonial {
+    text-align: center;
+    padding: 80px 0;
+  }
+
+  .testimonial-card {
+    max-width: 700px;
+    margin: 0 auto;
+    background: var(--dark);
+    border: 1px solid rgba(139,92,246,0.12);
+    clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+    padding: 56px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .testimonial-card::before {
+    content: '"';
+    position: absolute;
+    top: 16px; left: 40px;
+    font-size: 5rem;
+    font-family: 'Outfit', sans-serif;
+    background: linear-gradient(135deg, var(--gem-violet), var(--gem-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    opacity: 0.25;
+  }
+
+  .testimonial-card blockquote {
+    font-size: 1.15rem;
+    color: var(--text);
+    line-height: 1.75;
+    margin-bottom: 28px;
+    font-style: normal;
+    position: relative;
+    z-index: 1;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .testimonial-avatar {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(6,214,224,0.15));
+    border: 1px solid rgba(139,92,246,0.2);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gem-cyan);
+    font-weight: 700;
+    font-size: 0.85rem;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .testimonial-info { text-align: left; }
+  .testimonial-name { font-weight: 700; color: var(--text); font-size: 0.95rem; font-family: 'Outfit', sans-serif; }
+  .testimonial-role { color: var(--text-muted); font-size: 0.85rem; font-family: 'Instrument Sans', sans-serif; }
+
+  /* PRICING */
+  .pricing { text-align: center; }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    max-width: 950px;
+    margin: 0 auto;
+  }
+
+  .pricing-card {
+    background: var(--dark);
+    border: 1px solid rgba(139,92,246,0.1);
+    clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+    padding: 40px 32px;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .pricing-card:hover {
+    border-color: rgba(139,92,246,0.25);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(139,92,246,0.1);
+  }
+
+  .pricing-card.featured {
+    border: 1px solid rgba(139,92,246,0.3);
+    background: linear-gradient(180deg, rgba(139,92,246,0.06) 0%, var(--dark) 30%);
+    box-shadow: 0 0 40px rgba(139,92,246,0.08);
+  }
+
+  .pricing-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 20px;
+    background: linear-gradient(135deg, var(--gem-violet), var(--gem-cyan));
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+    font-family: 'Instrument Sans', sans-serif;
+  }
+
+  .pricing-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .pricing-card .price {
+    font-family: 'Outfit', sans-serif;
+    font-size: 3rem;
+    color: var(--text);
+    margin: 16px 0;
+    line-height: 1;
+    font-weight: 800;
+  }
+
+  .pricing-card .price span {
+    font-size: 1rem;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  .pricing-card .price-desc {
+    font-size: 0.9rem;
+    color: var(--text-soft);
+    margin-bottom: 28px;
+    font-family: 'Instrument Sans', sans-serif;
+  }
+
+  .pricing-features {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pricing-features li {
+    font-size: 0.9rem;
+    color: var(--text-soft);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Instrument Sans', sans-serif;
+  }
+
+  .pricing-features .check {
+    color: var(--gem-cyan);
+    font-weight: 700;
+  }
+
+  .pricing-card .btn-primary,
+  .pricing-card .btn-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 24px;
+    font-size: 0.95rem;
+  }
+
+  /* FINAL CTA */
+  .final-cta {
+    text-align: center;
+    padding: 100px 0;
+  }
+
+  .cta-box {
+    background: var(--dark);
+    border: 1px solid rgba(139,92,246,0.15);
+    clip-path: polygon(24px 0, 100% 0, 100% calc(100% - 24px), calc(100% - 24px) 100%, 0 100%, 0 24px);
+    padding: 80px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-box::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(139,92,246,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 30%, rgba(6,214,224,0.04) 0%, transparent 40%);
+    pointer-events: none;
+  }
+
+  .cta-box h2 {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    color: var(--text);
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-box p {
+    font-size: 1.05rem;
+    color: var(--text-soft);
+    margin-bottom: 36px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 1;
+    line-height: 1.75;
+    font-family: 'Instrument Sans', sans-serif;
+  }
+
+  .cta-box .btn-primary {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 60px 0 40px;
+    border-top: 1px solid rgba(139,92,246,0.08);
+    background: rgba(10,10,15,0.6);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+
+  .footer-brand .logo { display: block; margin-bottom: 12px; }
+  .footer-brand p { color: var(--text-muted); font-size: 0.85rem; max-width: 280px; line-height: 1.7; font-family: 'Instrument Sans', sans-serif; }
+
+  .footer-col h4 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 600;
+  }
+
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 10px; }
+  .footer-col a {
+    color: var(--text-soft);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    font-family: 'Instrument Sans', sans-serif;
+  }
+  .footer-col a:hover { color: var(--gem-cyan); }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 32px;
+    border-top: 1px solid rgba(139,92,246,0.08);
+  }
+
+  .footer-bottom p {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-family: 'Instrument Sans', sans-serif;
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 16px;
+  }
+
+  .footer-social a {
+    width: 36px; height: 36px;
+    background: var(--dark-mid);
+    border: 1px solid rgba(139,92,246,0.1);
+    clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-soft);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.3s;
+  }
+  .footer-social a:hover {
+    border-color: var(--gem-violet);
+    color: var(--gem-cyan);
+    background: rgba(139,92,246,0.1);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .container { padding: 0 24px; }
+    section { padding: 60px 0; }
+    .nav-links { display: none; }
+    .hero { padding-top: 130px; }
+    .hero h1 { font-size: 2.4rem; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .zigzag { flex-direction: column !important; gap: 32px; }
+    .zigzag-visual { min-height: 200px; width: 100%; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+    .cta-box { padding: 48px 32px; }
+    .mockup-sidebar { display: none; }
+    .gem-shard { display: none; }
+    .facet { display: none; }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<div class="faceted-bg">
+  <div class="facet facet-1"></div>
+  <div class="facet facet-2"></div>
+  <div class="facet facet-3"></div>
+  <div class="facet facet-4"></div>
+  <div class="facet facet-5"></div>
+</div>
+<div class="refraction-overlay"></div>
+
+<div class="gem-shard shard-1">
+  <svg viewBox="0 0 100 100"><polygon points="50,5 95,35 95,65 50,95 5,65 5,35" fill="none" stroke="url(#sg1)" stroke-width="1"/><defs><linearGradient id="sg1"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#06D6E0"/></linearGradient></defs></svg>
+</div>
+<div class="gem-shard shard-2">
+  <svg viewBox="0 0 100 100"><polygon points="50,0 100,50 50,100 0,50" fill="none" stroke="url(#sg2)" stroke-width="1"/><defs><linearGradient id="sg2"><stop offset="0%" stop-color="#E01B5F"/><stop offset="100%" stop-color="#F0A500"/></linearGradient></defs></svg>
+</div>
+<div class="gem-shard shard-3">
+  <svg viewBox="0 0 100 100"><polygon points="50,5 95,35 95,65 50,95 5,65 5,35" fill="none" stroke="url(#sg3)" stroke-width="1"/><defs><linearGradient id="sg3"><stop offset="0%" stop-color="#00D68F"/><stop offset="100%" stop-color="#1B6FF0"/></linearGradient></defs></svg>
+</div>
+<div class="gem-shard shard-4">
+  <svg viewBox="0 0 100 100"><polygon points="50,0 100,50 50,100 0,50" fill="none" stroke="url(#sg4)" stroke-width="1"/><defs><linearGradient id="sg4"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#FF2D92"/></linearGradient></defs></svg>
+</div>
+
+<nav>
+  <div class="container">
+    <a href="#" class="logo">MEET</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="nav-cta">Get Started</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      now in public beta
+    </div>
+    <h1>Meetings with <span class="highlight">precision</span></h1>
+    <p>Schedule, host, and follow up — all in one sharp, focused tool. Cut through the noise. Find clarity.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Start Free →</a>
+      <a href="#" class="btn-secondary">Watch Demo</a>
+    </div>
+    <div class="hero-screenshot">
+      <div class="mockup">
+        <div class="mockup-bar">
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-sidebar">
+            <div class="mockup-sidebar-item active"></div>
+            <div class="mockup-sidebar-item"></div>
+            <div class="mockup-sidebar-item"></div>
+            <div class="mockup-sidebar-item"></div>
+          </div>
+          <div class="mockup-main">
+            <div class="mockup-line title"></div>
+            <div class="mockup-line" style="width:100%"></div>
+            <div class="mockup-line" style="width:85%"></div>
+            <div class="mockup-line" style="width:90%"></div>
+            <div class="mockup-cards">
+              <div class="mockup-card"></div>
+              <div class="mockup-card"></div>
+              <div class="mockup-card"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="logos">
+  <div class="container">
+    <p>Trusted by teams at</p>
+    <div class="logo-grid">
+      <span class="logo-item">Stripe</span>
+      <span class="logo-item">Notion</span>
+      <span class="logo-item">Vercel</span>
+      <span class="logo-item">Linear</span>
+      <span class="logo-item">Figma</span>
+      <span class="logo-item">Raycast</span>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="container">
+    <p class="section-label">features</p>
+    <h2 class="section-title">Everything you need, nothing you don't</h2>
+    <p class="section-desc">A tool designed around how teams actually work — precise, sharp, and effortlessly clear.</p>
+    <div class="feature-grid">
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🎯</div>
+        <h3>Smart Scheduling</h3>
+        <p>AI finds the perfect time across time zones. No more back-and-forth emails.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">⚡</div>
+        <h3>Auto Agendas</h3>
+        <p>Every meeting gets a generated agenda from your project context. Start focused.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">📋</div>
+        <h3>Live Notes</h3>
+        <p>Real-time collaborative notes with action items that sync to your tools.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🔥</div>
+        <h3>One-Click Join</h3>
+        <p>No downloads. No logins. Just a link that works everywhere.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🔄</div>
+        <h3>Follow-Up Flow</h3>
+        <p>Decisions, tasks, and summaries sent automatically after every meeting.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🔒</div>
+        <h3>Private by Default</h3>
+        <p>End-to-end encryption. Your conversations stay yours. Always.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="zigzag-section">
+  <div class="container">
+    <div class="zigzag fade-in">
+      <div class="zigzag-visual">
+        <span class="icon-large">📅</span>
+      </div>
+      <div class="zigzag-content">
+        <h2>Scheduling that actually works</h2>
+        <p>Connect your calendars and let Meet find the open slots. Time zones handled automatically.</p>
+        <ul class="feature-list">
+          <li><span class="check">✓</span> Google, Outlook, Apple Calendar</li>
+          <li><span class="check">✓</span> Buffer time between meetings</li>
+          <li><span class="check">✓</span> Smart rescheduling on conflicts</li>
+        </ul>
+      </div>
+    </div>
+    <div class="zigzag fade-in">
+      <div class="zigzag-visual">
+        <span class="icon-large">💬</span>
+      </div>
+      <div class="zigzag-content">
+        <h2>Meetings with purpose</h2>
+        <p>Every meeting starts with context and ends with clarity. No more "what were we talking about?"</p>
+        <ul class="feature-list">
+          <li><span class="check">✓</span> AI-generated agendas</li>
+          <li><span class="check">✓</span> Real-time transcription</li>
+          <li><span class="check">✓</span> Action items auto-assigned</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonial">
+  <div class="container">
+    <div class="testimonial-card fade-in">
+      <blockquote>
+        Meet cut our meeting overhead by 60%. We used to spend 30 minutes scheduling. Now it's one click. The auto-agendas alone saved us hours every week.
+      </blockquote>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">SK</div>
+        <div class="testimonial-info">
+          <div class="testimonial-name">Sarah Kim</div>
+          <div class="testimonial-role">VP of Operations, CloudScale</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="container">
+    <p class="section-label">pricing</p>
+    <h2 class="section-title">Simple, transparent pricing</h2>
+    <p class="section-desc">Start free. Upgrade when you need more. No surprises.</p>
+    <div class="pricing-grid">
+      <div class="pricing-card fade-in">
+        <h3>Free</h3>
+        <div class="price">$0 <span>/mo</span></div>
+        <p class="price-desc">For individuals and small teams</p>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> 10 meetings/month</li>
+          <li><span class="check">✓</span> Basic scheduling</li>
+          <li><span class="check">✓</span> Live notes</li>
+          <li><span class="check">✓</span> 1 calendar connection</li>
+        </ul>
+        <a href="#" class="btn-secondary">Get Started</a>
+      </div>
+      <div class="pricing-card featured fade-in">
+        <div class="pricing-badge">Popular</div>
+        <h3>Pro</h3>
+        <div class="price">$12 <span>/mo</span></div>
+        <p class="price-desc">For growing teams that need more</p>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Unlimited meetings</li>
+          <li><span class="check">✓</span> AI agendas & summaries</li>
+          <li><span class="check">✓</span> Team analytics</li>
+          <li><span class="check">✓</span> Unlimited calendars</li>
+          <li><span class="check">✓</span> Priority support</li>
+        </ul>
+        <a href="#" class="btn-primary">Get Started →</a>
+      </div>
+      <div class="pricing-card fade-in">
+        <h3>Enterprise</h3>
+        <div class="price">Custom</div>
+        <p class="price-desc">For organizations with specific needs</p>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Everything in Pro</li>
+          <li><span class="check">✓</span> SSO & SAML</li>
+          <li><span class="check">✓</span> Custom integrations</li>
+          <li><span class="check">✓</span> Dedicated support</li>
+          <li><span class="check">✓</span> SLA guarantee</li>
+        </ul>
+        <a href="#" class="btn-secondary">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="container">
+    <div class="cta-box">
+      <h2>Ready to find clarity?</h2>
+      <p>Join thousands of teams who replaced meeting chaos with precision. Free to start, no credit card needed.</p>
+      <a href="#" class="btn-primary">Start Free →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">MEET</a>
+        <p>Meetings that don't waste your week. Simple scheduling, smart agendas, clear outcomes.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#">Features</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">Integrations</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">Security</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Meet. All rights reserved.</p>
+      <div class="footer-social">
+        <a href="#">𝕏</a>
+        <a href="#">in</a>
+        <a href="#">gh</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      nav.style.background = 'rgba(10,10,15,0.95)';
+    } else {
+      nav.style.background = 'rgba(10,10,15,0.85)';
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1A1410;
+    --bg2: #231C15;
+    --bg3: #2D241C;
+    --surface: rgba(45, 36, 28, 0.7);
+    --surface-border: rgba(212, 168, 67, 0.12);
+    --surface-border-hover: rgba(212, 168, 67, 0.3);
+    --gold: #D4A843;
+    --gold-light: #E8C56A;
+    --gold-dim: rgba(212, 168, 67, 0.1);
+    --gold-glow: rgba(212, 168, 67, 0.25);
+    --terracotta: #C75B39;
+    --terracotta-light: #D97452;
+    --burnt-orange: #B8623D;
+    --warm-brown: #8B6914;
+    --cream: #F0E6D3;
+    --cream-dim: #C4B59E;
+    --text: #F0E6D3;
+    --text-dim: #A89880;
+    --text-muted: #6B5D50;
+    --radius: 4px;
+    --radius-lg: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Fraunces', serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Tapa cloth pattern overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='none' stroke='%23D4A843' stroke-width='1'/%3E%3Cpath d='M15 15L45 15L45 45L15 45Z' fill='none' stroke='%23D4A843' stroke-width='0.5'/%3E%3Ccircle cx='30' cy='30' r='4' fill='%23D4A843'/%3E%3C/svg%3E");
+    background-size: 60px 60px;
+  }
+
+  /* Tribal divider SVG */
+  .tribal-divider {
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+    opacity: 0.4;
+  }
+  .tribal-divider svg {
+    width: 200px;
+    height: 20px;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+  /* Gold gradient text */
+  .gradient-text {
+    background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--burnt-orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 16px 0;
+    background: rgba(26, 20, 16, 0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--surface-border);
+  }
+  nav::after {
+    content: '';
+    position: absolute; bottom: -1px; left: 0; right: 0; height: 2px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--gold) 0px, var(--gold) 8px,
+      transparent 8px, transparent 16px,
+      var(--terracotta) 16px, var(--terracotta) 24px,
+      transparent 24px, transparent 32px
+    );
+    opacity: 0.3;
+  }
+  nav .container {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700; font-size: 1.4rem;
+    color: var(--text);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    color: var(--text-dim); text-decoration: none;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.85rem; font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-cta {
+    padding: 8px 24px;
+    background: var(--terracotta);
+    color: #fff !important;
+    border-radius: var(--radius);
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
+    transition: all 0.3s !important;
+    border: 1px solid var(--terracotta-light);
+  }
+  .nav-cta:hover {
+    background: var(--terracotta-light);
+    transform: translateY(-1px);
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 120px 32px 80px;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 40%, rgba(199, 91, 57, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Tiki torch glow accents */
+  .tiki-glow {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .tiki-glow-1 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(199, 91, 57, 0.08) 0%, transparent 70%);
+    top: 10%; left: 5%;
+    animation: torch-flicker 4s ease-in-out infinite alternate;
+  }
+  .tiki-glow-2 {
+    width: 250px; height: 250px;
+    background: radial-gradient(circle, rgba(212, 168, 67, 0.06) 0%, transparent 70%);
+    bottom: 15%; right: 8%;
+    animation: torch-flicker 5s ease-in-out infinite alternate-reverse;
+  }
+  @keyframes torch-flicker {
+    0% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+    100% { opacity: 0.7; transform: scale(0.98); }
+  }
+
+  /* Tiki face SVG in hero */
+  .tiki-face {
+    width: 80px; height: 80px;
+    margin: 0 auto 32px;
+    opacity: 0.5;
+  }
+  .hero h1 {
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    margin-bottom: 24px;
+    letter-spacing: 0.04em;
+  }
+  .hero h1 .line { display: block; }
+  .hero-sub {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--text-dim);
+    max-width: 540px;
+    margin: 0 auto 48px;
+    font-weight: 300;
+    line-height: 1.7;
+    font-style: italic;
+  }
+  .hero-actions {
+    display: flex; gap: 16px;
+    justify-content: center; flex-wrap: wrap;
+  }
+  .btn-primary {
+    padding: 14px 40px;
+    background: var(--terracotta);
+    color: #fff;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: 2px solid var(--terracotta-light);
+    border-radius: var(--radius);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .btn-primary:hover {
+    background: var(--terracotta-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(199, 91, 57, 0.3);
+  }
+  .btn-secondary {
+    padding: 14px 40px;
+    background: transparent;
+    color: var(--gold);
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    text-decoration: none;
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-secondary:hover {
+    border-color: var(--gold);
+    background: var(--gold-dim);
+  }
+
+  /* Hero mockup */
+  .hero-mockup {
+    margin-top: 72px;
+    position: relative;
+  }
+  .mockup-frame {
+    background: var(--bg2);
+    border: 2px solid var(--surface-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow:
+      0 24px 80px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(212, 168, 67, 0.05);
+  }
+  /* Tribal border accent on mockup */
+  .mockup-frame::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--gold) 0px, var(--gold) 10px,
+      var(--terracotta) 10px, var(--terracotta) 20px,
+      var(--burnt-orange) 20px, var(--burnt-orange) 30px,
+      var(--gold) 30px, var(--gold) 40px
+    );
+    opacity: 0.6;
+  }
+  .mockup-topbar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 14px 20px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--surface-border);
+  }
+  .mockup-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    opacity: 0.4;
+  }
+  .mockup-dot:nth-child(1) { background: var(--terracotta); opacity: 0.7; }
+  .mockup-dot:nth-child(2) { background: var(--gold); opacity: 0.7; }
+  .mockup-dot:nth-child(3) { background: #5B8C5A; opacity: 0.7; }
+  .mockup-body {
+    padding: 32px;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 24px;
+    min-height: 280px;
+  }
+  .mockup-sidebar {
+    border-right: 1px solid var(--surface-border);
+    padding-right: 24px;
+  }
+  .mockup-sidebar-item {
+    height: 10px;
+    background: var(--text-muted);
+    opacity: 0.2;
+    margin-bottom: 14px;
+    border-radius: 2px;
+  }
+  .mockup-sidebar-item.active {
+    background: var(--gold);
+    opacity: 0.5;
+    width: 80%;
+  }
+  .mockup-main .mockup-line {
+    height: 10px;
+    background: var(--text-muted);
+    opacity: 0.15;
+    margin-bottom: 14px;
+    border-radius: 2px;
+  }
+  .mockup-main .mockup-line:nth-child(1) { width: 55%; height: 14px; opacity: 0.3; background: var(--gold); margin-bottom: 24px; }
+  .mockup-main .mockup-line:nth-child(2) { width: 100%; }
+  .mockup-main .mockup-line:nth-child(3) { width: 88%; }
+  .mockup-main .mockup-line:nth-child(4) { width: 95%; }
+  .mockup-main .mockup-line:nth-child(5) { width: 72%; }
+
+  /* ===== LOGOS ===== */
+  .logos-section {
+    padding: 80px 0;
+    border-top: 1px solid var(--surface-border);
+    border-bottom: 1px solid var(--surface-border);
+  }
+  .logos-label {
+    text-align: center;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+  .logos-grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    opacity: 0.3;
+  }
+  .logo-item {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: var(--cream-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ===== FEATURES ===== */
+  .features-section {
+    padding: 120px 0;
+  }
+  .section-header {
+    text-align: center;
+    margin-bottom: 72px;
+  }
+  .section-tag {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.75rem;
+    color: var(--gold);
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .section-header h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 16px;
+    letter-spacing: 0.04em;
+  }
+  .section-header p {
+    color: var(--text-dim);
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    max-width: 520px;
+    margin: 0 auto;
+    font-weight: 300;
+    font-style: italic;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .feature-card {
+    padding: 36px 28px;
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius);
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+  /* Tribal corner accent */
+  .feature-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 24px; height: 24px;
+    border-top: 2px solid var(--gold);
+    border-left: 2px solid var(--gold);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .feature-card:hover {
+    border-color: var(--surface-border-hover);
+    transform: translateY(-4px);
+  }
+  .feature-card:hover::before { opacity: 0.4; }
+  .feature-icon {
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    color: var(--gold);
+    background: var(--gold-dim);
+    border-radius: var(--radius);
+    border: 1px solid rgba(212, 168, 67, 0.15);
+  }
+  .feature-card h3 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+  .feature-card p {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag-section {
+    padding: 120px 0;
+    border-top: 1px solid var(--surface-border);
+  }
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    margin-bottom: 100px;
+  }
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-content { order: 2; }
+  .zigzag-row.reverse .zigzag-visual { order: 1; }
+  .zigzag-content .section-tag { text-align: left; }
+  .zigzag-content h2 {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    margin-bottom: 16px;
+    letter-spacing: 0.04em;
+  }
+  .zigzag-content p {
+    color: var(--text-dim);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 24px;
+    font-weight: 300;
+  }
+  .zigzag-list {
+    list-style: none;
+  }
+  .zigzag-list li {
+    padding: 8px 0;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    display: flex; align-items: center; gap: 12px;
+    font-weight: 300;
+  }
+  .zigzag-list li::before {
+    content: '◆';
+    color: var(--gold);
+    font-size: 0.5rem;
+  }
+  .zigzag-visual {
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    min-height: 280px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  /* Tribal pattern overlay on visual */
+  .zigzag-visual::before {
+    content: '';
+    position: absolute; inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0L40 20L20 40L0 20Z' fill='none' stroke='%23D4A843' stroke-width='1'/%3E%3C/svg%3E");
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+  .visual-placeholder {
+    text-align: center;
+    position: relative; z-index: 1;
+  }
+  .visual-placeholder .big-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    display: block;
+    color: var(--gold);
+    opacity: 0.4;
+  }
+  .visual-placeholder .label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial-section {
+    padding: 120px 0;
+    border-top: 1px solid var(--surface-border);
+    border-bottom: 1px solid var(--surface-border);
+    text-align: center;
+    position: relative;
+  }
+  .testimonial-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 50% 60% at 50% 50%, rgba(199, 91, 57, 0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .testimonial-quote {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+    line-height: 1.6;
+    max-width: 720px;
+    margin: 0 auto 40px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--cream);
+    position: relative;
+  }
+  .testimonial-quote::before {
+    content: '\201C';
+    font-size: 6rem;
+    color: var(--gold);
+    opacity: 0.15;
+    position: absolute;
+    top: -50px;
+    left: -10px;
+    font-family: 'Fraunces', serif;
+    line-height: 1;
+    font-style: normal;
+  }
+  .testimonial-author {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .testimonial-author .name {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .testimonial-author .role {
+    font-family: 'Fraunces', serif;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  /* ===== PRICING ===== */
+  .pricing-section {
+    padding: 120px 0;
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .pricing-card {
+    padding: 40px 32px;
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    position: relative;
+    transition: all 0.4s;
+  }
+  .pricing-card.featured {
+    border-color: var(--gold);
+    background: rgba(45, 36, 28, 0.9);
+  }
+  .pricing-card.featured::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--terracotta), var(--gold), var(--burnt-orange));
+  }
+  .pricing-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--surface-border-hover);
+  }
+  .pricing-badge {
+    display: inline-block;
+    padding: 4px 14px;
+    background: var(--gold-dim);
+    border: 1px solid rgba(212, 168, 67, 0.2);
+    border-radius: 100px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.7rem;
+    color: var(--gold);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .pricing-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    letter-spacing: 0.06em;
+  }
+  .pricing-amount {
+    font-family: 'Oswald', sans-serif;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 4px;
+  }
+  .pricing-amount span {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text-dim);
+  }
+  .pricing-desc {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+    font-weight: 300;
+  }
+  .pricing-features {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 32px;
+  }
+  .pricing-features li {
+    padding: 8px 0;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 300;
+    border-bottom: 1px solid rgba(212, 168, 67, 0.05);
+  }
+  .pricing-features li::before {
+    content: '◆';
+    color: var(--gold);
+    font-size: 0.4rem;
+  }
+  .pricing-btn {
+    display: inline-block;
+    width: 100%;
+    padding: 12px 24px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    border-radius: var(--radius);
+    transition: all 0.3s;
+    cursor: pointer;
+    text-align: center;
+  }
+  .pricing-btn-primary {
+    background: var(--terracotta);
+    color: #fff;
+    border: 1px solid var(--terracotta-light);
+  }
+  .pricing-btn-primary:hover {
+    background: var(--terracotta-light);
+  }
+  .pricing-btn-secondary {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--surface-border);
+  }
+  .pricing-btn-secondary:hover {
+    border-color: var(--gold);
+    background: var(--gold-dim);
+  }
+
+  /* ===== FINAL CTA ===== */
+  .cta-section {
+    padding: 120px 0;
+    text-align: center;
+    position: relative;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(199, 91, 57, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-section h2 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    margin-bottom: 20px;
+    letter-spacing: 0.04em;
+  }
+  .cta-section p {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    max-width: 480px;
+    margin: 0 auto 40px;
+    font-weight: 300;
+    font-style: italic;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 60px 0 40px;
+    border-top: 1px solid var(--surface-border);
+  }
+  /* Tribal pattern footer border */
+  footer::before {
+    content: '';
+    position: absolute; top: -1px; left: 0; right: 0; height: 3px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--gold) 0px, var(--gold) 6px,
+      transparent 6px, transparent 10px,
+      var(--terracotta) 10px, var(--terracotta) 16px,
+      transparent 16px, transparent 20px
+    );
+    opacity: 0.25;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+  .footer-brand .nav-logo {
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+  .footer-brand p {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    max-width: 280px;
+    font-weight: 300;
+  }
+  .footer-col h4 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .footer-col a {
+    display: block;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    padding: 5px 0;
+    transition: color 0.3s;
+    font-weight: 300;
+  }
+  .footer-col a:hover { color: var(--gold); }
+  .footer-bottom {
+    padding-top: 32px;
+    border-top: 1px solid var(--surface-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-bottom p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .features-grid, .pricing-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+    .zigzag-row { grid-template-columns: 1fr; gap: 40px; }
+    .zigzag-row.reverse .zigzag-content { order: unset; }
+    .zigzag-row.reverse .zigzag-visual { order: unset; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .mockup-body { grid-template-columns: 1fr; }
+    .mockup-sidebar { display: none; }
+  }
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+    .hero h1 { font-size: 2.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Tiki glow accents -->
+<div class="tiki-glow tiki-glow-1"></div>
+<div class="tiki-glow tiki-glow-2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <a href="#" class="nav-logo">MEET<span>.</span></a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="nav-cta">Get Started</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <!-- Tiki face SVG -->
+    <svg class="tiki-face" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M40 4L52 16L68 16L76 28L76 48L68 60L52 68L40 76L28 68L12 60L4 48L4 28L12 16L28 16Z" stroke="#D4A843" stroke-width="1.5" fill="none"/>
+      <path d="M24 32L32 28L40 32L48 28L56 32" stroke="#D4A843" stroke-width="1.5" fill="none"/>
+      <circle cx="28" cy="40" r="4" fill="#D4A843" opacity="0.6"/>
+      <circle cx="52" cy="40" r="4" fill="#D4A843" opacity="0.6"/>
+      <path d="M28 52L34 56L40 52L46 56L52 52" stroke="#D4A843" stroke-width="1.5" fill="none"/>
+      <path d="M40 4L40 76" stroke="#D4A843" stroke-width="0.5" opacity="0.3"/>
+      <path d="M4 40L76 40" stroke="#D4A843" stroke-width="0.5" opacity="0.3"/>
+    </svg>
+
+    <h1>
+      <span class="line">Meetings That</span>
+      <span class="line gradient-text">Actually Work</span>
+    </h1>
+    <p class="hero-sub">
+      Schedule smarter. Meet shorter. Build culture without burning out your calendar.
+    </p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Start Free Trial</a>
+      <a href="#" class="btn-secondary">Watch Demo</a>
+    </div>
+
+    <div class="hero-mockup reveal">
+      <div class="mockup-frame">
+        <div class="mockup-topbar">
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-sidebar">
+            <div class="mockup-sidebar-item active"></div>
+            <div class="mockup-sidebar-item"></div>
+            <div class="mockup-sidebar-item"></div>
+            <div class="mockup-sidebar-item"></div>
+            <div class="mockup-sidebar-item"></div>
+          </div>
+          <div class="mockup-main">
+            <div class="mockup-line"></div>
+            <div class="mockup-line"></div>
+            <div class="mockup-line"></div>
+            <div class="mockup-line"></div>
+            <div class="mockup-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<section class="logos-section">
+  <div class="container">
+    <p class="logos-label">Trusted by teams at</p>
+    <div class="logos-grid">
+      <span class="logo-item">Stripe</span>
+      <span class="logo-item">Vercel</span>
+      <span class="logo-item">Linear</span>
+      <span class="logo-item">Notion</span>
+      <span class="logo-item">Figma</span>
+      <span class="logo-item">Raycast</span>
+    </div>
+  </div>
+</section>
+
+<!-- Tribal divider -->
+<div class="tribal-divider">
+  <svg viewBox="0 0 200 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 10H80L90 4L100 16L110 4L120 10H200" stroke="#D4A843" stroke-width="1"/>
+    <circle cx="100" cy="10" r="3" fill="#D4A843" opacity="0.5"/>
+  </svg>
+</div>
+
+<!-- FEATURES -->
+<section class="features-section" id="features">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">Features</span>
+      <h2>Built for <span class="gradient-text">Real Teams</span></h2>
+      <p>Every feature designed around how people actually work together</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon">◈</div>
+        <h3>Smart Scheduling</h3>
+        <p>AI finds the perfect time slot across time zones. No more email ping-pong.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">◇</div>
+        <h3>Focus Mode</h3>
+        <p>Auto-blocks deep work hours. Protects your calendar like a fortress.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">◆</div>
+        <h3>Meeting Briefs</h3>
+        <p>AI-generated agendas and recaps. Everyone arrives prepared, leaves aligned.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">✦</div>
+        <h3>Async First</h3>
+        <p>Not everything needs a meeting. LLM-powered async updates that actually get read.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">❖</div>
+        <h3>Analytics</h3>
+        <p>See where your team's time actually goes. Data-driven meeting hygiene.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">✧</div>
+        <h3>Integrations</h3>
+        <p>Slack, Google, Notion, GitHub. Connects to your existing tools seamlessly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZIGZAG -->
+<section class="zigzag-section">
+  <div class="container">
+    <div class="zigzag-row reveal">
+      <div class="zigzag-content">
+        <span class="section-tag">How It Works</span>
+        <h2>Three Steps to <span class="gradient-text">Calendar Peace</span></h2>
+        <p>Setup takes minutes. The relief lasts forever.</p>
+        <ul class="zigzag-list">
+          <li>Connect your calendar in one click</li>
+          <li>Set your focus hours and preferences</li>
+          <li>Let Meet optimize everything automatically</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <div class="visual-placeholder">
+          <span class="big-icon">◈</span>
+          <span class="label">Setup Flow</span>
+        </div>
+      </div>
+    </div>
+    <div class="zigzag-row reverse reveal">
+      <div class="zigzag-content">
+        <span class="section-tag">Why It Matters</span>
+        <h2>Reclaim <span class="gradient-text">4 Hours Weekly</span></h2>
+        <p>The average knowledge worker wastes 14 hours a month in unnecessary meetings. Meet cuts that by 70%.</p>
+        <ul class="zigzag-list">
+          <li>Auto-cancel when agendas are missing</li>
+          <li>Suggest async alternatives</li>
+          <li>Enforce 25-minute default slots</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <div class="visual-placeholder">
+          <span class="big-icon">◇</span>
+          <span class="label">Time Saved</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial-section">
+  <div class="container">
+    <div class="reveal">
+      <p class="testimonial-quote">
+        Meet transformed how our team uses time. We went from 35 meetings a week to 18 — and shipped faster.
+      </p>
+      <div class="testimonial-author">
+        <span class="name">Aria Nakamura</span>
+        <span class="role">VP of Engineering, Luminary</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">Pricing</span>
+      <h2>Simple, <span class="gradient-text">Transparent</span></h2>
+      <p>No hidden fees. Cancel anytime.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <h3>Starter</h3>
+        <div class="pricing-amount">$0 <span>/mo</span></div>
+        <p class="pricing-desc">For individuals and small teams</p>
+        <ul class="pricing-features">
+          <li>Up to 5 team members</li>
+          <li>Smart scheduling</li>
+          <li>Basic analytics</li>
+          <li>Calendar integration</li>
+        </ul>
+        <a href="#" class="pricing-btn pricing-btn-secondary">Get Started</a>
+      </div>
+      <div class="pricing-card featured reveal">
+        <span class="pricing-badge">Most Popular</span>
+        <h3>Pro</h3>
+        <div class="pricing-amount">$12 <span>/mo</span></div>
+        <p class="pricing-desc">For growing teams that need more</p>
+        <ul class="pricing-features">
+          <li>Unlimited members</li>
+          <li>AI meeting briefs</li>
+          <li>Advanced analytics</li>
+          <li>Async-first workflows</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#" class="pricing-btn pricing-btn-primary">Start Free Trial</a>
+      </div>
+      <div class="pricing-card reveal">
+        <h3>Enterprise</h3>
+        <div class="pricing-amount">$29 <span>/mo</span></div>
+        <p class="pricing-desc">For organizations at scale</p>
+        <ul class="pricing-features">
+          <li>Everything in Pro</li>
+          <li>SSO & SCIM</li>
+          <li>Custom integrations</li>
+          <li>Dedicated CSM</li>
+          <li>SLA guarantee</li>
+        </ul>
+        <a href="#" class="pricing-btn pricing-btn-secondary">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-section">
+  <div class="container reveal">
+    <h2>Ready to <span class="gradient-text">Reclaim Your Time</span>?</h2>
+    <p>Join 12,000+ teams who stopped wasting meetings and started building.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Start Free Trial</a>
+      <a href="#" class="btn-secondary">Talk to Sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo">MEET<span>.</span></a>
+        <p>Meetings that respect your time. Built for teams who ship.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Integrations</a>
+        <a href="#">Changelog</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Blog</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Security</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 Meet. All rights reserved.</p>
+      <p>Built with intention.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

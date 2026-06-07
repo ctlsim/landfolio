@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07060E;
+    --bg-light: #0D0B18;
+    --bg-card: rgba(255,255,255,0.04);
+    --bg-card-hover: rgba(255,255,255,0.07);
+    --neon-pink: #FF2D7B;
+    --neon-purple: #A855F7;
+    --neon-blue: #3B82F6;
+    --neon-cyan: #06D6A0;
+    --neon-orange: #FF6B35;
+    --neon-yellow: #FFD628;
+    --white: #FFFFFF;
+    --white-soft: rgba(255,255,255,0.85);
+    --white-muted: rgba(255,255,255,0.55);
+    --white-dim: rgba(255,255,255,0.3);
+    --border: rgba(255,255,255,0.08);
+    --border-hover: rgba(255,255,255,0.15);
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--white-soft);
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ===== ANIMATED GRADIENT MESH BG ===== */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 800px 600px at 15% 20%, rgba(255,45,123,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 700px 500px at 80% 30%, rgba(168,85,247,0.10) 0%, transparent 70%),
+      radial-gradient(ellipse 600px 800px at 50% 70%, rgba(59,130,246,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 500px 400px at 25% 80%, rgba(6,214,160,0.06) 0%, transparent 70%);
+    animation: meshShift 20s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes meshShift {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -20px) scale(1.05); }
+    66% { transform: translate(-20px, 15px) scale(0.98); }
+    100% { transform: translate(10px, -10px) scale(1.02); }
+  }
+
+  /* ===== FLOWING NEON LINE ===== */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple), var(--neon-blue), var(--neon-cyan), var(--neon-pink));
+    background-size: 200% 100%;
+    animation: neonFlow 4s linear infinite;
+    z-index: 100;
+  }
+  @keyframes neonFlow {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
+  }
+
+  section { position: relative; z-index: 1; }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--white);
+  }
+
+  h1 { font-size: clamp(2.8rem, 6vw, 5rem); letter-spacing: -0.03em; }
+  h2 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.02em; }
+  h3 { font-size: clamp(1.3rem, 2.5vw, 1.6rem); font-weight: 600; }
+
+  a { color: var(--neon-cyan); text-decoration: none; transition: all 0.3s; }
+  a:hover { color: var(--white); text-shadow: 0 0 20px rgba(6,214,160,0.5); }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ===== NEON GRADIENT TEXT ===== */
+  .neon-text {
+    background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple), var(--neon-blue), var(--neon-cyan));
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 6s ease-in-out infinite;
+  }
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* ===== NEON BUTTONS ===== */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 36px;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+    color: var(--white);
+    border-radius: 60px;
+    box-shadow: 0 0 30px rgba(255,45,123,0.3), 0 0 60px rgba(168,85,247,0.15);
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: 60px;
+  }
+  .btn-primary:hover {
+    box-shadow: 0 0 40px rgba(255,45,123,0.5), 0 0 80px rgba(168,85,247,0.25);
+    transform: translateY(-2px);
+    color: var(--white);
+  }
+  .btn-primary:hover::before { opacity: 1; }
+  .btn-primary span { position: relative; z-index: 1; }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--white-soft);
+    border: 1px solid var(--border);
+    border-radius: 60px;
+  }
+  .btn-secondary:hover {
+    border-color: var(--neon-purple);
+    color: var(--white);
+    box-shadow: 0 0 20px rgba(168,85,247,0.2);
+    transform: translateY(-2px);
+  }
+
+  /* ===== NEON CARD ===== */
+  .neon-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+    backdrop-filter: blur(10px);
+  }
+  .neon-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple), var(--neon-blue));
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .neon-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(168,85,247,0.1);
+  }
+  .neon-card:hover::before { opacity: 1; }
+
+  /* ===== GLOW ORB DECORATION ===== */
+  .glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    opacity: 0.4;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 32px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero .glow-orb-1 {
+    width: 500px; height: 500px;
+    top: -10%; left: -5%;
+    background: var(--neon-pink);
+    animation: orbFloat1 12s ease-in-out infinite;
+  }
+  .hero .glow-orb-2 {
+    width: 400px; height: 400px;
+    bottom: -5%; right: -5%;
+    background: var(--neon-blue);
+    animation: orbFloat2 15s ease-in-out infinite;
+  }
+  .hero .glow-orb-3 {
+    width: 300px; height: 300px;
+    top: 40%; right: 15%;
+    background: var(--neon-purple);
+    animation: orbFloat3 10s ease-in-out infinite;
+  }
+  @keyframes orbFloat1 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(60px, 40px); }
+  }
+  @keyframes orbFloat2 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-50px, -30px); }
+  }
+  @keyframes orbFloat3 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-30px, 20px) scale(1.15); }
+  }
+
+  .hero-content {
+    max-width: 850px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 18px;
+    background: rgba(255,45,123,0.1);
+    border: 1px solid rgba(255,45,123,0.2);
+    border-radius: 60px;
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--neon-pink);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .hero-badge .dot {
+    width: 6px; height: 6px;
+    background: var(--neon-pink);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255,45,123,0.4); }
+    50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(255,45,123,0); }
+  }
+
+  .hero h1 {
+    margin-bottom: 24px;
+  }
+
+  .hero p {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--white-muted);
+    max-width: 560px;
+    margin: 0 auto 44px;
+    line-height: 1.7;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* ===== LOGOS ===== */
+  .logos-section {
+    padding: 60px 32px;
+    text-align: center;
+    background: rgba(255,255,255,0.01);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logos-section p {
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    color: var(--white-dim);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  .logos-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    opacity: 0.3;
+  }
+
+  .logo-placeholder {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--white-muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* ===== FEATURES ===== */
+  .features-section {
+    padding: 100px 32px;
+    background: var(--bg);
+    position: relative;
+  }
+
+  .features-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 60px;
+  }
+  .features-header h2 { margin-bottom: 16px; }
+  .features-header p {
+    font-size: 1.05rem;
+    color: var(--white-muted);
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+    backdrop-filter: blur(10px);
+  }
+  .feature-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0; height: 2px;
+    background: linear-gradient(90deg, var(--neon-pink), var(--neon-cyan));
+    transition: width 0.5s;
+  }
+  .feature-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(168,85,247,0.08);
+  }
+  .feature-card:hover::after { width: 100%; }
+
+  .feature-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    font-weight: 700;
+    font-family: var(--font-display);
+    color: var(--white);
+  }
+  .feature-icon.pink { background: linear-gradient(135deg, var(--neon-pink), #FF6B9D); box-shadow: 0 0 20px rgba(255,45,123,0.3); }
+  .feature-icon.purple { background: linear-gradient(135deg, var(--neon-purple), #C084FC); box-shadow: 0 0 20px rgba(168,85,247,0.3); }
+  .feature-icon.blue { background: linear-gradient(135deg, var(--neon-blue), #60A5FA); box-shadow: 0 0 20px rgba(59,130,246,0.3); }
+  .feature-icon.cyan { background: linear-gradient(135deg, var(--neon-cyan), #34D399); box-shadow: 0 0 20px rgba(6,214,160,0.3); }
+
+  .feature-card h3 {
+    margin-bottom: 12px;
+    font-size: 1.3rem;
+  }
+  .feature-card p {
+    color: var(--white-muted);
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag-section {
+    padding: 100px 32px;
+    background: var(--bg-light);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .zigzag-section .glow-orb {
+    width: 400px; height: 400px;
+    background: var(--neon-purple);
+    top: 20%; right: -10%;
+    animation: orbFloat2 18s ease-in-out infinite;
+  }
+
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    max-width: 1000px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+  .zigzag-row:not(:last-child) { margin-bottom: 80px; }
+  .zigzag-row.reverse .zigzag-visual { order: 2; }
+  .zigzag-row.reverse .zigzag-text { order: 1; }
+
+  .zigzag-text h3 {
+    margin-bottom: 16px;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+  .zigzag-text p {
+    color: var(--white-muted);
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .zigzag-visual {
+    aspect-ratio: 4/3;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+  }
+
+  /* Gradient wave mockup */
+  .zigzag-visual .wave-container {
+    position: absolute; inset: 0;
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+    gap: 3px;
+  }
+  .zigzag-visual .wave-bar {
+    flex: 1;
+    border-radius: 4px 4px 0 0;
+    animation: wavePulse 3s ease-in-out infinite;
+  }
+  @keyframes wavePulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial-section {
+    padding: 100px 32px;
+    text-align: center;
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .testimonial-section .glow-orb-1 {
+    width: 350px; height: 350px;
+    top: 10%; left: 10%;
+    background: var(--neon-pink);
+    animation: orbFloat1 14s ease-in-out infinite;
+  }
+  .testimonial-section .glow-orb-2 {
+    width: 300px; height: 300px;
+    bottom: 10%; right: 10%;
+    background: var(--neon-cyan);
+    animation: orbFloat2 16s ease-in-out infinite;
+  }
+
+  .testimonial-content {
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .testimonial-stars {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 28px;
+  }
+  .testimonial-stars .star {
+    color: var(--neon-yellow);
+    font-size: 1.2rem;
+    text-shadow: 0 0 10px rgba(255,214,40,0.4);
+  }
+
+  .testimonial-quote {
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    line-height: 1.5;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 36px;
+  }
+  .testimonial-quote::before {
+    content: '\201C';
+    font-size: 5rem;
+    line-height: 0;
+    display: block;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .testimonial-author {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+  .testimonial-role {
+    font-size: 0.9rem;
+    color: var(--white-muted);
+  }
+
+  /* ===== PRICING ===== */
+  .pricing-section {
+    padding: 100px 32px;
+    background: var(--bg-light);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pricing-section .glow-orb {
+    width: 500px; height: 500px;
+    bottom: -20%; left: 30%;
+    background: var(--neon-blue);
+    animation: orbFloat3 20s ease-in-out infinite;
+  }
+
+  .pricing-header {
+    text-align: center;
+    max-width: 550px;
+    margin: 0 auto 60px;
+    position: relative;
+    z-index: 2;
+  }
+  .pricing-header h2 { margin-bottom: 16px; }
+  .pricing-header p {
+    color: var(--white-muted);
+    font-size: 1.05rem;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .pricing-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px 32px;
+    text-align: center;
+    position: relative;
+    transition: all 0.4s;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+  }
+  .pricing-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--border-hover), transparent);
+    transition: all 0.4s;
+  }
+  .pricing-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(168,85,247,0.08);
+  }
+  .pricing-card:hover::before {
+    background: linear-gradient(90deg, transparent, var(--neon-purple), transparent);
+  }
+  .pricing-card.featured {
+    border-color: rgba(255,45,123,0.3);
+    box-shadow: 0 0 60px rgba(255,45,123,0.08);
+  }
+  .pricing-card.featured::before {
+    height: 3px;
+    background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple), var(--neon-blue));
+  }
+
+  .pricing-badge {
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+    color: var(--white);
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 20px;
+    white-space: nowrap;
+    border-radius: 0 0 8px 8px;
+  }
+
+  .pricing-card h3 {
+    margin-bottom: 8px;
+    font-size: 1.4rem;
+  }
+  .pricing-amount {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .pricing-amount .currency {
+    font-size: 1.4rem;
+    color: var(--white-muted);
+    font-weight: 400;
+    vertical-align: top;
+    line-height: 2.4rem;
+  }
+  .pricing-amount span {
+    font-size: 1rem;
+    color: var(--white-muted);
+    font-weight: 400;
+  }
+  .pricing-desc {
+    color: var(--white-muted);
+    font-size: 0.9rem;
+    margin-bottom: 28px;
+  }
+
+  .pricing-features {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 32px;
+  }
+  .pricing-features li {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--white-muted);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .pricing-features li::before {
+    content: '✦';
+    color: var(--neon-cyan);
+    font-size: 0.8rem;
+    text-shadow: 0 0 8px rgba(6,214,160,0.4);
+  }
+
+  .pricing-card .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ===== FINAL CTA ===== */
+  .cta-section {
+    padding: 120px 32px;
+    text-align: center;
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section .glow-orb-1 {
+    width: 600px; height: 600px;
+    top: -20%; left: 50%;
+    transform: translateX(-50%);
+    background: var(--neon-purple);
+    animation: orbFloat3 12s ease-in-out infinite;
+  }
+
+  .cta-content {
+    max-width: 650px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .cta-content h2 {
+    margin-bottom: 20px;
+  }
+  .cta-content p {
+    color: var(--white-muted);
+    font-size: 1.1rem;
+    margin-bottom: 36px;
+    line-height: 1.7;
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    padding: 48px 32px;
+    text-align: center;
+    background: var(--bg-light);
+    border-top: 1px solid var(--border);
+    position: relative;
+  }
+
+  .footer::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--neon-pink), var(--neon-purple), var(--neon-blue), transparent);
+    opacity: 0.3;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .footer-links a {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    color: var(--white-dim);
+    letter-spacing: 0.02em;
+    transition: all 0.3s;
+  }
+  .footer-links a:hover {
+    color: var(--neon-pink);
+    text-shadow: 0 0 12px rgba(255,45,123,0.3);
+  }
+
+  .footer p {
+    font-size: 0.85rem;
+    color: var(--white-dim);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .zigzag-row {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .zigzag-row.reverse .zigzag-text { order: 0; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 360px; }
+    .hero { min-height: 90vh; padding: 100px 24px 60px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .hero .glow-orb-1 { width: 250px; height: 250px; }
+    .hero .glow-orb-2 { width: 200px; height: 200px; }
+    .hero .glow-orb-3 { width: 150px; height: 150px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    <div class="glow-orb glow-orb-3"></div>
+    <div class="hero-content">
+      <div class="hero-badge"><span class="dot"></span> Now in Beta</div>
+      <h1>Schedule at the<br><span class="neon-text">speed of energy</span></h1>
+      <p>Meetings that move as fast as your startup. No friction, no blockers — just pure forward momentum from the first click.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn btn-primary"><span>LAUNCH NOW</span></a>
+        <a href="#" class="btn btn-secondary">SEE THE DEMO</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LOGOS ===== -->
+  <section class="logos-section">
+    <p>Powering teams at</p>
+    <div class="logos-grid">
+      <span class="logo-placeholder">Vercel</span>
+      <span class="logo-placeholder">Linear</span>
+      <span class="logo-placeholder">Notion</span>
+      <span class="logo-placeholder">Stripe</span>
+      <span class="logo-placeholder">Figma</span>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="features-section">
+    <div class="features-header">
+      <h2>Features that <span class="neon-text">ignite</span></h2>
+      <p>Every tool designed for velocity. No bloat, no friction — just raw scheduling power with neon-bright clarity.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon pink">⚡</div>
+        <h3>Instant Scheduling</h3>
+        <p>Time zones resolved before you blink. Availability matched in milliseconds. Your calendar syncs before your coffee cools.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon purple">◎</div>
+        <h3>Live Sync</h3>
+        <p>Google, Outlook, Apple — all pulsing in real time. One source of truth, zero conflicts, infinite clarity.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon blue">◈</div>
+        <h3>Team Pulse</h3>
+        <p>See who's in flow, in meetings, or AFK at a glance. Presence detection with the precision of a heartbeat monitor.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon cyan">▣</div>
+        <h3>Energy Analytics</h3>
+        <p>Meeting heatmaps, focus-time scores, and velocity dashboards. Data that glows with purpose, not noise.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ZIGZAG ===== -->
+  <section class="zigzag-section">
+    <div class="glow-orb"></div>
+    <div class="zigzag-row">
+      <div class="zigzag-text">
+        <h3>Flow state, <span class="neon-text">engineered</span></h3>
+        <p>Your calendar becomes a living dashboard. Every meeting auto-categorized, every gap optimized, every day a masterclass in intentional time allocation. No more context switching — just one clear path forward.</p>
+      </div>
+      <div class="zigzag-visual">
+        <div class="wave-container" id="wave1"></div>
+      </div>
+    </div>
+    <div class="zigzag-row reverse">
+      <div class="zigzag-text">
+        <h3>Insights that <span class="neon-text">illuminate</span></h3>
+        <p>Weekly reports that actually glow. See where your team's energy goes, which meetings drain and which energize, and get AI-powered suggestions to reclaim your most valuable resource — time.</p>
+      </div>
+      <div class="zigzag-visual">
+        <div class="wave-container" id="wave2"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIAL ===== -->
+  <section class="testimonial-section">
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    <div class="testimonial-content">
+      <div class="testimonial-stars">
+        <span class="star">★</span>
+        <span class="star">★</span>
+        <span class="star">★</span>
+        <span class="star">★</span>
+        <span class="star">★</span>
+      </div>
+      <div class="testimonial-quote">
+        We cut meeting time by 60% in the first month. The analytics alone paid for the tool ten times over. It's like someone installed a turbo engine on our calendar.
+      </div>
+      <div class="testimonial-author">MAYA CHEN</div>
+      <div class="testimonial-role">VP OF OPERATIONS, NEXUS AI</div>
+    </div>
+  </section>
+
+  <!-- ===== PRICING ===== -->
+  <section class="pricing-section">
+    <div class="glow-orb"></div>
+    <div class="pricing-header">
+      <h2>Plans with <span class="neon-text">momentum</span></h2>
+      <p>Start free. Scale infinitely. No hidden fees, no surprises — just pure velocity at every tier.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <h3>SPARK</h3>
+        <div class="pricing-amount"><span class="currency">$</span>0<span>/mo</span></div>
+        <p class="pricing-desc">For solo founders. Enough firepower to launch.</p>
+        <ul class="pricing-features">
+          <li>10 meetings per month</li>
+          <li>1 calendar sync</li>
+          <li>Basic availability view</li>
+        </ul>
+        <a href="#" class="btn btn-secondary">GET STARTED</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">MOST POPULAR</div>
+        <h3>FLAME</h3>
+        <div class="pricing-amount"><span class="currency">$</span>12<span>/mo</span></div>
+        <p class="pricing-desc">For growing teams. Full power, zero limits.</p>
+        <ul class="pricing-features">
+          <li>Unlimited meetings</li>
+          <li>All calendar syncs</li>
+          <li>Team pulse dashboard</li>
+          <li>Energy analytics</li>
+        </ul>
+        <a href="#" class="btn btn-primary"><span>START FREE TRIAL</span></a>
+      </div>
+      <div class="pricing-card">
+        <h3>NOVA</h3>
+        <div class="pricing-amount"><span class="currency">$</span>29<span>/mo</span></div>
+        <p class="pricing-desc">For orgs at scale. Enterprise-grade velocity.</p>
+        <ul class="pricing-features">
+          <li>Everything in Flame</li>
+          <li>API access</li>
+          <li>Custom integrations</li>
+          <li>Dedicated support</li>
+        </ul>
+        <a href="#" class="btn btn-secondary">CONTACT SALES</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FINAL CTA ===== -->
+  <section class="cta-section">
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="cta-content">
+      <h2>Ready to go <span class="neon-text">full throttle</span>?</h2>
+      <p>Join 10,000+ teams who replaced calendar chaos with neon-bright clarity. Free to start. No credit card. No commitment. Just momentum.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn btn-primary"><span>START FOR FREE</span></a>
+        <a href="#" class="btn btn-secondary">BOOK A DEMO</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="#">Product</a>
+      <a href="#">Pricing</a>
+      <a href="#">Blog</a>
+      <a href="#">Docs</a>
+      <a href="#">Contact</a>
+    </div>
+    <p>MEET &copy; 2026 — SCHEDULING AT THE SPEED OF ENERGY</p>
+  </footer>
+
+  <script>
+    // Generate gradient wave bars for zigzag visuals
+    function createWaveBars(containerId, count) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      const colors = [
+        'var(--neon-pink)', 'var(--neon-purple)', 'var(--neon-blue)',
+        'var(--neon-cyan)', 'var(--neon-orange)', 'var(--neon-yellow)'
+      ];
+      for (let i = 0; i < count; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'wave-bar';
+        const height = 15 + Math.random() * 75;
+        bar.style.height = height + '%';
+        const colorIdx = Math.floor(Math.random() * colors.length);
+        bar.style.background = colors[colorIdx];
+        bar.style.animationDelay = (i * 0.08) + 's';
+        container.appendChild(bar);
+      }
+    }
+    createWaveBars('wave1', 32);
+    createWaveBars('wave2', 32);
+  </script>
+
+</body>
+</html>

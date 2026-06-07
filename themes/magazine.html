@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F0EB;
+    --ink: #1A1410;
+    --warm-grey: #6B6058;
+    --light-grey: #B8AFA6;
+    --accent: #C45D3E;
+    --cream: #EDE7DF;
+    --gold: #C9A96E;
+    --olive: #7A8B6F;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    font-weight: 400;
+  }
+  h1,h2,h3 { font-family: 'Playfair Display', serif; font-weight: 400; line-height: 1.08; }
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+
+  /* Magazine grid */
+  .mag-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
+
+  /* Nav */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(245,240,235,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--cream); }
+  nav .container { display: flex; justify-content: space-between; align-items: center; padding: 18px 32px; }
+  .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .logo span { color: var(--accent); font-style: italic; }
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a { color: var(--warm-grey); text-decoration: none; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; }
+  .btn-nav {
+    color: var(--accent) !important; font-weight: 600 !important; padding: 6px 0;
+    border-bottom: 2px solid var(--accent); letter-spacing: 0.08em !important;
+  }
+
+  /* Hero */
+  .hero { padding: 160px 0 80px; }
+  .hero .mag-grid > .hero-left { grid-column: span 8; }
+  .hero .mag-grid > .hero-right { grid-column: span 4; }
+  .hero-issue { font-size: 0.65rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.2em; color: var(--light-grey); margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(3.5rem, 8vw, 7rem); margin-bottom: 24px; }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero .subhead { font-size: 1rem; color: var(--warm-grey); max-width: 400px; line-height: 1.8; margin-bottom: 32px; font-weight: 300; }
+  .cta-group { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 40px; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--ink); color: var(--bg); padding: 16px 32px;
+    text-decoration: none; font-weight: 500; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase;
+    transition: background 0.2s;
+  }
+  .btn-primary:hover { background: var(--accent); }
+  .btn-secondary { color: var(--warm-grey); padding: 16px 24px; text-decoration: none; font-size: 0.85rem; font-style: italic; border-bottom: 1px solid var(--light-grey); }
+
+  .hero-right { display: flex; flex-direction: column; gap: 20px; }
+  .hero-pullquote { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-style: italic; color: var(--warm-grey); line-height: 1.4; padding: 24px 0; border-top: 2px solid var(--ink); }
+  .hero-stat { font-size: 3rem; font-family: 'Playfair Display', serif; font-weight: 700; color: var(--accent); }
+  .hero-stat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--light-grey); }
+
+  .hero-screenshot { grid-column: span 12; margin-top: 40px; border: 1px solid var(--cream); }
+  .screenshot-mockup { padding: 0; display: flex; flex-direction: column; }
+  .mockup-topbar { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--cream); font-size: 0.6rem; color: var(--light-grey); letter-spacing: 0.1em; text-transform: uppercase; }
+  .mockup-body { flex: 1; display: grid; grid-template-columns: 180px 1fr 220px; }
+  .mock-sidebar { border-right: 1px solid var(--cream); padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .mock-sidebar-item { height: 8px; background: var(--cream); }
+  .mock-sidebar-item.active { background: var(--accent); opacity: 0.5; }
+  .mock-main { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .mock-line { height: 8px; background: var(--cream); }
+  .mock-line.title { height: 10px; background: var(--ink); width: 45%; opacity: 0.1; }
+  .mock-right { border-left: 1px solid var(--cream); padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .mock-action { display: flex; align-items: center; gap: 8px; padding: 8px; border: 1px solid var(--cream); }
+  .mock-action-dot { width: 6px; height: 6px; flex-shrink: 0; }
+  .mock-action-line { height: 6px; background: var(--cream); flex: 1; }
+
+  /* Section title */
+  .section-title { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 16px; }
+  .section-subtitle { font-size: 0.95rem; color: var(--warm-grey); font-weight: 300; line-height: 1.7; max-width: 500px; }
+
+  /* Logos */
+  .logo-bar { padding: 50px 0; border-top: 1px solid var(--cream); border-bottom: 1px solid var(--cream); }
+  .logo-bar p { font-size: 0.65rem; letter-spacing: 0.15em; color: var(--light-grey); text-transform: uppercase; text-align: center; margin-bottom: 24px; }
+  .logos { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+  .logo-item { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--light-grey); font-style: italic; }
+
+  /* Features */
+  .features { padding: 80px 0; }
+  .features-header { margin-bottom: 60px; }
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 1px solid var(--cream); border-left: 1px solid var(--cream); }
+  .feature-card { padding: 40px 32px; border-right: 1px solid var(--cream); border-bottom: 1px solid var(--cream); transition: background 0.3s; }
+  .feature-card:hover { background: var(--cream); }
+  .feature-number { font-family: 'Playfair Display', serif; font-size: 3.5rem; color: var(--cream); font-weight: 700; line-height: 1; margin-bottom: 20px; }
+  .feature-card h3 { font-size: 1.4rem; margin-bottom: 10px; }
+  .feature-card p { font-size: 0.85rem; color: var(--warm-grey); line-height: 1.8; font-weight: 300; }
+
+  /* Zigzag */
+  .zigzag { padding: 40px 0 80px; }
+  .zigzag-row { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; margin-bottom: 80px; }
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-visual { order: -1; }
+  .zigzag-copy h2 { font-size: 2.5rem; margin-bottom: 14px; }
+  .zigzag-copy h2 em { font-style: italic; color: var(--accent); }
+  .zigzag-copy p { font-size: 0.9rem; color: var(--warm-grey); line-height: 1.9; margin-bottom: 24px; font-weight: 300; }
+  .zigzag-visual { border: 1px solid var(--cream); aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; padding: 28px; background: var(--cream); }
+  .zigzag-visual-inner { width: 85%; display: flex; flex-direction: column; gap: 8px; }
+  .conn-row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1px solid var(--cream); background: var(--bg); }
+  .conn-icon { width: 28px; height: 28px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 0.7rem; font-weight: 700; color: var(--accent); }
+  .conn-line { height: 4px; background: var(--cream); flex: 1; }
+  .conn-badge { font-size: 0.6rem; padding: 2px 8px; color: var(--olive); border: 1px solid var(--olive); letter-spacing: 0.08em; }
+
+  /* Testimonial */
+  .testimonial { padding: 100px 0; background: var(--ink); color: var(--bg); }
+  .testimonial-inner { max-width: 700px; margin: 0 auto; text-align: center; }
+  .testimonial blockquote { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 3vw, 2.4rem); font-style: italic; line-height: 1.5; margin-bottom: 28px; }
+  .testimonial-author { display: flex; align-items: center; justify-content: center; gap: 12px; }
+  .author-avatar { width: 40px; height: 40px; border: 1px solid rgba(245,240,235,0.3); }
+  .author-info { text-align: left; }
+  .author-info .name { font-weight: 500; font-size: 0.9rem; }
+  .author-info .role { font-size: 0.8rem; color: var(--light-grey); }
+
+  /* Pricing */
+  .pricing { padding: 80px 0; }
+  .pricing-header { text-align: center; margin-bottom: 60px; }
+  .pricing-header h2 { font-size: 3rem; margin-bottom: 10px; }
+  .pricing-header p { color: var(--warm-grey); font-weight: 300; }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .pricing-card { padding: 40px 28px; border: 1px solid var(--cream); text-align: center; transition: border-color 0.3s; }
+  .pricing-card:hover { border-color: var(--accent); }
+  .pricing-card.featured { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .pricing-card.featured::before {
+    content: 'Most Popular'; position: absolute; top: 0; left: 0; right: 0;
+    font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.8rem;
+    padding: 6px; background: var(--accent); color: white; text-align: center;
+  }
+  .pricing-card h3 { font-size: 1.1rem; margin-bottom: 10px; font-style: italic; }
+  .pricing-card .price { font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 4px; }
+  .pricing-card .price span { font-size: 1rem; font-weight: 300; }
+  .pricing-card .period { font-size: 0.7rem; margin-bottom: 24px; color: var(--light-grey); letter-spacing: 0.08em; text-transform: uppercase; }
+  .pricing-card ul { list-style: none; text-align: left; margin-bottom: 28px; }
+  .pricing-card li { padding: 6px 0; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--cream); color: var(--warm-grey); }
+  .pricing-card.featured li { border-bottom-color: rgba(245,240,235,0.08); color: var(--light-grey); }
+  .pricing-card li::before { content: '—'; color: var(--accent); }
+  .btn-pricing {
+    display: block; width: 100%; padding: 13px; text-decoration: none;
+    font-size: 0.75rem; text-align: center; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500;
+    border: 1px solid var(--cream); color: var(--ink); background: transparent; cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .btn-pricing:hover { border-color: var(--accent); }
+  .btn-pricing.filled { background: var(--bg); color: var(--ink); border-color: var(--bg); }
+
+  /* Final CTA */
+  .final-cta { padding: 100px 0; text-align: center; border-top: 1px solid var(--cream); }
+  .final-cta h2 { font-size: clamp(2.5rem, 5vw, 4.5rem); margin-bottom: 16px; }
+  .final-cta h2 em { font-style: italic; color: var(--accent); }
+  .final-cta p { color: var(--warm-grey); font-size: 0.95rem; margin-bottom: 36px; font-weight: 300; }
+
+  /* Footer */
+  footer { padding: 32px 0; text-align: center; border-top: 1px solid var(--cream); }
+  footer p { font-size: 0.75rem; color: var(--light-grey); letter-spacing: 0.08em; }
+
+  @media (max-width: 768px) {
+    .hero .mag-grid > .hero-left, .hero .mag-grid > .hero-right { grid-column: span 12; }
+    .features-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
+    .zigzag-row { grid-template-columns: 1fr; }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .mockup-body { grid-template-columns: 1fr; }
+    .mock-sidebar, .mock-right { display: none; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="#" class="logo">meet<span>.</span></a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="btn-nav">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="mag-grid">
+      <div class="hero-left">
+        <div class="hero-issue reveal">Issue 01 — AI Meeting Notes</div>
+        <h1 class="reveal">Meetings that don't <em>waste</em> your week</h1>
+        <p class="subhead reveal">AI notes that turn transcripts into action items. Syncs to Notion, Linear, Slack — so nothing falls through the cracks.</p>
+        <div class="cta-group reveal">
+          <a href="#" class="btn-primary">Connect calendar — free 14 days</a>
+          <a href="#features" class="btn-secondary">See how it works</a>
+        </div>
+      </div>
+      <div class="hero-right reveal">
+        <div class="hero-pullquote">"The future of work isn't more meetings. It's meetings that remember everything."</div>
+        <div class="hero-stat">4hrs</div>
+        <div class="hero-stat-label">Saved per week, on average</div>
+      </div>
+    </div>
+    <div class="hero-screenshot reveal">
+      <div class="screenshot-mockup">
+        <div class="mockup-topbar"><span>meet://meetings</span><span>Today</span></div>
+        <div class="mockup-body">
+          <div class="mock-sidebar">
+            <div class="mock-sidebar-item active" style="width:80%"></div>
+            <div class="mock-sidebar-item" style="width:65%"></div>
+            <div class="mock-sidebar-item" style="width:90%"></div>
+            <div class="mock-sidebar-item" style="width:50%"></div>
+            <div class="mock-sidebar-item" style="width:75%"></div>
+          </div>
+          <div class="mock-main">
+            <div class="mock-line title"></div>
+            <div class="mock-line" style="width:100%"></div>
+            <div class="mock-line" style="width:85%"></div>
+            <div class="mock-line" style="width:95%"></div>
+            <div class="mock-line" style="width:70%"></div>
+          </div>
+          <div class="mock-right">
+            <div class="mock-action"><div class="mock-action-dot" style="background:var(--accent)"></div><div class="mock-action-line"></div></div>
+            <div class="mock-action"><div class="mock-action-dot" style="background:var(--olive)"></div><div class="mock-action-line"></div></div>
+            <div class="mock-action"><div class="mock-action-dot" style="background:var(--gold)"></div><div class="mock-action-line"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="logo-bar">
+  <div class="container">
+    <p class="reveal">As seen at</p>
+    <div class="logos reveal">
+      <span class="logo-item">Vercel</span><span class="logo-item">Stripe</span><span class="logo-item">Notion</span><span class="logo-item">Linear</span><span class="logo-item">Figma</span><span class="logo-item">Raycast</span>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header">
+      <h2 class="section-title reveal">Three acts</h2>
+      <p class="section-subtitle reveal">Every meeting follows the same arc. Record. Distill. Distribute.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal"><div class="feature-number">I</div><h3>Transcribe</h3><p>Every word captured. Speaker-labeled. Searchable. Your meetings become a permanent record you can actually find things in.</p></div>
+      <div class="feature-card reveal"><div class="feature-number">II</div><h3>Summarize</h3><p>AI distills 60 minutes into 3 bullet points and 5 action items. Skip the replay. Get the signal.</p></div>
+      <div class="feature-card reveal"><div class="feature-number">III</div><h3>Sync</h3><p>Pushes to your tools. Notion pages, Linear tickets, Slack threads. One click. Every tool updated.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="zigzag">
+  <div class="container">
+    <div class="zigzag-row">
+      <div class="zigzag-copy reveal"><h2>One click.<br><em>Every tool</em> updated.</h2><p>Connect your workspace tools once. Meet pushes the right content to the right place — meeting notes to Notion, bugs to Linear, decisions to Slack.</p><a href="#" class="btn-secondary">View integrations →</a></div>
+      <div class="zigzag-visual reveal"><div class="zigzag-visual-inner">
+        <div class="conn-row"><div class="conn-icon">N</div><div class="conn-line"></div><span class="conn-badge">Connected</span></div>
+        <div class="conn-row"><div class="conn-icon">L</div><div class="conn-line"></div><span class="conn-badge">Connected</span></div>
+        <div class="conn-row"><div class="conn-icon">S</div><div class="conn-line"></div><span class="conn-badge">Connected</span></div>
+      </div></div>
+    </div>
+    <div class="zigzag-row reverse">
+      <div class="zigzag-copy reveal"><h2>Notes that live<br><em>somewhere useful</em></h2><p>Every meeting generates a polished Notion page automatically. Headings, tables, timestamps — formatted like a human wrote them.</p></div>
+      <div class="zigzag-visual reveal"><div class="zigzag-visual-inner">
+        <div class="mock-line title" style="width:45%"></div>
+        <div class="mock-line" style="width:100%"></div>
+        <div class="mock-line" style="width:80%"></div>
+        <div class="mock-line" style="width:90%"></div>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonial">
+  <div class="container">
+    <div class="testimonial-inner reveal">
+      <blockquote>"We went from 4 hours of note-taking per week to zero. Meet just works."</blockquote>
+      <div class="testimonial-author"><div class="author-avatar"></div><div class="author-info"><div class="name">Sarah Chen</div><div class="role">VP of Product · Linear</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="pricing-header reveal"><h2>The price of time</h2><p>Start free. Upgrade when you're ready.</p></div>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal"><h3>Free</h3><div class="price">$0<span>/mo</span></div><div class="period">10 meetings / month</div><ul><li>AI transcription</li><li>Basic summaries</li><li>1 integration</li></ul><a href="#" class="btn-pricing">Get started</a></div>
+      <div class="pricing-card featured reveal" style="position:relative"><h3>Pro</h3><div class="price">$12<span>/mo</span></div><div class="period">Unlimited meetings</div><ul><li>Everything in Free</li><li>AI summaries & action items</li><li>Unlimited integrations</li><li>Search across all meetings</li></ul><a href="#" class="btn-pricing filled">Start free trial</a></div>
+      <div class="pricing-card reveal"><h3>Team</h3><div class="price">$29<span>/mo</span></div><div class="period">Per seat, min 5</div><ul><li>Everything in Pro</li><li>Shared workspace</li><li>Admin controls</li><li>SSO & audit logs</li></ul><a href="#" class="btn-pricing">Contact sales</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="container">
+    <h2 class="reveal">Stop taking notes.<br>Start getting things <em>done</em>.</h2>
+    <p class="reveal">Your calendar already knows about your meetings. Let Meet handle the rest.</p>
+    <a href="#" class="btn-primary reveal">Start free — no credit card →</a>
+  </div>
+</section>
+
+<footer><div class="container"><p>© 2024 Meet. Built for people who value their time.</p></div></footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) { setTimeout(() => entry.target.classList.add('visible'), i * 50); observer.unobserve(entry.target); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

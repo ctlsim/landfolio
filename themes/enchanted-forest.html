@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #070e07;
+    --deep: #0a160a;
+    --forest: #0f200f;
+    --moss: #1a3318;
+    --moss-light: #2a4a28;
+    --leaf: #3d6b35;
+    --leaf-bright: #5a9a4e;
+    --amber: #d4a843;
+    --amber-light: #f0c674;
+    --amber-glow: rgba(212,168,67,0.15);
+    --amber-glow-strong: rgba(212,168,67,0.35);
+    --gold: #c9952c;
+    --cream: #f5ecd7;
+    --cream-dim: #c4b89a;
+    --text: #e8dcc8;
+    --text-dim: #8a9a7a;
+    --text-muted: #5a6a4e;
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'Quicksand', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--void);
+    color: var(--text);
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    line-height: 1.15;
+  }
+
+  h1 { font-size: clamp(2.8rem, 6vw, 5rem); font-weight: 600; }
+  h2 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 600; }
+  h3 { font-size: clamp(1.2rem, 1.5vw, 1.5rem); font-weight: 500; }
+
+  h4 {
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--amber);
+  }
+
+  p { color: var(--text-dim); font-size: 0.92rem; }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ===== FIREFLIES ===== */
+  .firefly {
+    position: fixed;
+    width: 4px; height: 4px;
+    background: var(--amber-light);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    box-shadow: 0 0 8px 2px var(--amber-glow-strong), 0 0 20px 4px var(--amber-glow);
+    animation: firefly-float linear infinite;
+    opacity: 0;
+  }
+
+  .firefly:nth-child(1) { left: 10%; animation-duration: 12s; animation-delay: 0s; }
+  .firefly:nth-child(2) { left: 25%; animation-duration: 15s; animation-delay: 2s; }
+  .firefly:nth-child(3) { left: 40%; animation-duration: 11s; animation-delay: 4s; }
+  .firefly:nth-child(4) { left: 55%; animation-duration: 14s; animation-delay: 1s; }
+  .firefly:nth-child(5) { left: 70%; animation-duration: 13s; animation-delay: 3s; }
+  .firefly:nth-child(6) { left: 85%; animation-duration: 16s; animation-delay: 5s; }
+  .firefly:nth-child(7) { left: 15%; animation-duration: 10s; animation-delay: 6s; }
+  .firefly:nth-child(8) { left: 60%; animation-duration: 17s; animation-delay: 2.5s; }
+
+  @keyframes firefly-float {
+    0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+    10% { opacity: 0.8; }
+    50% { opacity: 0.4; transform: translateY(50vh) translateX(30px); }
+    90% { opacity: 0.7; }
+    100% { transform: translateY(-20vh) translateX(-20px); opacity: 0; }
+  }
+
+  /* ===== LIGHT RAYS ===== */
+  .light-rays {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .light-ray {
+    position: absolute;
+    top: -20%;
+    width: 2px;
+    height: 140%;
+    background: linear-gradient(180deg, var(--amber-glow-strong) 0%, transparent 60%);
+    transform-origin: top center;
+    opacity: 0.12;
+    animation: ray-sway 20s ease-in-out infinite;
+  }
+
+  .light-ray:nth-child(1) { left: 20%; transform: rotate(-8deg); animation-delay: 0s; }
+  .light-ray:nth-child(2) { left: 40%; transform: rotate(3deg); animation-delay: 4s; width: 3px; }
+  .light-ray:nth-child(3) { left: 60%; transform: rotate(-5deg); animation-delay: 8s; }
+  .light-ray:nth-child(4) { left: 80%; transform: rotate(6deg); animation-delay: 12s; width: 1.5px; }
+
+  @keyframes ray-sway {
+    0%, 100% { opacity: 0.08; transform: rotate(var(--base-rot, -5deg)); }
+    50% { opacity: 0.18; transform: rotate(calc(var(--base-rot, -5deg) + 3deg)); }
+  }
+
+  /* ===== MYSTICAL GRADIENT OVERLAY ===== */
+  .mystical-overlay {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(42,74,40,0.3) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 60%, rgba(212,168,67,0.06) 0%, transparent 40%),
+      radial-gradient(ellipse at 50% 90%, rgba(15,32,15,0.8) 0%, transparent 60%);
+  }
+
+  /* ===== VINE BORDER SVG ===== */
+  .vine-border-top, .vine-border-bottom {
+    position: relative;
+    width: 100%;
+    height: 40px;
+    overflow: hidden;
+  }
+
+  .vine-border-top svg, .vine-border-bottom svg {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 40px;
+  }
+
+  .vine-border-bottom svg {
+    top: 0;
+    bottom: auto;
+    transform: scaleY(-1);
+  }
+
+  /* ===== LEAF DECORATION ===== */
+  .leaf-deco {
+    display: inline-block;
+    margin-right: 8px;
+    color: var(--leaf-bright);
+    font-size: 1rem;
+    vertical-align: middle;
+    opacity: 0.7;
+  }
+
+  /* ===== AMBER DIVIDER ===== */
+  .amber-divider {
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .amber-divider::after {
+    content: '✦';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.5rem;
+    color: var(--amber);
+    background: var(--void);
+    padding: 0 8px;
+  }
+
+  .amber-divider.center { margin-left: auto; margin-right: auto; }
+
+  /* ===== NAVIGATION ===== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(7,14,7,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(42,74,40,0.3);
+  }
+
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 68px;
+  }
+
+  .logo {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--cream);
+    letter-spacing: 0.04em;
+  }
+
+  .logo .leaf-accent {
+    color: var(--amber);
+    font-style: italic;
+  }
+
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--amber-light); }
+
+  .nav-cta {
+    background: linear-gradient(135deg, var(--amber), var(--gold)) !important;
+    color: var(--void) !important;
+    padding: 8px 22px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.06em !important;
+    border-radius: 2px !important;
+    transition: box-shadow 0.3s !important;
+  }
+  .nav-cta:hover {
+    box-shadow: 0 0 25px var(--amber-glow-strong) !important;
+  }
+
+  /* ===== BUTTONS ===== */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-body);
+    font-size: 0.88rem; font-weight: 600;
+    padding: 13px 30px;
+    text-decoration: none; border: none; cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: all 0.3s;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--amber), var(--gold));
+    color: var(--void);
+    box-shadow: 0 4px 20px var(--amber-glow);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 6px 30px var(--amber-glow-strong);
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--cream);
+    border: 1px solid var(--moss-light);
+  }
+  .btn-secondary:hover {
+    border-color: var(--amber);
+    color: var(--amber-light);
+    box-shadow: 0 0 20px var(--amber-glow);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--cream);
+    border: 1px solid var(--moss);
+  }
+  .btn-outline:hover {
+    border-color: var(--amber);
+    color: var(--amber-light);
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 170px 0 100px;
+    position: relative;
+    overflow: hidden;
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    background: var(--void);
+  }
+
+  /* Mystical glow behind hero */
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 20%; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, var(--amber-glow) 0%, transparent 60%);
+    pointer-events: none;
+    animation: hero-glow 8s ease-in-out infinite;
+  }
+
+  @keyframes hero-glow {
+    0%, 100% { opacity: 0.4; transform: translateX(-50%) scale(1); }
+    50% { opacity: 0.7; transform: translateX(-50%) scale(1.1); }
+  }
+
+  .hero-content {
+    position: relative;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .hero h1 {
+    margin-bottom: 24px;
+    color: var(--cream);
+  }
+
+  .hero h1 .amber-word {
+    color: var(--amber);
+    font-style: italic;
+    position: relative;
+  }
+
+  /* Vine decoration above hero */
+  .hero-vine {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .hero-vine .vine-line {
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--leaf-bright));
+  }
+
+  .hero-vine .vine-line:last-child {
+    background: linear-gradient(90deg, var(--leaf-bright), transparent);
+  }
+
+  .hero-vine .vine-leaf {
+    color: var(--leaf-bright);
+    font-size: 0.9rem;
+    opacity: 0.6;
+  }
+
+  .hero p {
+    font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+    max-width: 520px;
+    margin: 0 auto 40px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  .hero-buttons {
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 72px;
+  }
+
+  /* ===== HERO MOCKUP ===== */
+  .hero-visual {
+    position: relative;
+    max-width: 920px;
+    margin: 0 auto;
+  }
+
+  .hero-mockup {
+    background: var(--forest);
+    border: 1px solid var(--moss);
+    padding: 1px;
+    position: relative;
+  }
+
+  /* Vine accent on mockup */
+  .hero-mockup::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--leaf-bright), var(--amber), var(--leaf-bright), transparent);
+    opacity: 0.5;
+  }
+
+  .mockup-inner {
+    background: var(--deep);
+  }
+
+  .mockup-bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    background: var(--forest);
+    border-bottom: 1px solid var(--moss);
+  }
+
+  .mockup-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--moss-light);
+  }
+  .mockup-dot:first-child { background: var(--amber); }
+
+  .mockup-body {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 20px;
+    min-height: 280px;
+  }
+
+  .mockup-sidebar {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+
+  .mockup-sidebar-item {
+    height: 28px;
+    background: var(--forest);
+    border: 1px solid var(--moss);
+    border-radius: 2px;
+  }
+  .mockup-sidebar-item.active {
+    background: linear-gradient(135deg, var(--moss-light), var(--moss));
+    border-color: var(--leaf);
+  }
+
+  .mockup-content {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+
+  .mockup-line {
+    height: 10px;
+    background: var(--forest);
+    border: 1px solid var(--moss);
+    border-radius: 2px;
+  }
+  .mockup-line:nth-child(1) { width: 45%; background: var(--moss); border-color: var(--moss-light); }
+  .mockup-line:nth-child(2) { width: 100%; }
+  .mockup-line:nth-child(3) { width: 80%; }
+  .mockup-line:nth-child(4) { width: 90%; }
+  .mockup-line:nth-child(5) { width: 65%; }
+
+  .mockup-cards {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px; margin-top: 14px;
+  }
+
+  .mockup-card {
+    height: 70px;
+    background: var(--forest);
+    border: 1px solid var(--moss);
+    border-radius: 2px;
+  }
+  .mockup-card:first-child {
+    border-color: var(--amber);
+    background: linear-gradient(135deg, var(--moss), var(--forest));
+    box-shadow: 0 0 15px var(--amber-glow);
+  }
+
+  /* ===== LOGOS ===== */
+  .logos {
+    padding: 50px 0;
+    border-top: 1px solid var(--moss);
+    border-bottom: 1px solid var(--moss);
+    background: var(--deep);
+    position: relative;
+  }
+
+  .logos p {
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-style: italic;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+    letter-spacing: 0.04em;
+  }
+
+  .logos-grid {
+    display: flex; align-items: center; justify-content: center;
+    gap: 40px; flex-wrap: wrap;
+  }
+
+  .logo-item {
+    font-family: var(--font-display);
+    font-size: 1.05rem; font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    transition: color 0.3s;
+  }
+  .logo-item:hover { color: var(--cream); }
+
+  /* ===== FEATURES ===== */
+  .features {
+    padding: 110px 0;
+    background: var(--void);
+    position: relative;
+  }
+
+  .features-header {
+    text-align: center; margin-bottom: 64px;
+  }
+
+  .features-header h4 { margin-bottom: 16px; }
+  .features-header h2 { margin-bottom: 16px; color: var(--cream); }
+  .features-header p {
+    max-width: 520px; margin: 0 auto;
+    color: var(--text-dim);
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .feature-card {
+    padding: 32px 24px;
+    background: linear-gradient(180deg, var(--forest) 0%, var(--deep) 100%);
+    border: 1px solid var(--moss);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Vine corner accent */
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--leaf-bright), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .feature-card:hover {
+    border-color: var(--moss-light);
+    box-shadow: 0 0 30px rgba(42,74,40,0.2);
+    transform: translateY(-3px);
+  }
+
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 44px; height: 44px;
+    background: var(--moss);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 18px;
+    font-size: 1.2rem;
+    border: 1px solid var(--moss-light);
+    border-radius: 50%;
+  }
+
+  .feature-card h3 { margin-bottom: 10px; color: var(--cream); }
+  .feature-card p { font-size: 0.84rem; line-height: 1.6; }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag { padding: 80px 0; background: var(--deep); }
+
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    padding: 70px 0;
+    border-bottom: 1px solid var(--moss);
+  }
+  .zigzag-row:last-child { border-bottom: none; }
+  .zigzag-row.reverse .zigzag-visual { order: -1; }
+
+  .zigzag-content h4 { margin-bottom: 12px; }
+  .zigzag-content h3 {
+    font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+    margin-bottom: 14px; color: var(--cream);
+  }
+  .zigzag-content p { margin-bottom: 20px; line-height: 1.7; }
+
+  .zigzag-list {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .zigzag-list li {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.84rem; color: var(--text-dim);
+  }
+  .zigzag-list li::before {
+    content: '❧';
+    color: var(--amber);
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+
+  .zigzag-visual {
+    background: var(--forest);
+    border: 1px solid var(--moss);
+    aspect-ratio: 4/3;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Vine accent on visual */
+  .zigzag-visual::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--leaf-bright), transparent);
+    opacity: 0.4;
+  }
+
+  .zigzag-bar-chart {
+    display: flex; align-items: flex-end; gap: 6px;
+    height: 110px; padding: 20px; width: 100%;
+  }
+
+  .zigzag-bar {
+    flex: 1;
+    background: var(--moss);
+    border: 1px solid var(--moss-light);
+    border-radius: 1px;
+    transition: background 0.3s;
+  }
+  .zigzag-bar.highlight {
+    background: linear-gradient(180deg, var(--amber), var(--gold));
+    border-color: var(--amber);
+    box-shadow: 0 0 10px var(--amber-glow);
+  }
+
+  .zigzag-visual-inner {
+    display: flex; flex-direction: column; gap: 10px;
+    padding: 24px; width: 100%;
+  }
+
+  .zigzag-stat {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px;
+    background: var(--deep);
+    border: 1px solid var(--moss);
+    border-radius: 2px;
+  }
+  .zigzag-stat-label {
+    font-size: 0.78rem; color: var(--text-dim);
+  }
+  .zigzag-stat-value {
+    font-family: var(--font-display);
+    font-size: 1.4rem; font-weight: 600; color: var(--amber);
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial {
+    padding: 110px 0;
+    position: relative;
+    overflow: hidden;
+    background: var(--void);
+  }
+
+  /* Mystical glow */
+  .testimonial::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 500px; height: 500px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(42,74,40,0.25) 0%, transparent 60%);
+    pointer-events: none;
+    animation: testimonial-glow 8s ease-in-out infinite;
+  }
+
+  @keyframes testimonial-glow {
+    0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.15); }
+  }
+
+  .testimonial-inner {
+    max-width: 720px; margin: 0 auto; text-align: center;
+    position: relative;
+  }
+
+  .testimonial-quote {
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 2.2vw, 1.8rem);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--cream);
+    margin-bottom: 36px;
+  }
+
+  .testimonial-quote::before {
+    content: '\201C';
+    color: var(--amber);
+    font-size: 3rem;
+    font-style: normal;
+    display: block;
+    margin-bottom: 8px;
+    line-height: 1;
+    opacity: 0.6;
+  }
+
+  .testimonial-author {
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+  }
+
+  .testimonial-avatar {
+    width: 48px; height: 48px;
+    background: var(--moss);
+    border: 1px solid var(--moss-light);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 600; font-size: 1rem;
+    color: var(--amber);
+  }
+
+  .testimonial-info { text-align: left; }
+  .testimonial-name {
+    font-family: var(--font-display);
+    font-weight: 600; color: var(--cream); font-size: 1.05rem;
+  }
+  .testimonial-role {
+    font-size: 0.78rem; color: var(--text-muted);
+    letter-spacing: 0.03em;
+  }
+
+  /* ===== PRICING ===== */
+  .pricing { padding: 110px 0; background: var(--deep); }
+
+  .pricing-header {
+    text-align: center; margin-bottom: 56px;
+  }
+  .pricing-header h4 { margin-bottom: 16px; }
+  .pricing-header h2 { margin-bottom: 16px; color: var(--cream); }
+  .pricing-header p { color: var(--text-dim); }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .pricing-card {
+    padding: 36px 28px;
+    background: var(--forest);
+    border: 1px solid var(--moss);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .pricing-card.featured {
+    border-color: var(--amber);
+    border-width: 1px;
+    background: linear-gradient(180deg, var(--moss) 0%, var(--forest) 100%);
+    box-shadow: 0 0 40px var(--amber-glow);
+  }
+
+  /* Vine accent on featured */
+  .pricing-card.featured::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--amber), transparent);
+  }
+
+  .pricing-badge {
+    position: absolute; top: -10px; right: 24px;
+    background: linear-gradient(135deg, var(--amber), var(--gold));
+    color: var(--void);
+    padding: 3px 14px;
+    font-family: var(--font-body);
+    font-size: 0.62rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+
+  .pricing-tier {
+    font-family: var(--font-body);
+    font-size: 0.68rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--text-muted); margin-bottom: 10px;
+  }
+  .pricing-card.featured .pricing-tier { color: var(--amber); }
+
+  .pricing-price {
+    font-family: var(--font-display);
+    font-size: 2.6rem; font-weight: 600;
+    color: var(--cream); margin-bottom: 4px;
+  }
+  .pricing-price span {
+    font-size: 0.85rem; font-weight: 400;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+  }
+
+  .pricing-desc {
+    font-size: 0.82rem; color: var(--text-dim);
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+
+  .pricing-features {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 12px;
+    margin-bottom: 28px;
+  }
+  .pricing-features li {
+    font-size: 0.82rem; color: var(--text-dim);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pricing-features li::before {
+    content: '✦';
+    color: var(--amber);
+    font-size: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .pricing-card .btn { width: 100%; justify-content: center; }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    padding: 110px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    background: var(--void);
+  }
+
+  /* Mystical ambient glow */
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    top: 30%; left: 50%;
+    transform: translateX(-50%);
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, var(--amber-glow) 0%, transparent 60%);
+    pointer-events: none;
+    animation: cta-glow 6s ease-in-out infinite;
+  }
+
+  @keyframes cta-glow {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+  }
+
+  .final-cta h2 {
+    margin-bottom: 18px; color: var(--cream);
+    position: relative;
+  }
+
+  .final-cta h2 .amber-word {
+    color: var(--amber);
+    font-style: italic;
+  }
+
+  .final-cta p {
+    font-size: 1rem; color: var(--text-dim);
+    max-width: 480px; margin: 0 auto 36px;
+    position: relative;
+  }
+
+  .final-cta .hero-buttons { position: relative; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 56px 0 36px;
+    border-top: 1px solid var(--moss);
+    background: var(--deep);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+
+  .footer-brand .logo { margin-bottom: 14px; display: inline-block; }
+  .footer-brand p {
+    font-size: 0.82rem; color: var(--text-muted); max-width: 260px; line-height: 1.6;
+    font-style: italic;
+  }
+
+  .footer-col h4 {
+    font-size: 0.62rem; margin-bottom: 14px;
+    letter-spacing: 0.2em;
+  }
+
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 8px; }
+
+  .footer-col a {
+    font-size: 0.82rem; color: var(--text-muted);
+    text-decoration: none; transition: color 0.3s;
+    font-family: var(--font-body);
+  }
+  .footer-col a:hover { color: var(--amber-light); }
+
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 28px; border-top: 1px solid var(--moss);
+  }
+  .footer-bottom p {
+    font-size: 0.72rem; color: var(--text-muted);
+    font-family: var(--font-body);
+    letter-spacing: 0.03em;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .features-grid { grid-template-columns: 1fr; }
+    .zigzag-row {
+      grid-template-columns: 1fr;
+      gap: 36px;
+    }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+    .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+    .mockup-body { grid-template-columns: 1fr; }
+    .mockup-sidebar { display: none; }
+    .mockup-cards { grid-template-columns: 1fr 1fr; }
+    .hero { min-height: auto; padding: 140px 0 80px; }
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+  }
+  .fade-in:nth-child(2) { animation-delay: 0.15s; }
+  .fade-in:nth-child(3) { animation-delay: 0.3s; }
+  .fade-in:nth-child(4) { animation-delay: 0.45s; }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+  <!-- FIREFLIES -->
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+
+  <!-- LIGHT RAYS -->
+  <div class="light-rays">
+    <div class="light-ray"></div>
+    <div class="light-ray"></div>
+    <div class="light-ray"></div>
+    <div class="light-ray"></div>
+  </div>
+
+  <!-- MYSTICAL OVERLAY -->
+  <div class="mystical-overlay"></div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <div class="logo">Meet<span class="leaf-accent">.</span></div>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#testimonials">Reviews</a>
+        <a href="#" class="nav-cta">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-vine fade-in">
+          <span class="vine-line"></span>
+          <span class="vine-leaf">&#10047;</span>
+          <span class="vine-line"></span>
+        </div>
+        <h1 class="fade-in">
+          Meetings that<br>
+          don't <span class="amber-word">waste</span><br>
+          your week
+        </h1>
+        <p class="fade-in">One platform to schedule, run, and follow up on every meeting. Cut meeting overhead by 60%.</p>
+        <div class="hero-buttons fade-in">
+          <a href="#" class="btn btn-primary">Start free &#10148;</a>
+          <a href="#" class="btn btn-secondary">Watch demo</a>
+        </div>
+      </div>
+      <div class="hero-visual fade-in">
+        <div class="hero-mockup">
+          <div class="mockup-inner">
+            <div class="mockup-bar">
+              <div class="mockup-dot"></div>
+              <div class="mockup-dot"></div>
+              <div class="mockup-dot"></div>
+            </div>
+            <div class="mockup-body">
+              <div class="mockup-sidebar">
+                <div class="mockup-sidebar-item active"></div>
+                <div class="mockup-sidebar-item"></div>
+                <div class="mockup-sidebar-item"></div>
+                <div class="mockup-sidebar-item"></div>
+                <div class="mockup-sidebar-item"></div>
+              </div>
+              <div class="mockup-content">
+                <div class="mockup-line"></div>
+                <div class="mockup-line"></div>
+                <div class="mockup-line"></div>
+                <div class="mockup-line"></div>
+                <div class="mockup-line"></div>
+                <div class="mockup-cards">
+                  <div class="mockup-card"></div>
+                  <div class="mockup-card"></div>
+                  <div class="mockup-card"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGOS -->
+  <section class="logos">
+    <div class="container">
+      <p>Trusted by teams at</p>
+      <div class="logos-grid">
+        <div class="logo-item">Stripe</div>
+        <div class="logo-item">Vercel</div>
+        <div class="logo-item">Linear</div>
+        <div class="logo-item">Notion</div>
+        <div class="logo-item">Figma</div>
+        <div class="logo-item">Raycast</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="features-header reveal">
+        <h4>Features</h4>
+        <div class="amber-divider center"></div>
+        <h2>Everything you need.<br>Nothing you don't.</h2>
+        <p>Six tools that replace your entire meeting stack. No integrations required.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon">&#9889;</div>
+          <h3>Smart Scheduling</h3>
+          <p>AI reads calendars, finds slots, sends invites. Zero back-and-forth emails.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">&#128203;</div>
+          <h3>Auto Agendas</h3>
+          <p>Generates structured agendas from project context. Everyone arrives prepared.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">&#127909;</div>
+          <h3>Live Transcripts</h3>
+          <p>Real-time transcription with speaker detection. Searchable within seconds.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">&#9989;</div>
+          <h3>Action Items</h3>
+          <p>Extracts tasks automatically. Pushes to Jira, Asana, or Linear on save.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">&#128202;</div>
+          <h3>Meeting Analytics</h3>
+          <p>Track time spent, decisions made, follow-ups pending. Data-driven meetings.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">&#128279;</div>
+          <h3>Integrations</h3>
+          <p>Slack, Google, Notion, GitHub. 40+ connectors. Works where you already work.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ZIGZAG -->
+  <section class="zigzag">
+    <div class="container">
+      <div class="zigzag-row reveal">
+        <div class="zigzag-content">
+          <h4>Why Meet</h4>
+          <div class="amber-divider"></div>
+          <h3>Cut meeting time by 60%</h3>
+          <p>Our AI trims every meeting to its essential core. Shorter meetings, better outcomes, more focus time.</p>
+          <ul class="zigzag-list">
+            <li>Auto-generated agendas save 15 min prep</li>
+            <li>Smart timeboxing keeps meetings on track</li>
+            <li>Async summaries replace 30% of meetings entirely</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <div class="zigzag-bar-chart">
+            <div class="zigzag-bar" style="height:40%"></div>
+            <div class="zigzag-bar" style="height:55%"></div>
+            <div class="zigzag-bar" style="height:45%"></div>
+            <div class="zigzag-bar highlight" style="height:80%"></div>
+            <div class="zigzag-bar highlight" style="height:90%"></div>
+            <div class="zigzag-bar highlight" style="height:95%"></div>
+            <div class="zigzag-bar" style="height:60%"></div>
+            <div class="zigzag-bar" style="height:50%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="zigzag-row reverse reveal">
+        <div class="zigzag-content">
+          <h4>Follow-up</h4>
+          <div class="amber-divider"></div>
+          <h3>Decisions that actually stick</h3>
+          <p>No more "what did we decide?" Follow-ups are automatic, assigned, and tracked until resolution.</p>
+          <ul class="zigzag-list">
+            <li>Decision log with full context and timestamps</li>
+            <li>Task assignment with due dates and owners</li>
+            <li>Weekly digest emails for the whole team</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <div class="zigzag-visual-inner">
+            <div class="zigzag-stat">
+              <span class="zigzag-stat-label">Meetings saved</span>
+              <span class="zigzag-stat-value">2,847</span>
+            </div>
+            <div class="zigzag-stat">
+              <span class="zigzag-stat-label">Hours recovered</span>
+              <span class="zigzag-stat-value">1,204</span>
+            </div>
+            <div class="zigzag-stat">
+              <span class="zigzag-stat-label">Tasks completed</span>
+              <span class="zigzag-stat-value">94%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="testimonial" id="testimonials">
+    <div class="container">
+      <div class="testimonial-inner reveal">
+        <div class="amber-divider center"></div>
+        <p class="testimonial-quote">We went from 18 meetings a week to 7. The ones we kept were actually useful. Meet changed how our entire org communicates.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">SK</div>
+          <div class="testimonial-info">
+            <div class="testimonial-name">Sarah Kim</div>
+            <div class="testimonial-role">VP of Engineering, Linear</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <div class="pricing-header reveal">
+        <h4>Pricing</h4>
+        <div class="amber-divider center"></div>
+        <h2>Simple pricing.<br>Powerful results.</h2>
+        <p>Start free. Upgrade when your team outgrows it.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card reveal">
+          <div class="pricing-tier">Starter</div>
+          <div class="pricing-price">$0 <span>/mo</span></div>
+          <p class="pricing-desc">For individuals and small teams getting started.</p>
+          <ul class="pricing-features">
+            <li>5 meetings per month</li>
+            <li>Basic transcription</li>
+            <li>Calendar integration</li>
+            <li>Email summaries</li>
+          </ul>
+          <a href="#" class="btn btn-secondary">Get started</a>
+        </div>
+        <div class="pricing-card featured reveal">
+          <div class="pricing-badge">Most popular</div>
+          <div class="pricing-tier">Pro</div>
+          <div class="pricing-price">$12 <span>/user/mo</span></div>
+          <p class="pricing-desc">For teams that need the full power of Meet.</p>
+          <ul class="pricing-features">
+            <li>Unlimited meetings</li>
+            <li>AI agendas &amp; action items</li>
+            <li>All integrations</li>
+            <li>Meeting analytics</li>
+            <li>Priority support</li>
+          </ul>
+          <a href="#" class="btn btn-primary">Start free trial &#10148;</a>
+        </div>
+        <div class="pricing-card reveal">
+          <div class="pricing-tier">Enterprise</div>
+          <div class="pricing-price">Custom</div>
+          <p class="pricing-desc">For orgs that need security, scale, and control.</p>
+          <ul class="pricing-features">
+            <li>SSO &amp; SAML</li>
+            <li>Audit logs</li>
+            <li>Dedicated support</li>
+            <li>Custom SLA</li>
+            <li>On-premise option</li>
+          </ul>
+          <a href="#" class="btn btn-outline">Contact sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta">
+    <div class="container">
+      <div class="reveal">
+        <h2>Ready to <span class="amber-word">reclaim</span> your week?</h2>
+        <p>Join 12,000+ teams who stopped wasting time in bad meetings.</p>
+        <div class="hero-buttons">
+          <a href="#" class="btn btn-primary">Start free — no card needed &#10148;</a>
+          <a href="#" class="btn btn-secondary">Talk to sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo">Meet<span class="leaf-accent">.</span></div>
+          <p>Meetings that don't waste your week. Built for teams who value their time.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#">Features</a></li>
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">Integrations</a></li>
+            <li><a href="#">Changelog</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Terms</a></li>
+            <li><a href="#">Security</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 Meet. All rights reserved.</p>
+        <p>&#10047; Built with care</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Intersection Observer for reveal animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Smooth scroll for nav links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // Animate bars on scroll
+    const barObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const bars = entry.target.querySelectorAll('.zigzag-bar');
+          bars.forEach((bar, i) => {
+            const height = bar.style.height;
+            bar.style.height = '0%';
+            setTimeout(() => {
+              bar.style.transition = 'height 0.6s ease';
+              bar.style.height = height;
+            }, i * 80);
+          });
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('.zigzag-bar-chart').forEach(el => barObserver.observe(el));
+  </script>
+</body>
+</html>

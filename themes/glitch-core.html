@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #030303;
+    --dark: #080808;
+    --dark-grey: #0e0e0e;
+    --grey: #1a1a1a;
+    --mid-grey: #333;
+    --light-grey: #888;
+    --white: #f0f0f0;
+    --dim: #666;
+    --accent: #ff003c;
+    --accent-dim: rgba(255,0,60,0.15);
+    --accent-glow: rgba(255,0,60,0.4);
+    --r-ch: #ff0000;
+    --g-ch: #00ff00;
+    --b-ch: #0000ff;
+    --font-display: 'Oswald', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-mono);
+    background: var(--black);
+    color: var(--white);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    line-height: 1.05;
+  }
+
+  h1 { font-size: clamp(3rem, 7vw, 5.5rem); font-weight: 700; }
+  h2 { font-size: clamp(2rem, 4.5vw, 3.2rem); font-weight: 600; }
+  h3 { font-size: clamp(1.1rem, 1.5vw, 1.3rem); font-weight: 500; }
+
+  h4 {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  p { color: var(--light-grey); font-size: 0.9rem; }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ===== RGB SPLIT TEXT ===== */
+  .rgb-split {
+    position: relative;
+    display: inline-block;
+  }
+
+  .rgb-split::before,
+  .rgb-split::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .rgb-split::before {
+    color: var(--r-ch);
+    opacity: 0.7;
+    animation: rgb-r 4s infinite linear alternate-reverse;
+    mix-blend-mode: screen;
+  }
+
+  .rgb-split::after {
+    color: var(--b-ch);
+    opacity: 0.7;
+    animation: rgb-b 3.5s infinite linear alternate-reverse;
+    mix-blend-mode: screen;
+  }
+
+  @keyframes rgb-r {
+    0% { transform: translate(-3px, 1px); clip-path: inset(0 0 60% 0); }
+    25% { transform: translate(2px, -1px); clip-path: inset(40% 0 20% 0); }
+    50% { transform: translate(-1px, 2px); clip-path: inset(70% 0 0 0); }
+    75% { transform: translate(3px, 0); clip-path: inset(10% 0 60% 0); }
+    100% { transform: translate(-2px, -1px); clip-path: inset(50% 0 30% 0); }
+  }
+
+  @keyframes rgb-b {
+    0% { transform: translate(3px, -1px); clip-path: inset(60% 0 0 0); }
+    25% { transform: translate(-2px, 1px); clip-path: inset(20% 0 40% 0); }
+    50% { transform: translate(1px, -2px); clip-path: inset(0 0 70% 0); }
+    75% { transform: translate(-3px, 0); clip-path: inset(60% 0 10% 0); }
+    100% { transform: translate(2px, 1px); clip-path: inset(30% 0 50% 0); }
+  }
+
+  /* ===== PIXEL BLOCK DECORATIONS ===== */
+  .pixel-block {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    margin-right: 8px;
+    vertical-align: middle;
+    animation: pixel-flicker 3s infinite;
+  }
+
+  .pixel-block:nth-child(2) { animation-delay: 0.5s; }
+  .pixel-block:nth-child(3) { animation-delay: 1s; }
+
+  @keyframes pixel-flicker {
+    0%, 90%, 100% { opacity: 1; }
+    92% { opacity: 0; }
+    94% { opacity: 1; }
+    96% { opacity: 0; }
+    98% { opacity: 1; }
+  }
+
+  /* ===== CORRUPTED BAR ===== */
+  .corrupt-bar {
+    width: 100%;
+    height: 1px;
+    background: var(--mid-grey);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .corrupt-bar::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -20%;
+    width: 30%;
+    height: 3px;
+    background: var(--accent);
+    animation: corrupt-sweep 5s linear infinite;
+    box-shadow: 0 0 8px var(--accent-glow);
+  }
+
+  @keyframes corrupt-sweep {
+    0% { left: -30%; }
+    100% { left: 130%; }
+  }
+
+  /* ===== ACCENT LINE ===== */
+  .accent-line {
+    width: 40px; height: 2px;
+    background: var(--accent);
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .accent-line::after {
+    content: '';
+    position: absolute;
+    top: 0; right: -12px;
+    width: 6px; height: 6px;
+    background: var(--accent);
+  }
+
+  .accent-line.center { margin-left: auto; margin-right: auto; }
+
+  /* ===== GLITCH CARD ===== */
+  .g-card {
+    background: var(--dark-grey);
+    border: 1px solid var(--grey);
+    position: relative;
+    transition: all 0.1s;
+  }
+
+  /* Asymmetric corner accent */
+  .g-card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px;
+    width: 16px; height: 16px;
+    border-top: 2px solid var(--accent);
+    border-left: 2px solid var(--accent);
+    transition: all 0.1s;
+  }
+
+  .g-card::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; right: -1px;
+    width: 10px; height: 10px;
+    border-bottom: 1px solid var(--mid-grey);
+    border-right: 1px solid var(--mid-grey);
+  }
+
+  .g-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 30px var(--accent-dim), inset 0 0 1px var(--accent);
+  }
+
+  .g-card:hover::before {
+    width: 100%; height: 2px;
+    border: none;
+    background: var(--accent);
+  }
+
+  /* ===== SCANLINE OVERLAY ===== */
+  .scanlines {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.06) 3px,
+      rgba(0,0,0,0.06) 6px
+    );
+  }
+
+  /* ===== NOISE OVERLAY ===== */
+  .noise {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 128px;
+  }
+
+  /* ===== RANDOM GLITCH FLASH ===== */
+  .glitch-flash {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 9997;
+    opacity: 0;
+    background: var(--accent);
+    animation: flash 12s infinite;
+  }
+
+  @keyframes flash {
+    0%, 96%, 100% { opacity: 0; }
+    97% { opacity: 0.03; }
+    97.5% { opacity: 0; }
+    98% { opacity: 0.02; }
+    98.5% { opacity: 0; }
+  }
+
+  /* ===== PIXEL GRID BG ===== */
+  .pixel-grid {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.02;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px);
+    background-size: 16px 16px;
+  }
+
+  /* ===== HORIZONTAL GLITCH LINES ===== */
+  .h-glitch {
+    position: fixed;
+    width: 100%;
+    height: 1px;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    background: var(--accent);
+  }
+
+  .h-glitch:nth-child(1) { top: 20%; animation: hglitch 9s 0s infinite; }
+  .h-glitch:nth-child(2) { top: 45%; animation: hglitch 11s 3s infinite; }
+  .h-glitch:nth-child(3) { top: 70%; animation: hglitch 8s 6s infinite; }
+  .h-glitch:nth-child(4) { top: 85%; animation: hglitch 13s 1s infinite; }
+
+  @keyframes hglitch {
+    0%, 94%, 100% { opacity: 0; transform: translateX(0); }
+    95% { opacity: 0.5; transform: translateX(-8px); height: 2px; }
+    96% { opacity: 0; }
+    97% { opacity: 0.3; transform: translateX(4px); }
+    98% { opacity: 0; }
+  }
+
+  /* ===== NAVIGATION ===== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(3,3,3,0.95);
+    backdrop-filter: blur(4px);
+    border-bottom: 1px solid var(--grey);
+  }
+
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+
+  .logo {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .logo .accent-dot {
+    color: var(--accent);
+    animation: dot-pulse 2s infinite;
+  }
+
+  @keyframes dot-pulse {
+    0%, 80%, 100% { opacity: 1; }
+    90% { opacity: 0; }
+    95% { opacity: 1; }
+  }
+
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--light-grey);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.1s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-cta {
+    background: var(--accent) !important;
+    color: var(--black) !important;
+    padding: 7px 18px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.12em !important;
+    transition: box-shadow 0.1s !important;
+  }
+  .nav-cta:hover {
+    box-shadow: 0 0 20px var(--accent-glow) !important;
+  }
+
+  /* ===== BUTTONS ===== */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem; font-weight: 700;
+    padding: 12px 28px;
+    text-decoration: none; border: none; cursor: pointer;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: all 0.1s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--black);
+    box-shadow: 4px 4px 0 var(--grey);
+  }
+  .btn-primary:hover {
+    box-shadow: 6px 6px 0 var(--mid-grey);
+    transform: translate(-1px, -1px);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid var(--mid-grey);
+  }
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 15px var(--accent-dim);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid var(--grey);
+  }
+  .btn-outline:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 160px 0 100px;
+    position: relative;
+    overflow: hidden;
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    background: var(--black);
+  }
+
+  /* Asymmetric accent block */
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 100px; right: 5%;
+    width: 3px;
+    height: 200px;
+    background: var(--accent);
+    opacity: 0.3;
+    animation: accent-pulse 4s infinite;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), transparent 30%, transparent 70%, var(--mid-grey));
+  }
+
+  @keyframes accent-pulse {
+    0%, 100% { opacity: 0.2; height: 200px; }
+    50% { opacity: 0.5; height: 240px; }
+  }
+
+  .hero-content {
+    position: relative;
+    max-width: 800px;
+  }
+
+  .hero h1 {
+    margin-bottom: 24px;
+    color: var(--white);
+  }
+
+  .hero h1 .accent-word {
+    color: var(--accent);
+    position: relative;
+    display: inline-block;
+  }
+
+  /* Pixel block decoration on hero */
+  .hero-pixel-deco {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+
+  .hero-pixel-deco span {
+    width: 10px; height: 10px;
+    background: var(--accent);
+    opacity: 0.6;
+  }
+  .hero-pixel-deco span:nth-child(2) { opacity: 0.4; }
+  .hero-pixel-deco span:nth-child(3) { opacity: 0.2; width: 14px; }
+
+  .hero p {
+    font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+    max-width: 520px;
+    margin: 0 auto 40px;
+    color: var(--light-grey);
+    line-height: 1.7;
+  }
+
+  .hero-buttons {
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 72px;
+  }
+
+  /* ===== HERO MOCKUP ===== */
+  .hero-visual {
+    position: relative;
+    max-width: 920px;
+    margin: 0 auto;
+  }
+
+  .hero-mockup {
+    background: var(--dark-grey);
+    border: 1px solid var(--grey);
+    padding: 1px;
+    position: relative;
+  }
+
+  /* Asymmetric accent on mockup */
+  .hero-mockup::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: var(--accent);
+  }
+
+  .hero-mockup::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 2px; height: 100%;
+    background: linear-gradient(180deg, var(--accent), transparent 40%);
+    opacity: 0.3;
+  }
+
+  .mockup-inner {
+    background: var(--dark);
+  }
+
+  .mockup-bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    background: var(--dark-grey);
+    border-bottom: 1px solid var(--grey);
+  }
+
+  .mockup-dot {
+    width: 8px; height: 8px;
+    background: var(--mid-grey);
+  }
+  .mockup-dot:first-child { background: var(--accent); }
+
+  .mockup-body {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 20px;
+    min-height: 280px;
+  }
+
+  .mockup-sidebar {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+
+  .mockup-sidebar-item {
+    height: 28px;
+    background: var(--dark-grey);
+    border: 1px solid var(--grey);
+  }
+  .mockup-sidebar-item.active {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .mockup-content {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+
+  .mockup-line {
+    height: 10px;
+    background: var(--dark-grey);
+    border: 1px solid var(--grey);
+  }
+  .mockup-line:nth-child(1) { width: 45%; background: var(--grey); }
+  .mockup-line:nth-child(2) { width: 100%; }
+  .mockup-line:nth-child(3) { width: 80%; }
+  .mockup-line:nth-child(4) { width: 90%; }
+  .mockup-line:nth-child(5) { width: 65%; }
+
+  .mockup-cards {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px; margin-top: 14px;
+  }
+
+  .mockup-card {
+    height: 70px;
+    background: var(--dark-grey);
+    border: 1px solid var(--grey);
+  }
+  .mockup-card:first-child {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  /* ===== LOGOS ===== */
+  .logos {
+    padding: 50px 0;
+    border-top: 1px solid var(--grey);
+    border-bottom: 1px solid var(--grey);
+    background: var(--dark);
+  }
+
+  .logos p {
+    text-align: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    margin-bottom: 28px;
+  }
+
+  .logos-grid {
+    display: flex; align-items: center; justify-content: center;
+    gap: 40px; flex-wrap: wrap;
+  }
+
+  .logo-item {
+    font-family: var(--font-display);
+    font-size: 1rem; font-weight: 500;
+    color: var(--mid-grey);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.1s;
+  }
+  .logo-item:hover { color: var(--white); }
+
+  /* ===== FEATURES ===== */
+  .features {
+    padding: 110px 0;
+    background: var(--black);
+  }
+
+  .features-header {
+    text-align: center; margin-bottom: 64px;
+  }
+
+  .features-header h4 { margin-bottom: 16px; }
+  .features-header h2 { margin-bottom: 16px; color: var(--white); }
+  .features-header p {
+    max-width: 520px; margin: 0 auto;
+    color: var(--light-grey);
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .feature-card {
+    padding: 32px 24px;
+    transition: all 0.1s;
+  }
+
+  .feature-icon {
+    width: 40px; height: 40px;
+    background: var(--grey);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 18px;
+    font-size: 1.1rem;
+    border: 1px solid var(--mid-grey);
+  }
+
+  .feature-card h3 { margin-bottom: 10px; color: var(--white); }
+  .feature-card p { font-size: 0.82rem; line-height: 1.6; }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag { padding: 80px 0; background: var(--dark); }
+
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    padding: 70px 0;
+    border-bottom: 1px solid var(--grey);
+  }
+  .zigzag-row:last-child { border-bottom: none; }
+  .zigzag-row.reverse .zigzag-visual { order: -1; }
+
+  .zigzag-content h4 { margin-bottom: 12px; }
+  .zigzag-content h3 {
+    font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+    margin-bottom: 14px; color: var(--white);
+  }
+  .zigzag-content p { margin-bottom: 20px; line-height: 1.7; }
+
+  .zigzag-list {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .zigzag-list li {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.82rem; color: var(--light-grey);
+  }
+  .zigzag-list li::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .zigzag-visual {
+    background: var(--dark-grey);
+    border: 1px solid var(--grey);
+    aspect-ratio: 4/3;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Asymmetric corner accent */
+  .zigzag-visual::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 30px; height: 2px;
+    background: var(--accent);
+  }
+  .zigzag-visual::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 2px; height: 30px;
+    background: var(--accent);
+    opacity: 0.3;
+  }
+
+  .zigzag-bar-chart {
+    display: flex; align-items: flex-end; gap: 6px;
+    height: 110px; padding: 20px; width: 100%;
+  }
+
+  .zigzag-bar {
+    flex: 1;
+    background: var(--grey);
+    transition: background 0.3s;
+  }
+  .zigzag-bar.highlight {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-dim);
+  }
+
+  .zigzag-visual-inner {
+    display: flex; flex-direction: column; gap: 10px;
+    padding: 24px; width: 100%;
+  }
+
+  .zigzag-stat {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px;
+    background: var(--dark);
+    border: 1px solid var(--grey);
+  }
+  .zigzag-stat-label {
+    font-size: 0.75rem; color: var(--light-grey);
+  }
+  .zigzag-stat-value {
+    font-family: var(--font-display);
+    font-size: 1.3rem; font-weight: 600; color: var(--accent);
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial {
+    padding: 110px 0;
+    position: relative;
+    overflow: hidden;
+    background: var(--black);
+  }
+
+  /* Glitch accent flash */
+  .testimonial::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 400px; height: 400px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, var(--accent-dim) 0%, transparent 60%);
+    pointer-events: none;
+    animation: testimonial-glow 6s ease-in-out infinite;
+  }
+
+  @keyframes testimonial-glow {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+  }
+
+  .testimonial-inner {
+    max-width: 720px; margin: 0 auto; text-align: center;
+    position: relative;
+  }
+
+  .testimonial-quote {
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 2.2vw, 1.7rem);
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--white);
+    margin-bottom: 36px;
+    letter-spacing: 0.01em;
+  }
+
+  .testimonial-quote::before {
+    content: '//';
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    display: block;
+    margin-bottom: 16px;
+    letter-spacing: 0.1em;
+  }
+
+  .testimonial-author {
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+  }
+
+  .testimonial-avatar {
+    width: 44px; height: 44px;
+    background: var(--grey);
+    border: 1px solid var(--mid-grey);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 600; font-size: 0.9rem;
+    color: var(--accent);
+  }
+
+  .testimonial-info { text-align: left; }
+  .testimonial-name {
+    font-family: var(--font-display);
+    font-weight: 500; color: var(--white); font-size: 0.95rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .testimonial-role {
+    font-size: 0.72rem; color: var(--dim);
+    letter-spacing: 0.05em;
+  }
+
+  /* ===== PRICING ===== */
+  .pricing { padding: 110px 0; background: var(--dark); }
+
+  .pricing-header {
+    text-align: center; margin-bottom: 56px;
+  }
+  .pricing-header h4 { margin-bottom: 16px; }
+  .pricing-header h2 { margin-bottom: 16px; color: var(--white); }
+  .pricing-header p { color: var(--light-grey); }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .pricing-card {
+    padding: 36px 28px;
+    transition: all 0.1s;
+  }
+
+  .pricing-card.featured {
+    border-color: var(--accent);
+    border-width: 2px;
+    background: var(--dark-grey);
+    position: relative;
+  }
+
+  /* Asymmetric featured accent */
+  .pricing-card.featured::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px;
+    width: 100%; height: 3px;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+
+  .pricing-badge {
+    position: absolute; top: -10px; right: 20px;
+    background: var(--accent);
+    color: var(--black);
+    padding: 3px 12px;
+    font-family: var(--font-mono);
+    font-size: 0.6rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+
+  .pricing-tier {
+    font-family: var(--font-mono);
+    font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--dim); margin-bottom: 10px;
+  }
+  .pricing-card.featured .pricing-tier { color: var(--accent); }
+
+  .pricing-price {
+    font-family: var(--font-display);
+    font-size: 2.6rem; font-weight: 700;
+    color: var(--white); margin-bottom: 4px;
+    letter-spacing: 0.02em;
+  }
+  .pricing-price span {
+    font-size: 0.85rem; font-weight: 400;
+    color: var(--dim);
+    font-family: var(--font-mono);
+  }
+
+  .pricing-desc {
+    font-size: 0.8rem; color: var(--light-grey);
+    margin-bottom: 28px;
+  }
+
+  .pricing-features {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 12px;
+    margin-bottom: 28px;
+  }
+  .pricing-features li {
+    font-size: 0.8rem; color: var(--light-grey);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pricing-features li::before {
+    content: '';
+    width: 5px; height: 5px;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .pricing-card .btn { width: 100%; justify-content: center; }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    padding: 110px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    background: var(--black);
+  }
+
+  /* Asymmetric accent lines */
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    top: 40%; left: 10%;
+    width: 200px; height: 1px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    opacity: 0.2;
+  }
+  .final-cta::after {
+    content: '';
+    position: absolute;
+    bottom: 30%; right: 15%;
+    width: 150px; height: 1px;
+    background: linear-gradient(270deg, var(--accent), transparent);
+    opacity: 0.15;
+  }
+
+  .final-cta h2 {
+    margin-bottom: 18px; color: var(--white);
+    position: relative;
+  }
+
+  .final-cta p {
+    font-size: 1rem; color: var(--light-grey);
+    max-width: 480px; margin: 0 auto 36px;
+    position: relative;
+  }
+
+  .final-cta .hero-buttons { position: relative; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 56px 0 36px;
+    border-top: 1px solid var(--grey);
+    background: var(--dark);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+
+  .footer-brand .logo { margin-bottom: 14px; display: inline-block; }
+  .footer-brand p {
+    font-size: 0.78rem; color: var(--dim); max-width: 260px; line-height: 1.6;
+  }
+
+  .footer-col h4 {
+    font-size: 0.6rem; margin-bottom: 14px;
+    letter-spacing: 0.2em;
+  }
+
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 8px; }
+
+  .footer-col a {
+    font-size: 0.78rem; color: var(--dim);
+    text-decoration: none; transition: color 0.1s;
+    font-family: var(--font-mono);
+    letter-spacing: 0.03em;
+  }
+  .footer-col a:hover { color: var(--accent); }
+
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 28px; border-top: 1px solid var(--grey);
+  }
+  .footer-bottom p {
+    font-size: 0.7rem; color: var(--dim);
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+  }
+
+  /* ===== CORRUPTED PIXEL BLOCKS ===== */
+  .corrupt-blocks {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .corrupt-blocks .block {
+    position: absolute;
+    background: var(--accent);
+    opacity: 0;
+    animation: corrupt-appear 10s infinite;
+  }
+
+  .corrupt-blocks .block:nth-child(1) { width: 4px; height: 4px; top: 20%; left: 10%; animation-delay: 0s; }
+  .corrupt-blocks .block:nth-child(2) { width: 6px; height: 6px; top: 60%; left: 80%; animation-delay: 3s; }
+  .corrupt-blocks .block:nth-child(3) { width: 3px; height: 8px; top: 40%; left: 50%; animation-delay: 6s; }
+
+  @keyframes corrupt-appear {
+    0%, 93%, 100% { opacity: 0; transform: translateX(0); }
+    94% { opacity: 0.4; transform: translateX(-3px); }
+    95% { opacity: 0; }
+    96% { opacity: 0.3; transform: translateX(2px); }
+    97% { opacity: 0; }
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .features-grid { grid-template-columns: 1fr; }
+    .zigzag-row {
+      grid-template-columns: 1fr;
+      gap: 36px;
+    }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+    .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+    .mockup-body { grid-template-columns: 1fr; }
+    .mockup-sidebar { display: none; }
+    .mockup-cards { grid-template-columns: 1fr 1fr; }
+    .hero { min-height: auto; padding: 140px 0 80px; }
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    animation: fadeInUp 0.5s ease forwards;
+  }
+  .fade-in:nth-child(2) { animation-delay: 0.1s; }
+  .fade-in:nth-child(3) { animation-delay: 0.2s; }
+  .fade-in:nth-child(4) { animation-delay: 0.3s; }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+  <!-- OVERLAYS -->
+  <div class="scanlines"></div>
+  <div class="noise"></div>
+  <div class="glitch-flash"></div>
+  <div class="pixel-grid"></div>
+  <div class="h-glitch"></div>
+  <div class="h-glitch"></div>
+  <div class="h-glitch"></div>
+  <div class="h-glitch"></div>
+
+  <!-- CORRUPTED PIXEL BLOCKS -->
+  <div class="corrupt-blocks">
+    <div class="block"></div>
+    <div class="block"></div>
+    <div class="block"></div>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <div class="logo">Meet<span class="accent-dot">.</span></div>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#testimonials">Reviews</a>
+        <a href="#" class="nav-cta">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-pixel-deco fade-in">
+          <span></span><span></span><span></span>
+        </div>
+        <h1 class="fade-in">
+          <span class="rgb-split" data-text="Meetings that">Meetings that</span><br>
+          <span class="accent-word">don't waste</span><br>
+          your week
+        </h1>
+        <p class="fade-in">One platform to schedule, run, and follow up on every meeting. Cut meeting overhead by 60%.</p>
+        <div class="hero-buttons fade-in">
+          <a href="#" class="btn btn-primary">Start free →</a>
+          <a href="#" class="btn btn-secondary">Watch demo</a>
+        </div>
+      </div>
+      <div class="hero-visual fade-in">
+        <div class="hero-mockup">
+          <div class="mockup-inner">
+            <div class="mockup-bar">
+              <div class="mockup-dot"></div>
+              <div class="mockup-dot"></div>
+              <div class="mockup-dot"></div>
+            </div>
+            <div class="mockup-body">
+              <div class="mockup-sidebar">
+                <div class="mockup-sidebar-item active"></div>
+                <div class="mockup-sidebar-item"></div>
+                <div class="mockup-sidebar-item"></div>
+                <div class="mockup-sidebar-item"></div>
+                <div class="mockup-sidebar-item"></div>
+              </div>
+              <div class="mockup-content">
+                <div class="mockup-line"></div>
+                <div class="mockup-line"></div>
+                <div class="mockup-line"></div>
+                <div class="mockup-line"></div>
+                <div class="mockup-line"></div>
+                <div class="mockup-cards">
+                  <div class="mockup-card"></div>
+                  <div class="mockup-card"></div>
+                  <div class="mockup-card"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGOS -->
+  <section class="logos">
+    <div class="container">
+      <p>Trusted by teams at</p>
+      <div class="logos-grid">
+        <div class="logo-item">Stripe</div>
+        <div class="logo-item">Vercel</div>
+        <div class="logo-item">Linear</div>
+        <div class="logo-item">Notion</div>
+        <div class="logo-item">Figma</div>
+        <div class="logo-item">Raycast</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="features-header reveal">
+        <h4>// Features</h4>
+        <div class="accent-line center"></div>
+        <h2>Everything you need.<br>Nothing you don't.</h2>
+        <p>Six tools that replace your entire meeting stack. No integrations required.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card g-card reveal">
+          <div class="feature-icon">⚡</div>
+          <h3>Smart Scheduling</h3>
+          <p>AI reads calendars, finds slots, sends invites. Zero back-and-forth emails.</p>
+        </div>
+        <div class="feature-card g-card reveal">
+          <div class="feature-icon">📋</div>
+          <h3>Auto Agendas</h3>
+          <p>Generates structured agendas from project context. Everyone arrives prepared.</p>
+        </div>
+        <div class="feature-card g-card reveal">
+          <div class="feature-icon">🎙</div>
+          <h3>Live Transcripts</h3>
+          <p>Real-time transcription with speaker detection. Searchable within seconds.</p>
+        </div>
+        <div class="feature-card g-card reveal">
+          <div class="feature-icon">✅</div>
+          <h3>Action Items</h3>
+          <p>Extracts tasks automatically. Pushes to Jira, Asana, or Linear on save.</p>
+        </div>
+        <div class="feature-card g-card reveal">
+          <div class="feature-icon">📊</div>
+          <h3>Meeting Analytics</h3>
+          <p>Track time spent, decisions made, follow-ups pending. Data-driven meetings.</p>
+        </div>
+        <div class="feature-card g-card reveal">
+          <div class="feature-icon">🔗</div>
+          <h3>Integrations</h3>
+          <p>Slack, Google, Notion, GitHub. 40+ connectors. Works where you already work.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ZIGZAG -->
+  <section class="zigzag">
+    <div class="container">
+      <div class="zigzag-row reveal">
+        <div class="zigzag-content">
+          <h4>// Why Meet</h4>
+          <div class="accent-line"></div>
+          <h3>Cut meeting time by 60%</h3>
+          <p>Our AI trims every meeting to its essential core. Shorter meetings, better outcomes, more focus time.</p>
+          <ul class="zigzag-list">
+            <li>Auto-generated agendas save 15 min prep</li>
+            <li>Smart timeboxing keeps meetings on track</li>
+            <li>Async summaries replace 30% of meetings entirely</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <div class="zigzag-bar-chart">
+            <div class="zigzag-bar" style="height:40%"></div>
+            <div class="zigzag-bar" style="height:55%"></div>
+            <div class="zigzag-bar" style="height:45%"></div>
+            <div class="zigzag-bar highlight" style="height:80%"></div>
+            <div class="zigzag-bar highlight" style="height:90%"></div>
+            <div class="zigzag-bar highlight" style="height:95%"></div>
+            <div class="zigzag-bar" style="height:60%"></div>
+            <div class="zigzag-bar" style="height:50%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="zigzag-row reverse reveal">
+        <div class="zigzag-content">
+          <h4>// Follow-up</h4>
+          <div class="accent-line"></div>
+          <h3>Decisions that actually stick</h3>
+          <p>No more "what did we decide?" Follow-ups are automatic, assigned, and tracked until resolution.</p>
+          <ul class="zigzag-list">
+            <li>Decision log with full context and timestamps</li>
+            <li>Task assignment with due dates and owners</li>
+            <li>Weekly digest emails for the whole team</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <div class="zigzag-visual-inner">
+            <div class="zigzag-stat">
+              <span class="zigzag-stat-label">Meetings saved</span>
+              <span class="zigzag-stat-value">2,847</span>
+            </div>
+            <div class="zigzag-stat">
+              <span class="zigzag-stat-label">Hours recovered</span>
+              <span class="zigzag-stat-value">1,204</span>
+            </div>
+            <div class="zigzag-stat">
+              <span class="zigzag-stat-label">Tasks completed</span>
+              <span class="zigzag-stat-value">94%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="testimonial" id="testimonials">
+    <div class="container">
+      <div class="testimonial-inner reveal">
+        <div class="accent-line center"></div>
+        <p class="testimonial-quote">We went from 18 meetings a week to 7. The ones we kept were actually useful. Meet changed how our entire org communicates.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">SK</div>
+          <div class="testimonial-info">
+            <div class="testimonial-name">Sarah Kim</div>
+            <div class="testimonial-role">VP of Engineering, Linear</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <div class="pricing-header reveal">
+        <h4>// Pricing</h4>
+        <div class="accent-line center"></div>
+        <h2>Simple pricing.<br>Powerful results.</h2>
+        <p>Start free. Upgrade when your team outgrows it.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card g-card reveal">
+          <div class="pricing-tier">Starter</div>
+          <div class="pricing-price">$0 <span>/mo</span></div>
+          <p class="pricing-desc">For individuals and small teams getting started.</p>
+          <ul class="pricing-features">
+            <li>5 meetings per month</li>
+            <li>Basic transcription</li>
+            <li>Calendar integration</li>
+            <li>Email summaries</li>
+          </ul>
+          <a href="#" class="btn btn-secondary">Get started</a>
+        </div>
+        <div class="pricing-card g-card featured reveal">
+          <div class="pricing-badge">Most popular</div>
+          <div class="pricing-tier">Pro</div>
+          <div class="pricing-price">$12 <span>/user/mo</span></div>
+          <p class="pricing-desc">For teams that need the full power of Meet.</p>
+          <ul class="pricing-features">
+            <li>Unlimited meetings</li>
+            <li>AI agendas &amp; action items</li>
+            <li>All integrations</li>
+            <li>Meeting analytics</li>
+            <li>Priority support</li>
+          </ul>
+          <a href="#" class="btn btn-primary">Start free trial →</a>
+        </div>
+        <div class="pricing-card g-card reveal">
+          <div class="pricing-tier">Enterprise</div>
+          <div class="pricing-price">Custom</div>
+          <p class="pricing-desc">For orgs that need security, scale, and control.</p>
+          <ul class="pricing-features">
+            <li>SSO &amp; SAML</li>
+            <li>Audit logs</li>
+            <li>Dedicated support</li>
+            <li>Custom SLA</li>
+            <li>On-premise option</li>
+          </ul>
+          <a href="#" class="btn btn-outline">Contact sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta">
+    <div class="container">
+      <div class="reveal">
+        <h2><span class="rgb-split" data-text="Ready to reclaim">Ready to reclaim</span> your week?</h2>
+        <p>Join 12,000+ teams who stopped wasting time in bad meetings.</p>
+        <div class="hero-buttons">
+          <a href="#" class="btn btn-primary">Start free — no card needed →</a>
+          <a href="#" class="btn btn-secondary">Talk to sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo">Meet<span class="accent-dot">.</span></div>
+          <p>Meetings that don't waste your week. Built for teams who value their time.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#">Features</a></li>
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">Integrations</a></li>
+            <li><a href="#">Changelog</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Terms</a></li>
+            <li><a href="#">Security</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 Meet. All rights reserved.</p>
+        <p>// Built with precision</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Intersection Observer for reveal animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Smooth scroll for nav links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // Animate bars on scroll
+    const barObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const bars = entry.target.querySelectorAll('.zigzag-bar');
+          bars.forEach((bar, i) => {
+            const height = bar.style.height;
+            bar.style.height = '0%';
+            setTimeout(() => {
+              bar.style.transition = 'height 0.5s ease';
+              bar.style.height = height;
+            }, i * 80);
+          });
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('.zigzag-bar-chart').forEach(el => barObserver.observe(el));
+
+    // Random glitch text effect
+    const glitchChars = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`';
+    function glitchText(el, duration = 200) {
+      const original = el.getAttribute('data-text') || el.textContent;
+      const steps = 8;
+      let step = 0;
+      const interval = setInterval(() => {
+        let text = '';
+        for (let i = 0; i < original.length; i++) {
+          text += Math.random() > 0.5 ? glitchChars[Math.floor(Math.random() * glitchChars.length)] : original[i];
+        }
+        if (el.hasAttribute('data-text')) {
+          el.setAttribute('data-text', text);
+        }
+        step++;
+        if (step >= steps) {
+          clearInterval(interval);
+          if (el.hasAttribute('data-text')) {
+            el.setAttribute('data-text', original);
+          }
+        }
+      }, duration / steps);
+    }
+
+    // Trigger glitch on hover for RGB split elements
+    document.querySelectorAll('.rgb-split').forEach(el => {
+      el.addEventListener('mouseenter', () => glitchText(el, 300));
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #14100C;
+    --bg-light: #1C1712;
+    --bg-card: #251F18;
+    --bg-card-hover: #2E2620;
+    --burgundy: #722F37;
+    --burgundy-deep: #5A252C;
+    --burgundy-light: #8B3A42;
+    --gold: #C5A572;
+    --gold-light: #D4B888;
+    --gold-dim: #9E8560;
+    --cream: #F0E0D0;
+    --cream-mid: #C4B09A;
+    --cream-dim: #8A7B6B;
+    --leather: #5C3A28;
+    --leather-light: #6E4A36;
+    --parchment: #E8D5B7;
+    --ink: #0F0C09;
+    --border: #3D342C;
+    --border-gold: #5A4D3E;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Lora', Georgia, serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--cream);
+    line-height: 1.7;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ===== LEATHER TEXTURE OVERLAY ===== */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(114,47,55,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(197,165,114,0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, rgba(92,58,40,0.08) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== NOISE TEXTURE ===== */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--cream);
+  }
+
+  h1 { font-size: clamp(2.8rem, 6vw, 5rem); letter-spacing: -0.02em; }
+  h2 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.01em; }
+  h3 { font-size: clamp(1.3rem, 2.5vw, 1.6rem); font-weight: 600; }
+
+  section { position: relative; z-index: 1; }
+
+  a { color: var(--gold); text-decoration: none; transition: color 0.3s; }
+  a:hover { color: var(--gold-light); }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ===== ORNAMENTAL DIVIDER ===== */
+  .ornament-divider {
+    text-align: center;
+    margin: 48px auto;
+    color: var(--gold-dim);
+    font-size: 1.4rem;
+    letter-spacing: 0.8em;
+    opacity: 0.6;
+  }
+  .ornament-divider::before {
+    content: '—';
+    margin-right: 0.4em;
+  }
+  .ornament-divider::after {
+    content: '—';
+    margin-left: 0.4em;
+  }
+
+  /* ===== BOOKMARK RIBBON ===== */
+  .ribbon {
+    display: inline-block;
+    width: 3px;
+    height: 24px;
+    background: var(--burgundy);
+    border-radius: 0 0 2px 2px;
+    margin-right: 12px;
+    vertical-align: middle;
+  }
+
+  /* ===== GOLD BUTTONS ===== */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 36px;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--burgundy), var(--burgundy-deep));
+    color: var(--parchment);
+    border: 1px solid var(--burgundy-light);
+    box-shadow: 0 2px 20px rgba(114,47,55,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, var(--burgundy-light), var(--burgundy));
+    box-shadow: 0 4px 30px rgba(114,47,55,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+    transform: translateY(-2px);
+    color: var(--parchment);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--border-gold);
+  }
+  .btn-secondary:hover {
+    border-color: var(--gold);
+    color: var(--gold-light);
+    box-shadow: 0 0 20px rgba(197,165,114,0.1);
+    transform: translateY(-2px);
+  }
+
+  /* ===== PARCHMENT CARD ===== */
+  .parchment-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 36px;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .parchment-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .parchment-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-gold);
+  }
+  .parchment-card:hover::before {
+    opacity: 1;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 32px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Ambient glow behind hero */
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -20%; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(114,47,55,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    animation: heroGlow 8s ease-in-out infinite;
+  }
+  @keyframes heroGlow {
+    0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+    50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+  }
+
+  .hero-content {
+    max-width: 800px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-ornament {
+    display: block;
+    margin: 0 auto 28px;
+    color: var(--gold-dim);
+    font-size: 0.85rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    font-family: var(--font-body);
+    opacity: 0.7;
+  }
+  .hero-ornament::before,
+  .hero-ornament::after {
+    content: '◆';
+    margin: 0 0.6em;
+    font-size: 0.5em;
+    vertical-align: middle;
+  }
+
+  .hero h1 {
+    margin-bottom: 28px;
+  }
+  .hero h1 .gold-text {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--parchment));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--cream-mid);
+    max-width: 560px;
+    margin: 0 auto 44px;
+    line-height: 1.8;
+    font-style: italic;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* ===== LOGOS ===== */
+  .logos-section {
+    padding: 60px 32px;
+    text-align: center;
+    background: var(--bg-light);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logos-section p {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    color: var(--cream-dim);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  .logos-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    opacity: 0.35;
+  }
+
+  .logo-placeholder {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--cream-dim);
+    letter-spacing: 0.05em;
+  }
+
+  /* ===== FEATURES ===== */
+  .features-section {
+    padding: 100px 32px;
+    background: var(--bg);
+  }
+
+  .features-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 60px;
+  }
+  .features-header h2 { margin-bottom: 16px; }
+  .features-header p {
+    font-size: 1.05rem;
+    color: var(--cream-mid);
+    font-style: italic;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 36px;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .feature-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0; height: 2px;
+    background: linear-gradient(90deg, var(--burgundy), var(--gold));
+    transition: width 0.4s;
+  }
+  .feature-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-gold);
+    transform: translateY(-4px);
+  }
+  .feature-card:hover::after {
+    width: 100%;
+  }
+
+  .feature-icon {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--gold);
+    margin-bottom: 20px;
+    line-height: 1;
+    opacity: 0.8;
+  }
+
+  .feature-card h3 {
+    margin-bottom: 12px;
+    font-size: 1.3rem;
+  }
+  .feature-card p {
+    color: var(--cream-mid);
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag-section {
+    padding: 100px 32px;
+    background: var(--bg-light);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .zigzag-row:not(:last-child) { margin-bottom: 80px; }
+  .zigzag-row.reverse .zigzag-visual { order: 2; }
+  .zigzag-row.reverse .zigzag-text { order: 1; }
+
+  .zigzag-text h3 {
+    margin-bottom: 16px;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+  .zigzag-text p {
+    color: var(--cream-mid);
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .zigzag-visual {
+    aspect-ratio: 4/3;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Book-page mockup inside zigzag visual */
+  .zigzag-visual .book-page {
+    position: absolute; inset: 12px;
+    background: linear-gradient(180deg, var(--parchment) 0%, #DCC8A8 100%);
+    opacity: 0.15;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 8px;
+  }
+  .zigzag-visual .book-page .line {
+    height: 2px;
+    background: var(--ink);
+    opacity: 0.3;
+    border-radius: 1px;
+  }
+  .zigzag-visual .book-page .line:nth-child(odd) { width: 90%; }
+  .zigzag-visual .book-page .line:nth-child(even) { width: 75%; }
+  .zigzag-visual .book-page .line:nth-child(3n) { width: 85%; }
+  .zigzag-visual .book-page .line:nth-child(4n+1) { width: 60%; }
+
+  /* Gold foil accent on visual */
+  .zigzag-visual::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 40px; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(197,165,114,0.08));
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial-section {
+    padding: 100px 32px;
+    text-align: center;
+    background: var(--bg);
+    position: relative;
+  }
+
+  /* Ambient glow */
+  .testimonial-section::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 500px; height: 400px;
+    background: radial-gradient(ellipse, rgba(197,165,114,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .testimonial-content {
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .testimonial-quote {
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    line-height: 1.6;
+    font-weight: 400;
+    color: var(--cream);
+    margin-bottom: 36px;
+    font-style: italic;
+  }
+  .testimonial-quote::before {
+    content: '\201C';
+    font-size: 4rem;
+    color: var(--burgundy);
+    display: block;
+    margin-bottom: -16px;
+    line-height: 1;
+    font-style: normal;
+    opacity: 0.7;
+  }
+
+  .testimonial-author {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 4px;
+    letter-spacing: 0.05em;
+  }
+  .testimonial-role {
+    font-size: 0.9rem;
+    color: var(--cream-dim);
+    font-style: italic;
+  }
+
+  /* ===== PRICING ===== */
+  .pricing-section {
+    padding: 100px 32px;
+    background: var(--bg-light);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pricing-header {
+    text-align: center;
+    max-width: 550px;
+    margin: 0 auto 60px;
+  }
+  .pricing-header h2 { margin-bottom: 16px; }
+  .pricing-header p {
+    color: var(--cream-mid);
+    font-style: italic;
+    font-size: 1.05rem;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .pricing-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 40px 32px;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .pricing-card:hover {
+    border-color: var(--border-gold);
+    transform: translateY(-4px);
+  }
+  .pricing-card.featured {
+    border-color: var(--burgundy);
+    box-shadow: 0 0 40px rgba(114,47,55,0.15);
+  }
+  .pricing-card.featured::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--burgundy), var(--gold), var(--burgundy));
+  }
+
+  .pricing-badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--burgundy), var(--burgundy-deep));
+    color: var(--parchment);
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 5px 20px;
+    white-space: nowrap;
+    border: 1px solid var(--burgundy-light);
+  }
+
+  .pricing-card h3 {
+    margin-bottom: 8px;
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+  }
+  .pricing-amount {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .pricing-amount span {
+    font-size: 1rem;
+    color: var(--cream-dim);
+    font-weight: 400;
+  }
+  .pricing-desc {
+    color: var(--cream-dim);
+    font-size: 0.9rem;
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+
+  .pricing-features {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 32px;
+  }
+  .pricing-features li {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(61,52,44,0.5);
+    color: var(--cream-mid);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .pricing-features li::before {
+    content: '§';
+    font-family: var(--font-display);
+    color: var(--gold);
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  .pricing-card .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ===== FINAL CTA ===== */
+  .cta-section {
+    padding: 120px 32px;
+    text-align: center;
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Ambient glow */
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    top: 30%; left: 50%;
+    transform: translateX(-50%);
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(114,47,55,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .cta-content {
+    max-width: 650px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .cta-content h2 {
+    margin-bottom: 20px;
+  }
+  .cta-content h2 .gold-text {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .cta-content p {
+    color: var(--cream-mid);
+    font-size: 1.1rem;
+    margin-bottom: 36px;
+    font-style: italic;
+    line-height: 1.8;
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    padding: 48px 32px;
+    text-align: center;
+    background: var(--bg-light);
+    border-top: 1px solid var(--border);
+  }
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .footer-links a {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    color: var(--cream-dim);
+    letter-spacing: 0.05em;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+
+  .footer p {
+    font-size: 0.85rem;
+    color: var(--cream-dim);
+    font-style: italic;
+  }
+  .footer .footer-ornament {
+    display: inline-block;
+    color: var(--gold-dim);
+    margin: 0 8px;
+    opacity: 0.5;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .zigzag-row {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .zigzag-row.reverse .zigzag-text { order: 0; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 360px; }
+    .hero { min-height: 90vh; padding: 100px 24px 60px; }
+    .features-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero-content">
+      <span class="hero-ornament">Est. MMXXVI</span>
+      <h1>Schedule with<br><span class="gold-text">scholarly precision</span></h1>
+      <p>Where every meeting is a chapter well-written. No wasted passages, no redundant footnotes — only the essential text of your week.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn btn-primary">BEGIN YOUR STUDY</a>
+        <a href="#" class="btn btn-secondary">BROWSE THE ARCHIVE</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LOGOS ===== -->
+  <section class="logos-section">
+    <p>Trusted by the learned institutions</p>
+    <div class="logos-grid">
+      <span class="logo-placeholder">Oxford</span>
+      <span class="logo-placeholder">Harvard</span>
+      <span class="logo-placeholder">MIT</span>
+      <span class="logo-placeholder">Cambridge</span>
+      <span class="logo-placeholder">Yale</span>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="features-section">
+    <div class="features-header">
+      <h2>A curriculum of features</h2>
+      <p>Each tool crafted with the care of a leather-bound volume — timeless, precise, built to endure.</p>
+    </div>
+    <div class="ornament-divider">✦</div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">I.</div>
+        <h3>Smart Scheduling</h3>
+        <p>Auto-detects time zones, availability, and meeting length. The algorithm reads your calendar like a well-annotated text.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">II.</div>
+        <h3>Calendar Sync</h3>
+        <p>Google, Outlook, Apple — all in perfect concordance. No contradictions between your sources.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">III.</div>
+        <h3>Team Availability</h3>
+        <p>See who is in session, on sabbatical, or in deep study. Presence marked with scholarly clarity.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">IV.</div>
+        <h3>Analytics</h3>
+        <p>Meeting heatmaps, productivity indices, and time-waste treatises. Every datum catalogued and cross-referenced.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ZIGZAG ===== -->
+  <section class="zigzag-section">
+    <div class="zigzag-row">
+      <div class="zigzag-text">
+        <h3>A well-ordered catalogue</h3>
+        <p>Every meeting indexed, cross-referenced, and shelved in its proper place. Your calendar becomes a living library — each entry a volume of purpose, each day a chapter of progress.</p>
+      </div>
+      <div class="zigzag-visual">
+        <div class="book-page">
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+        </div>
+      </div>
+    </div>
+    <div class="zigzag-row reverse">
+      <div class="zigzag-text">
+        <h3>Marginalia that matters</h3>
+        <p>Annotations, reminders, and context — all woven into the margins of each meeting. Like a scholar's notes in the gutter of a precious text, every detail has its place.</p>
+      </div>
+      <div class="zigzag-visual">
+        <div class="book-page">
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIAL ===== -->
+  <section class="testimonial-section">
+    <div class="testimonial-content">
+      <div class="testimonial-quote">
+        We reduced meeting overhead by forty percent. Every hour of our week now carries the weight of intention. The scheduling is elegant, the sync is seamless, and the analytics read like a well-argued thesis.
+      </div>
+      <div class="testimonial-author">PROF. ELEANOR VANCE</div>
+      <div class="testimonial-role">DEAN OF DIGITAL SCHOLARSHIP, KINGSLEY COLLEGE</div>
+    </div>
+  </section>
+
+  <!-- ===== PRICING ===== -->
+  <section class="pricing-section">
+    <div class="pricing-header">
+      <h2>Choose your volume</h2>
+      <p>From a single pamphlet to the complete collected works. Scale your library as your fellowship grows.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <h3>PAMPHLET</h3>
+        <div class="pricing-amount">$0<span>/mo</span></div>
+        <p class="pricing-desc">For the solitary scholar. Essential readings only.</p>
+        <ul class="pricing-features">
+          <li>5 meetings per month</li>
+          <li>1 calendar concordance</li>
+          <li>Basic availability index</li>
+        </ul>
+        <a href="#" class="btn btn-secondary">BEGIN READING</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">MOST POPULAR</div>
+        <h3>COLLECTED WORKS</h3>
+        <div class="pricing-amount">$12<span>/mo</span></div>
+        <p class="pricing-desc">For the learned circle. Full library access.</p>
+        <ul class="pricing-features">
+          <li>Unlimited meetings</li>
+          <li>All calendar concordances</li>
+          <li>Team availability index</li>
+          <li>Analytics treatise</li>
+        </ul>
+        <a href="#" class="btn btn-primary">ENROLL NOW</a>
+      </div>
+      <div class="pricing-card">
+        <h3>ENCYCLOPEDIA</h3>
+        <div class="pricing-amount">$29<span>/mo</span></div>
+        <p class="pricing-desc">For the grand institution. Every volume, every folio.</p>
+        <ul class="pricing-features">
+          <li>Everything in Collected Works</li>
+          <li>API access to archives</li>
+          <li>Custom integrations</li>
+          <li>Priority concierge</li>
+        </ul>
+        <a href="#" class="btn btn-secondary">CONTACT THE LIBRARIAN</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FINAL CTA ===== -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2>Ready to write your <span class="gold-text">next chapter</span>?</h2>
+      <p>Join ten thousand scholars who have turned their calendars into masterworks. Free to begin. No credit required for admission.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn btn-primary">START FOR FREE</a>
+        <a href="#" class="btn btn-secondary">SEE THE DEMO</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="#">Tome</a>
+      <a href="#">Archive</a>
+      <a href="#">Journal</a>
+      <a href="#">Colophon</a>
+      <a href="#">Manuscript</a>
+    </div>
+    <p><span class="footer-ornament">◆</span> MEET &copy; 2026 <span class="footer-ornament">◆</span> SCHOLARLY SCHEDULING</p>
+  </footer>
+
+</body>
+</html>

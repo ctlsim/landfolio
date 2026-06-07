@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..14,300;0,9..14,400;0,9..14,500;0,9..14,600;0,9..14,700;1,9..14,300;1,9..14,400&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F3EA;
+    --bg-alt: #EDE7D8;
+    --surface: #FDFBF7;
+    --surface-alt: #F0EBE0;
+    --border: #DDD5C4;
+    --text: #3D3628;
+    --text-dim: #7A7060;
+    --text-light: #A89E8C;
+    --sage: #8B9E7E;
+    --sage-light: #B5C4AD;
+    --sage-pale: #E4EBE0;
+    --mushroom: #8B7355;
+    --mushroom-light: #A89278;
+    --mushroom-pale: #EDE4D6;
+    --wildflower: #C4788A;
+    --wildflower-light: #E0A0B0;
+    --wildflower-pale: #F5E0E6;
+    --honey: #C9A84C;
+    --honey-light: #E0C878;
+    --honey-pale: #F5EDD6;
+    --lavender: #9B8FB8;
+    --lavender-pale: #E8E4F0;
+    --radius: 18px;
+    --radius-sm: 12px;
+    --radius-lg: 28px;
+    --shadow: 0 2px 6px rgba(61,54,40,0.06), 0 4px 16px rgba(61,54,40,0.04);
+    --shadow-lg: 0 4px 12px rgba(61,54,40,0.08), 0 12px 36px rgba(61,54,40,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Fraunces', serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 { font-weight: 600; line-height: 1.15; letter-spacing: -0.01em; }
+  .handwritten { font-family: 'Caveat', cursive; }
+
+  /* Floating wildflowers */
+  .wildflowers {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
+  }
+  .wildflower-blob {
+    position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.25;
+    animation: sway 18s ease-in-out infinite;
+  }
+  .wildflower-blob:nth-child(1) {
+    width: 300px; height: 300px; background: var(--sage-light);
+    top: 5%; left: -5%;
+  }
+  .wildflower-blob:nth-child(2) {
+    width: 250px; height: 250px; background: var(--wildflower-light);
+    top: 25%; right: -8%; animation-delay: -6s;
+  }
+  .wildflower-blob:nth-child(3) {
+    width: 200px; height: 200px; background: var(--honey-light);
+    bottom: 15%; left: 20%; animation-delay: -12s;
+  }
+  .wildflower-blob:nth-child(4) {
+    width: 180px; height: 180px; background: var(--lavender-pale);
+    top: 60%; right: 15%; animation-delay: -3s;
+  }
+  @keyframes sway {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(20px, -15px) scale(1.05); }
+    50% { transform: translate(-15px, 10px) scale(0.97); }
+    75% { transform: translate(10px, 20px) scale(1.03); }
+  }
+
+  /* Leaf SVG decorations */
+  .leaf-deco {
+    position: absolute; opacity: 0.08; pointer-events: none;
+  }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 32px; }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(247,243,234,0.85);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner {
+    max-width: 1140px; margin: 0 auto; padding: 0 32px;
+    display: flex; align-items: center; justify-content: space-between; height: 64px;
+  }
+  .nav-logo {
+    font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.3rem;
+    color: var(--text); text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-logo span { font-family: 'Caveat', cursive; font-size: 1.5rem; color: var(--sage); }
+  .nav-links { display: flex; align-items: center; gap: 32px; }
+  .nav-links a {
+    color: var(--text-dim); text-decoration: none; font-size: 0.9rem;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--sage); }
+  .nav-btn {
+    background: var(--sage); color: #fff; padding: 8px 22px;
+    border-radius: 100px; text-decoration: none; font-size: 0.85rem;
+    font-weight: 500; transition: background 0.2s, transform 0.15s;
+  }
+  .nav-btn:hover { background: var(--sage-light); color: var(--text); transform: translateY(-1px); }
+
+  /* Hero */
+  .hero {
+    padding: 140px 0 80px; text-align: center; position: relative;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--sage-pale); color: var(--sage);
+    padding: 6px 18px; border-radius: 100px; font-size: 0.82rem;
+    font-weight: 500; margin-bottom: 28px;
+    border: 1px solid var(--sage-light);
+  }
+  .hero-badge .handwritten { font-size: 1rem; }
+  .hero h1 {
+    font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+    max-width: 800px; margin: 0 auto 24px;
+    color: var(--text);
+  }
+  .hero h1 em {
+    font-style: italic; color: var(--sage);
+    background: linear-gradient(135deg, var(--sage), var(--wildflower));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    font-size: 1.15rem; color: var(--text-dim);
+    max-width: 560px; margin: 0 auto 36px; line-height: 1.7;
+  }
+  .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--sage); color: #fff; padding: 14px 32px;
+    border-radius: 100px; text-decoration: none; font-size: 0.95rem;
+    font-weight: 500; transition: all 0.2s; border: none; cursor: pointer;
+    box-shadow: 0 2px 8px rgba(139,158,126,0.3);
+  }
+  .btn-primary:hover { background: var(--sage-light); color: var(--text); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(139,158,126,0.35); }
+  .btn-secondary {
+    background: transparent; color: var(--text-dim); padding: 14px 32px;
+    border-radius: 100px; text-decoration: none; font-size: 0.95rem;
+    font-weight: 500; transition: all 0.2s;
+    border: 1.5px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--sage); color: var(--sage); }
+
+  .hero-mockup {
+    margin: 64px auto 0; max-width: 820px; position: relative;
+  }
+  .mockup-frame {
+    background: var(--surface); border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .mockup-topbar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 14px 18px; background: var(--surface-alt);
+    border-bottom: 1px solid var(--border);
+  }
+  .mockup-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--border);
+  }
+  .mockup-dot:nth-child(1) { background: var(--wildflower-light); }
+  .mockup-dot:nth-child(2) { background: var(--honey-light); }
+  .mockup-dot:nth-child(3) { background: var(--sage-light); }
+  .mockup-body {
+    display: flex; min-height: 320px;
+  }
+  .mockup-sidebar {
+    width: 180px; padding: 20px; border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .mockup-sidebar-bar {
+    height: 10px; border-radius: 100px; background: var(--surface-alt);
+  }
+  .mockup-sidebar-bar:nth-child(1) { width: 85%; background: var(--sage-pale); }
+  .mockup-sidebar-bar:nth-child(2) { width: 70%; }
+  .mockup-sidebar-bar:nth-child(3) { width: 90%; }
+  .mockup-sidebar-bar:nth-child(4) { width: 55%; }
+  .mockup-main {
+    flex: 1; padding: 24px; display: flex; flex-direction: column; gap: 14px;
+  }
+  .mockup-line {
+    height: 10px; border-radius: 100px; background: var(--surface-alt);
+  }
+  .mockup-line:nth-child(1) { width: 60%; height: 16px; background: var(--mushroom-pale); }
+  .mockup-line:nth-child(2) { width: 100%; }
+  .mockup-line:nth-child(3) { width: 85%; }
+  .mockup-line:nth-child(4) { width: 92%; }
+  .mockup-line:nth-child(5) { width: 75%; }
+
+  /* Floating leaf decorations */
+  .hero-leaf {
+    position: absolute; opacity: 0.12;
+  }
+  .hero-leaf.left { top: 20%; left: -30px; transform: rotate(-15deg); }
+  .hero-leaf.right { bottom: 15%; right: -20px; transform: rotate(25deg); }
+
+  /* Logos */
+  .logos-section {
+    padding: 60px 0; text-align: center;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .logos-section p {
+    font-size: 0.85rem; color: var(--text-light);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 28px;
+  }
+  .logos-row {
+    display: flex; justify-content: center; align-items: center;
+    gap: 48px; flex-wrap: wrap; opacity: 0.4;
+  }
+  .logos-row span {
+    font-size: 1.2rem; font-weight: 600; color: var(--text-dim);
+    font-family: 'Fraunces', serif;
+  }
+
+  /* Features */
+  .features-section { padding: 100px 0; }
+  .section-label {
+    font-family: 'Caveat', cursive; font-size: 1.2rem; color: var(--sage);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    margin-bottom: 16px;
+  }
+  .section-subtitle {
+    font-size: 1.05rem; color: var(--text-dim);
+    max-width: 560px; margin-bottom: 56px; line-height: 1.7;
+  }
+  .features-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+  }
+  .feature-card {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 32px; border: 1px solid var(--border);
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .feature-card:hover {
+    transform: translateY(-4px); box-shadow: var(--shadow);
+  }
+  .feature-icon {
+    width: 48px; height: 48px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; margin-bottom: 20px;
+  }
+  .feature-icon.sage { background: var(--sage-pale); }
+  .feature-icon.wildflower { background: var(--wildflower-pale); }
+  .feature-icon.honey { background: var(--honey-pale); }
+  .feature-icon.mushroom { background: var(--mushroom-pale); }
+  .feature-icon.lavender { background: var(--lavender-pale); }
+  .feature-icon.alt { background: var(--surface-alt); }
+  .feature-card h3 { font-size: 1.15rem; margin-bottom: 10px; }
+  .feature-card p { font-size: 0.9rem; color: var(--text-dim); line-height: 1.6; }
+
+  /* Zigzag */
+  .zigzag-section { padding: 80px 0; }
+  .zigzag-row {
+    display: flex; align-items: center; gap: 64px;
+    padding: 60px 0;
+  }
+  .zigzag-row:nth-child(even) { flex-direction: row-reverse; }
+  .zigzag-text { flex: 1; }
+  .zigzag-text h2 { font-size: 1.8rem; margin-bottom: 16px; }
+  .zigzag-text p { color: var(--text-dim); line-height: 1.7; margin-bottom: 20px; }
+  .zigzag-text ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .zigzag-text li {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.92rem; color: var(--text-dim);
+  }
+  .zigzag-text li::before {
+    content: '🌿'; font-size: 0.85rem;
+  }
+  .zigzag-visual {
+    flex: 1; border-radius: var(--radius-lg); overflow: hidden;
+    min-height: 280px; position: relative;
+  }
+  .zigzag-visual-1 {
+    background: linear-gradient(135deg, var(--sage-pale), var(--sage-light));
+    display: flex; align-items: center; justify-content: center;
+  }
+  .zigzag-visual-2 {
+    background: linear-gradient(135deg, var(--wildflower-pale), var(--wildflower-light));
+    display: flex; align-items: center; justify-content: center;
+  }
+  .zigzag-visual-inner {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 28px; box-shadow: var(--shadow); width: 85%;
+  }
+  .zigzag-bar {
+    height: 12px; border-radius: 100px; margin-bottom: 12px;
+  }
+  .zigzag-bar:nth-child(1) { width: 90%; background: var(--sage-light); }
+  .zigzag-bar:nth-child(2) { width: 75%; background: var(--wildflower-light); }
+  .zigzag-bar:nth-child(3) { width: 60%; background: var(--honey-light); }
+  .zigzag-bar:nth-child(4) { width: 85%; background: var(--mushroom-pale); }
+
+  /* Testimonial */
+  .testimonial-section {
+    padding: 100px 0; text-align: center;
+    background: var(--bg-alt);
+    border-radius: var(--radius-lg);
+    margin: 0 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .testimonial-section::before {
+    content: '\201C'; position: absolute;
+    font-family: 'Fraunces', serif; font-size: 12rem;
+    color: var(--sage); opacity: 0.06;
+    top: -20px; left: 40px; line-height: 1;
+  }
+  .testimonial-quote {
+    font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+    max-width: 700px; margin: 0 auto 32px;
+    line-height: 1.65; font-style: italic; color: var(--text);
+  }
+  .testimonial-author {
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+  }
+  .testimonial-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--sage), var(--wildflower));
+    border: 2px solid var(--surface);
+  }
+  .testimonial-info { text-align: left; }
+  .testimonial-name { font-weight: 600; font-size: 0.95rem; }
+  .testimonial-role { font-size: 0.82rem; color: var(--text-dim); }
+
+  /* Pricing */
+  .pricing-section { padding: 100px 0; text-align: center; }
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 28px; margin-top: 48px;
+  }
+  .pricing-card {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 36px 28px; border: 1.5px solid var(--border);
+    text-align: left; transition: transform 0.25s, box-shadow 0.25s;
+    position: relative;
+  }
+  .pricing-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+  .pricing-card.featured {
+    border-color: var(--sage);
+    box-shadow: var(--shadow-lg);
+    transform: scale(1.03);
+  }
+  .pricing-card.featured:hover { transform: scale(1.03) translateY(-4px); }
+  .pricing-badge {
+    position: absolute; top: -12px; right: 24px;
+    background: var(--sage); color: #fff;
+    padding: 4px 16px; border-radius: 100px;
+    font-size: 0.75rem; font-weight: 600;
+    font-family: 'Caveat', cursive; font-size: 0.95rem;
+  }
+  .pricing-name { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+  .pricing-price {
+    font-size: 2.4rem; font-weight: 700; margin-bottom: 4px;
+  }
+  .pricing-price span { font-size: 0.9rem; font-weight: 400; color: var(--text-dim); }
+  .pricing-desc { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 24px; }
+  .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+  .pricing-features li {
+    font-size: 0.88rem; color: var(--text-dim);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .pricing-features li::before { content: '✿'; color: var(--sage); font-size: 0.8rem; }
+  .pricing-btn {
+    display: block; width: 100%; padding: 12px;
+    border-radius: 100px; text-decoration: none;
+    font-size: 0.9rem; font-weight: 500; text-align: center;
+    transition: all 0.2s;
+  }
+  .pricing-btn.primary {
+    background: var(--sage); color: #fff; border: none;
+    box-shadow: 0 2px 8px rgba(139,158,126,0.25);
+  }
+  .pricing-btn.primary:hover { background: var(--sage-light); color: var(--text); }
+  .pricing-btn.secondary {
+    background: transparent; color: var(--text-dim);
+    border: 1.5px solid var(--border);
+  }
+  .pricing-btn.secondary:hover { border-color: var(--sage); color: var(--sage); }
+
+  /* CTA */
+  .cta-section {
+    padding: 100px 0; text-align: center;
+  }
+  .cta-box {
+    background: linear-gradient(135deg, var(--sage-pale), var(--wildflower-pale), var(--honey-pale));
+    border-radius: var(--radius-lg);
+    padding: 72px 48px; position: relative; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .cta-box::before {
+    content: '🌸 🌿 🍄 🌻'; position: absolute;
+    font-size: 3rem; opacity: 0.08;
+    top: 20px; left: 50%; transform: translateX(-50%);
+    letter-spacing: 24px; white-space: nowrap;
+  }
+  .cta-box h2 {
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    margin-bottom: 16px; position: relative;
+  }
+  .cta-box p {
+    font-size: 1.05rem; color: var(--text-dim);
+    max-width: 480px; margin: 0 auto 32px; line-height: 1.7;
+    position: relative;
+  }
+
+  /* Footer */
+  footer {
+    padding: 48px 0; border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  .footer-inner {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 20px;
+  }
+  .footer-brand {
+    font-weight: 600; font-size: 1rem;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .footer-brand span { font-family: 'Caveat', cursive; font-size: 1.2rem; color: var(--sage); }
+  .footer-links { display: flex; gap: 28px; }
+  .footer-links a {
+    color: var(--text-dim); text-decoration: none; font-size: 0.85rem;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--sage); }
+  .footer-copy {
+    width: 100%; text-align: center; margin-top: 24px;
+    font-size: 0.8rem; color: var(--text-light);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .features-grid, .pricing-grid { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
+    .zigzag-row, .zigzag-row:nth-child(even) { flex-direction: column; gap: 32px; }
+    .nav-links { display: none; }
+    .hero { padding: 120px 0 60px; }
+    .testimonial-section { margin: 0 16px; }
+    .footer-inner { flex-direction: column; text-align: center; }
+    .mockup-sidebar { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wildflowers">
+  <div class="wildflower-blob"></div>
+  <div class="wildflower-blob"></div>
+  <div class="wildflower-blob"></div>
+  <div class="wildflower-blob"></div>
+</div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo"><span>🌿</span> meet</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#cta" class="nav-btn">Get Started</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span class="handwritten">new</span> now with garden-mode 🌱
+    </div>
+    <h1>Meetings that grow<br>instead of <em>wither</em></h1>
+    <p>Cultivate your team's time. Meet helps you plant better meetings, nurture action items, and harvest results — without the weeds of busywork.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Start Your Garden</a>
+      <a href="#" class="btn-secondary">See It Grow</a>
+    </div>
+    <div class="hero-mockup">
+      <svg class="hero-leaf left" width="60" height="90" viewBox="0 0 60 90"><path d="M30 0 Q55 30 45 60 Q35 90 30 90 Q25 90 15 60 Q5 30 30 0Z" fill="#8B9E7E"/></svg>
+      <svg class="hero-leaf right" width="50" height="75" viewBox="0 0 50 75"><path d="M25 0 Q45 25 38 50 Q30 75 25 75 Q20 75 12 50 Q5 25 25 0Z" fill="#C4788A"/></svg>
+      <div class="mockup-frame">
+        <div class="mockup-topbar">
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-sidebar">
+            <div class="mockup-sidebar-bar"></div>
+            <div class="mockup-sidebar-bar"></div>
+            <div class="mockup-sidebar-bar"></div>
+            <div class="mockup-sidebar-bar"></div>
+          </div>
+          <div class="mockup-main">
+            <div class="mockup-line"></div>
+            <div class="mockup-line"></div>
+            <div class="mockup-line"></div>
+            <div class="mockup-line"></div>
+            <div class="mockup-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Logos -->
+<section class="logos-section">
+  <div class="container">
+    <p class="handwritten">trusted by growing teams</p>
+    <div class="logos-row">
+      <span>Atelier</span>
+      <span>Botanica</span>
+      <span>Harvest</span>
+      <span>Seedling</span>
+      <span>Wildroot</span>
+      <span>Thistle</span>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features-section" id="features">
+  <div class="container">
+    <div class="section-label">what bmeets inside</div>
+    <h2 class="section-title">Everything your garden needs</h2>
+    <p class="section-subtitle">Tools that feel natural. Workflows that grow on you. No synthetic shortcuts — just honest, rooted productivity.</p>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon sage">🌱</div>
+        <h3>Smart Scheduling</h3>
+        <p>Plant meetings at the right time of day. Meet learns your team's natural rhythm and suggests the sunniest slots.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon wildflower">🌸</div>
+        <h3>Living Agendas</h3>
+        <p>Agendas that grow as the conversation unfolds. Topics branch naturally, and nothing gets left on the vine.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon honey">🍯</div>
+        <h3>Honeycomb Notes</h3>
+        <p>Connected notes that pollinate across your team. Ideas cross-pollinate and sweeten every project.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon mushroom">🍄</div>
+        <h3>Rooted Tasks</h3>
+        <p>Action items that sprout from conversation. Each task traces back to its origin — no orphaned to-dos.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon lavender">💜</div>
+        <h3>Calming Reminders</h3>
+        <p>Gentle nudges instead of jarring alerts. Your calendar whispers, never shouts.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon alt">🌻</div>
+        <h3>Sunflower Analytics</h3>
+        <p>See where your team's energy bmeets. Heatmaps of meeting health, focus time, and growth trends.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Zigzag -->
+<section class="zigzag-section">
+  <div class="container">
+    <div class="zigzag-row reveal">
+      <div class="zigzag-text">
+        <div class="section-label">deep roots</div>
+        <h2>Meetings with <em>intention</em></h2>
+        <p>Every meeting starts with a clear purpose. Meet guides you to plant the right seeds before you even open the calendar.</p>
+        <ul>
+          <li>Purpose-driven meeting templates</li>
+          <li>Pre-read garden with shared documents</li>
+          <li>Automatic follow-up composting</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual zigzag-visual-1">
+        <div class="zigzag-visual-inner">
+          <div class="zigzag-bar"></div>
+          <div class="zigzag-bar"></div>
+          <div class="zigzag-bar"></div>
+          <div class="zigzag-bar"></div>
+        </div>
+      </div>
+    </div>
+    <div class="zigzag-row reveal">
+      <div class="zigzag-text">
+        <div class="section-label">natural harvest</div>
+        <h2>Results that <em>ripen</em> naturally</h2>
+        <p>No forced outcomes. Meet tracks what grows from each meeting and shows you the harvest — decisions made, tasks planted, energy spent.</p>
+        <ul>
+          <li>Decision tree visualization</li>
+          <li>Task growth tracking</li>
+          <li>Team energy dashboard</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual zigzag-visual-2">
+        <div class="zigzag-visual-inner">
+          <div class="zigzag-bar"></div>
+          <div class="zigzag-bar"></div>
+          <div class="zigzag-bar"></div>
+          <div class="zigzag-bar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonial -->
+<section class="testimonial-section reveal">
+  <div class="container">
+    <p class="testimonial-quote">"Meet turned our chaotic meeting jungle into a well-tended garden. We actually look forward to our weekly standup now — it's like watching something grow every day."</p>
+    <div class="testimonial-author">
+      <div class="testimonial-avatar"></div>
+      <div class="testimonial-info">
+        <div class="testimonial-name">Elara Mosswood</div>
+        <div class="testimonial-role">Head of Growth, Wildroot Studios</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="pricing-section" id="pricing">
+  <div class="container">
+    <div class="section-label">pick your plot</div>
+    <h2 class="section-title">Simple, rooted pricing</h2>
+    <p class="section-subtitle" style="margin: 0 auto 48px;">No hidden weeds. No surprise charges. Just honest plans for every garden size.</p>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <div class="pricing-name">Seedling</div>
+        <div class="pricing-price">Free <span>/ forever</span></div>
+        <div class="pricing-desc">For solo growers and small plots</div>
+        <ul class="pricing-features">
+          <li>5 meeting gardens</li>
+          <li>Basic agenda templates</li>
+          <li>Personal notes</li>
+          <li>7-day history</li>
+        </ul>
+        <a href="#" class="pricing-btn secondary">Plant for Free</a>
+      </div>
+      <div class="pricing-card featured reveal">
+        <div class="pricing-badge">most popular 🌿</div>
+        <div class="pricing-name">Greenhouse</div>
+        <div class="pricing-price">$12 <span>/ month</span></div>
+        <div class="pricing-desc">For growing teams that need structure</div>
+        <ul class="pricing-features">
+          <li>Unlimited gardens</li>
+          <li>Living agendas &amp; tasks</li>
+          <li>Team honeycomb notes</li>
+          <li>Full analytics dashboard</li>
+          <li>Priority composting</li>
+        </ul>
+        <a href="#" class="pricing-btn primary">Start Growing</a>
+      </div>
+      <div class="pricing-card reveal">
+        <div class="pricing-name">Orchard</div>
+        <div class="pricing-price">$29 <span>/ month</span></div>
+        <div class="pricing-desc">For established groves and estates</div>
+        <ul class="pricing-features">
+          <li>Everything in Greenhouse</li>
+          <li>Custom garden themes</li>
+          <li>API &amp; integrations</li>
+          <li>Dedicated gardener (support)</li>
+          <li>SSO &amp; admin controls</li>
+        </ul>
+        <a href="#" class="pricing-btn secondary">Talk to Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="cta">
+  <div class="container">
+    <div class="cta-box reveal">
+      <h2>Ready to tend your <em>meeting garden</em>?</h2>
+      <p>Join thousands of teams who stopped fighting weeds and started growing results. Free to plant, easy to harvest.</p>
+      <a href="#" class="btn-primary">Start Your Garden — It's Free</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand"><span>🌿</span> meet</div>
+      <div class="footer-links">
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Blog</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-copy">© 2026 Meet. Grown with care. 🌱</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

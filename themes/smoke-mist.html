@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F2F2F5;
+    --bg-light: #F8F8FA;
+    --bg-card: rgba(255, 255, 255, 0.55);
+    --bg-card-solid: #FFFFFF;
+    --text: #2C2C34;
+    --text-dim: #6E6E7A;
+    --text-muted: #A0A0AC;
+    --accent: #7B8FA1;
+    --accent-light: #95AAD0;
+    --accent-dim: rgba(123, 143, 161, 0.15);
+    --mist-1: rgba(180, 190, 200, 0.25);
+    --mist-2: rgba(200, 210, 220, 0.18);
+    --mist-3: rgba(160, 175, 190, 0.2);
+    --border: rgba(0, 0, 0, 0.06);
+    --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.04);
+    --shadow-mist: 0 4px 24px rgba(0, 0, 0, 0.03);
+    --radius: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 400;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cormorant', serif;
+    font-weight: 400;
+    line-height: 1.2;
+  }
+
+  /* ============ FOG OVERLAYS ============ */
+  .fog-layer {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0;
+    overflow: hidden;
+  }
+
+  .fog-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    animation: fogDrift 20s ease-in-out infinite alternate;
+  }
+
+  .fog-orb:nth-child(1) {
+    width: 600px; height: 600px;
+    top: -10%; left: -5%;
+    background: var(--mist-1);
+    animation-duration: 25s;
+  }
+
+  .fog-orb:nth-child(2) {
+    width: 500px; height: 500px;
+    top: 30%; right: -10%;
+    background: var(--mist-2);
+    animation-duration: 30s;
+    animation-delay: -5s;
+  }
+
+  .fog-orb:nth-child(3) {
+    width: 700px; height: 700px;
+    bottom: -15%; left: 20%;
+    background: var(--mist-3);
+    animation-duration: 35s;
+    animation-delay: -10s;
+  }
+
+  .fog-orb:nth-child(4) {
+    width: 400px; height: 400px;
+    top: 60%; left: -8%;
+    background: var(--mist-1);
+    animation-duration: 22s;
+    animation-delay: -15s;
+  }
+
+  @keyframes fogDrift {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(40px, -30px) scale(1.05); }
+    66% { transform: translate(-20px, 20px) scale(0.95); }
+    100% { transform: translate(30px, -10px) scale(1.02); }
+  }
+
+  /* Mist gradient divider */
+  .mist-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--mist-1), var(--mist-3), var(--mist-1), transparent);
+    margin: 0 auto;
+    max-width: 600px;
+  }
+
+  /* Container */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  section {
+    padding: 100px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 36px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    border-radius: 50px;
+    letter-spacing: 0.02em;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 4px 16px rgba(123, 143, 161, 0.3);
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(123, 143, 161, 0.35);
+  }
+
+  .btn-secondary {
+    background: var(--bg-card);
+    color: var(--text);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover {
+    background: var(--bg-card-solid);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent-dim);
+  }
+
+  .btn-ghost:hover {
+    background: var(--accent-dim);
+    transform: translateY(-1px);
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding-top: 60px;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    padding: 6px 20px;
+    border-radius: 50px;
+    background: var(--accent-dim);
+  }
+
+  .hero h1 {
+    font-size: clamp(40px, 7vw, 76px);
+    color: var(--text);
+    max-width: 800px;
+    margin-bottom: 24px;
+    font-weight: 300;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--text-dim);
+    max-width: 500px;
+    margin-bottom: 40px;
+    font-weight: 300;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 70px;
+  }
+
+  /* Hero mockup */
+  .hero-mockup {
+    width: 100%;
+    max-width: 850px;
+    aspect-ratio: 16/10;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    position: relative;
+  }
+
+  .mockup-bar {
+    height: 32px;
+    background: rgba(255, 255, 255, 0.6);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    gap: 7px;
+  }
+
+  .mockup-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    opacity: 0.4;
+  }
+
+  .mockup-dot:nth-child(1) { background: var(--accent); opacity: 0.6; }
+  .mockup-dot:nth-child(2) { background: var(--accent-light); opacity: 0.5; }
+  .mockup-dot:nth-child(3) { background: var(--text-muted); }
+
+  .mockup-body {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 16px;
+    height: calc(100% - 32px);
+  }
+
+  .mockup-sidebar {
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+  }
+
+  .mockup-sidebar-line {
+    height: 6px;
+    border-radius: 3px;
+    margin-bottom: 8px;
+    background: var(--mist-2);
+  }
+
+  .mockup-sidebar-line:nth-child(1) { width: 60%; background: var(--accent-dim); }
+  .mockup-sidebar-line:nth-child(2) { width: 80%; }
+  .mockup-sidebar-line:nth-child(3) { width: 45%; }
+  .mockup-sidebar-line:nth-child(4) { width: 70%; }
+  .mockup-sidebar-line:nth-child(5) { width: 55%; }
+
+  .mockup-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .mockup-card {
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+  }
+
+  .mockup-card-title {
+    height: 6px;
+    width: 45%;
+    border-radius: 3px;
+    margin-bottom: 8px;
+    background: var(--accent-dim);
+  }
+
+  .mockup-card-line {
+    height: 3px;
+    background: var(--mist-2);
+    border-radius: 2px;
+    margin-bottom: 5px;
+  }
+
+  .mockup-card-line:nth-child(2) { width: 90%; }
+  .mockup-card-line:nth-child(3) { width: 75%; }
+  .mockup-card-line:nth-child(4) { width: 60%; }
+
+  /* ============ LOGOS ============ */
+  .logos-section {
+    padding: 60px 0;
+  }
+
+  .logos-label {
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 36px;
+  }
+
+  .logos-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 44px;
+    flex-wrap: wrap;
+  }
+
+  .logo-item {
+    font-family: 'Cormorant', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text-muted);
+    opacity: 0.4;
+    letter-spacing: 0.05em;
+  }
+
+  /* ============ FEATURES ============ */
+  .features-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .section-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-size: clamp(28px, 4vw, 42px);
+    color: var(--text);
+    margin-bottom: 12px;
+    font-weight: 300;
+  }
+
+  .section-subtitle {
+    font-size: 15px;
+    color: var(--text-dim);
+    max-width: 480px;
+    margin: 0 auto;
+    font-weight: 300;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .feature-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    padding: 32px 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-mist);
+    position: relative;
+    transition: all 0.4s ease;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--mist-1), transparent);
+  }
+
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-soft);
+    background: rgba(255, 255, 255, 0.7);
+  }
+
+  .feature-icon {
+    width: 40px; height: 40px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    color: var(--accent);
+  }
+
+  .feature-card h3 {
+    font-size: 17px;
+    color: var(--text);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .feature-card p {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* ============ ZIGZAG ============ */
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: center;
+    margin-bottom: 80px;
+  }
+
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-visual { order: 2; }
+  .zigzag-row.reverse .zigzag-content { order: 1; }
+
+  .zigzag-content h3 {
+    font-size: 28px;
+    color: var(--text);
+    margin-bottom: 14px;
+    font-weight: 400;
+  }
+
+  .zigzag-content p {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 20px;
+    font-weight: 300;
+  }
+
+  .zigzag-visual {
+    aspect-ratio: 4/3;
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-mist);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .visual-inner {
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .visual-bar {
+    height: 12px;
+    border-radius: 6px;
+    background: var(--mist-2);
+  }
+
+  .visual-bar.c1 { background: linear-gradient(90deg, var(--accent-dim), var(--mist-1)); }
+  .visual-bar.c2 { background: linear-gradient(90deg, var(--mist-2), var(--mist-3)); }
+  .visual-bar.c3 { background: linear-gradient(90deg, var(--mist-3), var(--accent-dim)); }
+  .visual-bar.c4 { background: var(--mist-1); }
+  .visual-bar.w70 { width: 70%; }
+  .visual-bar.w50 { width: 50%; }
+  .visual-bar.w85 { width: 85%; }
+  .visual-bar.w40 { width: 40%; }
+
+  .visual-block {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .visual-mini {
+    border-radius: var(--radius);
+    background: var(--mist-2);
+  }
+
+  .visual-mini:nth-child(1) { background: var(--accent-dim); }
+  .visual-mini:nth-child(2) { background: var(--mist-1); }
+  .visual-mini:nth-child(3) { background: var(--mist-3); }
+  .visual-mini:nth-child(4) { background: var(--mist-2); }
+
+  /* ============ TESTIMONIAL ============ */
+  .testimonial-section {
+    background: linear-gradient(180deg, transparent, var(--mist-2), transparent);
+  }
+
+  .testimonial-card {
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .testimonial-quote {
+    font-family: 'Cormorant', serif;
+    font-size: clamp(20px, 3vw, 28px);
+    color: var(--text);
+    line-height: 1.5;
+    margin-bottom: 36px;
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  .testimonial-quote::before {
+    content: '\201C';
+    display: block;
+    font-size: 72px;
+    color: var(--accent);
+    line-height: 0.8;
+    margin-bottom: 12px;
+    font-style: normal;
+    opacity: 0.5;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .testimonial-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    font-family: 'Cormorant', serif;
+    font-size: 15px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+  }
+
+  .testimonial-name { text-align: left; }
+
+  .testimonial-name strong {
+    display: block;
+    font-family: 'Cormorant', serif;
+    font-size: 15px;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .testimonial-name span {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+
+  /* ============ PRICING ============ */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .pricing-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    padding: 36px 28px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-mist);
+    text-align: center;
+    transition: all 0.4s ease;
+  }
+
+  .pricing-card.featured {
+    border-color: var(--accent-dim);
+    background: rgba(255, 255, 255, 0.75);
+    box-shadow: var(--shadow-soft);
+    position: relative;
+  }
+
+  .pricing-card.featured::after {
+    content: '\2605';
+    position: absolute;
+    top: -12px; right: 24px;
+    font-size: 18px;
+    color: var(--accent);
+    opacity: 0.7;
+  }
+
+  .pricing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .pricing-tier {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .pricing-card.featured .pricing-tier { color: var(--accent); }
+
+  .pricing-amount {
+    font-family: 'Cormorant', serif;
+    font-size: 42px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .pricing-amount span {
+    font-size: 14px;
+    color: var(--text-dim);
+    font-weight: 300;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .pricing-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+    font-weight: 300;
+  }
+
+  .pricing-features {
+    list-style: none;
+    margin-bottom: 28px;
+    text-align: left;
+  }
+
+  .pricing-features li {
+    font-size: 12px;
+    color: var(--text-dim);
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    font-weight: 300;
+  }
+
+  .pricing-features li::before {
+    content: '\2022';
+    color: var(--accent);
+    margin-right: 8px;
+    font-size: 8px;
+  }
+
+  /* ============ FINAL CTA ============ */
+  .final-cta {
+    text-align: center;
+    padding: 100px 0;
+  }
+
+  .final-cta h2 {
+    font-size: clamp(30px, 4.5vw, 48px);
+    color: var(--text);
+    margin-bottom: 16px;
+    font-weight: 300;
+  }
+
+  .final-cta h2 em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  .final-cta p {
+    font-size: 15px;
+    color: var(--text-dim);
+    max-width: 440px;
+    margin: 0 auto 36px;
+    font-weight: 300;
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    padding: 50px 0;
+    border-top: 1px solid var(--border);
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 36px;
+  }
+
+  .footer-brand h4 {
+    font-family: 'Cormorant', serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 10px;
+    letter-spacing: 0.05em;
+  }
+
+  .footer-brand p {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    max-width: 240px;
+    font-weight: 300;
+  }
+
+  .footer-col h5 {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  .footer-col a {
+    display: block;
+    font-size: 12px;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 3px 0;
+    transition: color 0.3s ease;
+    font-weight: 300;
+  }
+
+  .footer-col a:hover { color: var(--accent); }
+
+  .footer-bottom {
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    opacity: 0.4;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .footer-bottom p {
+    font-size: 10px;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 768px) {
+    .container { padding: 0 24px; }
+    section { padding: 70px 0; }
+
+    .features-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .zigzag-row { grid-template-columns: 1fr; gap: 30px; }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .zigzag-row.reverse .zigzag-content { order: 0; }
+
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+
+    .mockup-body { grid-template-columns: 1fr; }
+    .mockup-sidebar { display: none; }
+  }
+
+  /* Fade-in animation */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<div class="fog-layer">
+  <div class="fog-orb"></div>
+  <div class="fog-orb"></div>
+  <div class="fog-orb"></div>
+  <div class="fog-orb"></div>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container">
+    <p class="hero-eyebrow">Clarity through simplicity</p>
+    <h1>Meetings that <em>won't</em> waste your week</h1>
+    <p class="hero-sub">Beautifully organized meetings with smart scheduling, live notes, and automatic follow-ups. Made with care.</p>
+    <div class="hero-buttons">
+      <a href="#" class="btn btn-primary">Start Free Trial</a>
+      <a href="#" class="btn btn-secondary">See How It Works</a>
+    </div>
+    <div class="hero-mockup">
+      <div class="mockup-bar">
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+      </div>
+      <div class="mockup-body">
+        <div class="mockup-sidebar">
+          <div class="mockup-sidebar-line"></div>
+          <div class="mockup-sidebar-line"></div>
+          <div class="mockup-sidebar-line"></div>
+          <div class="mockup-sidebar-line"></div>
+          <div class="mockup-sidebar-line"></div>
+        </div>
+        <div class="mockup-main">
+          <div class="mockup-card">
+            <div class="mockup-card-title"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+          </div>
+          <div class="mockup-card">
+            <div class="mockup-card-title"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+          </div>
+          <div class="mockup-card">
+            <div class="mockup-card-title"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+          </div>
+          <div class="mockup-card">
+            <div class="mockup-card-title"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="mist-divider"></div>
+
+<!-- ============ LOGOS ============ -->
+<section class="logos-section">
+  <div class="container">
+    <p class="logos-label">Trusted by forward-thinking teams</p>
+    <div class="logos-grid">
+      <span class="logo-item">Airbnb</span>
+      <span class="logo-item">Stripe</span>
+      <span class="logo-item">Notion</span>
+      <span class="logo-item">Figma</span>
+      <span class="logo-item">Spotify</span>
+      <span class="logo-item">Slack</span>
+    </div>
+  </div>
+</section>
+
+<div class="mist-divider"></div>
+
+<!-- ============ FEATURES ============ -->
+<section class="features">
+  <div class="container">
+    <div class="features-header fade-in">
+      <p class="section-eyebrow">What we offer</p>
+      <h2 class="section-title">Everything your meetings need</h2>
+      <p class="section-subtitle">Six thoughtful features, crafted for teams who care about how they work together.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-in">
+        <div class="feature-icon">&#9733;</div>
+        <h3>Smart Scheduling</h3>
+        <p>AI that finds the perfect time for everyone, across time zones and calendars.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">&#9898;</div>
+        <h3>Agenda Builder</h3>
+        <p>Structured agendas with time limits, topic owners, and auto-distribution.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">&#9899;</div>
+        <h3>Live Transcription</h3>
+        <p>Real-time speech-to-text with speaker labels and smart action extraction.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">&#10040;</div>
+        <h3>Decision Log</h3>
+        <p>Every decision captured, timestamped, and linked to the right person.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">&#10038;</div>
+        <h3>Analytics</h3>
+        <p>Meeting efficiency metrics, time tracking, and productivity insights.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">&#10047;</div>
+        <h3>Integrations</h3>
+        <p>Connects with Slack, Teams, Notion, Jira, and 200+ other tools.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="mist-divider"></div>
+
+<!-- ============ ZIGZAG ============ -->
+<section class="zigzag">
+  <div class="container">
+    <div class="zigzag-row fade-in">
+      <div class="zigzag-content">
+        <p class="section-eyebrow">Intelligence</p>
+        <h3>Scheduling that thinks ahead</h3>
+        <p>Our system studies 47 signals per meeting — availability patterns, energy levels, topic difficulty — to place every meeting exactly where it belongs.</p>
+        <a href="#" class="btn btn-ghost">Explore</a>
+      </div>
+      <div class="zigzag-visual">
+        <div class="visual-inner">
+          <div class="visual-bar c1 w70"></div>
+          <div class="visual-bar c2 w85"></div>
+          <div class="visual-bar c3 w50"></div>
+          <div class="visual-bar c4 w40"></div>
+          <div class="visual-block">
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="zigzag-row reverse fade-in">
+      <div class="zigzag-content">
+        <p class="section-eyebrow">Clarity</p>
+        <h3>Summaries that actually help</h3>
+        <p>Minutes after your meeting ends, everyone gets a clean summary: decisions made, tasks assigned, deadlines set, full context preserved.</p>
+        <a href="#" class="btn btn-ghost">Explore</a>
+      </div>
+      <div class="zigzag-visual">
+        <div class="visual-inner">
+          <div class="visual-bar c2 w85"></div>
+          <div class="visual-bar c1 w70"></div>
+          <div class="visual-bar c4 w50"></div>
+          <div class="visual-bar c3 w40"></div>
+          <div class="visual-block">
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIAL ============ -->
+<section class="testimonial-section">
+  <div class="container">
+    <div class="testimonial-card fade-in">
+      <blockquote class="testimonial-quote">
+        We saved 12,000 hours last quarter. Meet didn't just fix our meetings — it changed how our whole company thinks about time.
+      </blockquote>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">VH</div>
+        <div class="testimonial-name">
+          <strong>Victoria Hartmann</strong>
+          <span>COO, Meridian Partners</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="pricing">
+  <div class="container">
+    <div class="features-header fade-in">
+      <p class="section-eyebrow">Pricing</p>
+      <h2 class="section-title">Simple, honest pricing</h2>
+      <p class="section-subtitle">No tricks. No hidden fees. Cancel whenever you like.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card fade-in">
+        <p class="pricing-tier">Starter</p>
+        <p class="pricing-amount">$12 <span>/user/mo</span></p>
+        <p class="pricing-desc">For small focused teams</p>
+        <ul class="pricing-features">
+          <li>Smart scheduling</li>
+          <li>Agenda builder</li>
+          <li>Basic transcription</li>
+          <li>Email summaries</li>
+          <li>5 integrations</li>
+        </ul>
+        <a href="#" class="btn btn-ghost">Choose</a>
+      </div>
+      <div class="pricing-card featured fade-in">
+        <p class="pricing-tier">Growth</p>
+        <p class="pricing-amount">$29 <span>/user/mo</span></p>
+        <p class="pricing-desc">For growing organizations</p>
+        <ul class="pricing-features">
+          <li>Everything in Starter</li>
+          <li>Live transcription</li>
+          <li>Decision log</li>
+          <li>Analytics dashboard</li>
+          <li>50+ integrations</li>
+        </ul>
+        <a href="#" class="btn btn-primary">Choose</a>
+      </div>
+      <div class="pricing-card fade-in">
+        <p class="pricing-tier">Enterprise</p>
+        <p class="pricing-amount">Custom</p>
+        <p class="pricing-desc">For large-scale teams</p>
+        <ul class="pricing-features">
+          <li>Everything in Growth</li>
+          <li>SSO & SAML</li>
+          <li>Dedicated support</li>
+          <li>Custom integrations</li>
+          <li>SLA guarantee</li>
+        </ul>
+        <a href="#" class="btn btn-ghost">Contact</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="mist-divider"></div>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="final-cta">
+  <div class="container fade-in">
+    <h2>Time is your <em>most precious</em> resource</h2>
+    <p>Stop wasting it on meetings that could have been emails. Start your free 14-day trial today.</p>
+    <div class="hero-buttons">
+      <a href="#" class="btn btn-primary">Start Free Trial</a>
+      <a href="#" class="btn btn-secondary">Talk to Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h4>MEET</h4>
+        <p>Handcrafted meeting intelligence for teams who refuse to waste time.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Product</h5>
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Integrations</a>
+        <a href="#">Changelog</a>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <a href="#">About</a>
+        <a href="#">Blog</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Security</a>
+        <a href="#">GDPR</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 Meet. All rights reserved.</p>
+      <p>Made with care.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

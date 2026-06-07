@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..14,300;0,9..14,400;0,9..14,500;0,9..14,600;0,9..14,700;1,9..14,400&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dusk-deep: #0F0A1F;
+    --dusk-purple: #1B1464;
+    --twilight-purple: #5C3D7F;
+    --twilight-mid: #7B4FA2;
+    --sunset-orange: #FF6B35;
+    --sunset-warm: #FF8C42;
+    --golden: #FFB347;
+    --golden-light: #FFD166;
+    --cream: #FFF5E6;
+    --cream-warm: #FFE8CC;
+    --soft-pink: #FFB5A7;
+    --rose: #E8788A;
+    --ink: #1A0A2E;
+    --text: #2D1B4E;
+    --text-dim: #6B5A80;
+    --text-muted: #A89BBF;
+    --radius: 16px;
+    --radius-sm: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Quicksand', sans-serif;
+    background: var(--dusk-deep);
+    color: var(--cream);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Fraunces', serif;
+    line-height: 1.15;
+    color: var(--cream);
+    letter-spacing: -0.01em;
+  }
+
+  /* ===== SKY GRADIENT BG ===== */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background: linear-gradient(180deg,
+      #0F0A1F 0%,
+      #1B1464 15%,
+      #2D1B69 30%,
+      #5C3D7F 45%,
+      #7B4FA2 55%,
+      #B8699C 65%,
+      #E8788A 75%,
+      #FF8C42 85%,
+      #FFB347 95%,
+      #FFD166 100%
+    );
+    opacity: 0.12;
+  }
+
+  /* ===== STAR FIELD ===== */
+  .stars {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  }
+  .stars .star {
+    position: absolute; border-radius: 50%; background: white;
+    animation: twinkle 3s ease-in-out infinite;
+  }
+  .stars .star:nth-child(1) { width:2px;height:2px;top:8%;left:15%;animation-delay:0s;opacity:0.6; }
+  .stars .star:nth-child(2) { width:3px;height:3px;top:12%;left:45%;animation-delay:-0.5s;opacity:0.4; }
+  .stars .star:nth-child(3) { width:2px;height:2px;top:5%;left:72%;animation-delay:-1s;opacity:0.7; }
+  .stars .star:nth-child(4) { width:1px;height:1px;top:18%;left:28%;animation-delay:-1.5s;opacity:0.5; }
+  .stars .star:nth-child(5) { width:2px;height:2px;top:10%;left:88%;animation-delay:-2s;opacity:0.3; }
+  .stars .star:nth-child(6) { width:3px;height:3px;top:22%;left:55%;animation-delay:-0.8s;opacity:0.5; }
+  .stars .star:nth-child(7) { width:1px;height:1px;top:15%;left:10%;animation-delay:-2.5s;opacity:0.6; }
+  .stars .star:nth-child(8) { width:2px;height:2px;top:7%;left:62%;animation-delay:-1.2s;opacity:0.4; }
+  .stars .star:nth-child(9) { width:2px;height:2px;top:25%;left:35%;animation-delay:-0.3s;opacity:0.5; }
+  .stars .star:nth-child(10) { width:1px;height:1px;top:20%;left:80%;animation-delay:-1.8s;opacity:0.3; }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.3); }
+  }
+
+  /* ===== SILHOUETTE HORIZON ===== */
+  .silhouette-horizon {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: -1;
+    pointer-events: none; opacity: 0.06;
+  }
+  .silhouette-horizon svg {
+    width: 100%; height: auto; display: block;
+    fill: var(--dusk-deep);
+  }
+
+  .container { max-width: 1180px; margin: 0 auto; padding: 0 40px; }
+
+  /* ===== SUN GLOW ===== */
+  .sun-glow {
+    position: fixed;
+    bottom: -200px; right: -100px;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,179,71,0.15) 0%, rgba(255,107,53,0.08) 40%, transparent 70%);
+    z-index: -1; pointer-events: none;
+    animation: sunPulse 8s ease-in-out infinite;
+  }
+  @keyframes sunPulse {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    padding: 24px 0;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .nav-logo {
+    font-family: 'Fraunces', serif;
+    font-size: 1.8rem; color: var(--cream);
+    font-weight: 600;
+  }
+  .nav-logo span {
+    background: linear-gradient(135deg, var(--golden), var(--sunset-orange));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a {
+    font-size: 0.92rem; color: var(--soft-pink); text-decoration: none;
+    font-weight: 500; transition: color 0.3s;
+    font-family: 'Quicksand', sans-serif;
+  }
+  .nav-links a:hover { color: var(--golden); }
+  .nav-cta {
+    font-family: 'Fraunces', serif;
+    font-size: 0.9rem !important;
+    color: var(--dusk-deep) !important;
+    background: linear-gradient(135deg, var(--golden), var(--sunset-warm));
+    padding: 12px 28px; border-radius: 50px;
+    font-weight: 600;
+    box-shadow: 0 4px 20px rgba(255,179,71,0.3);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .nav-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(255,179,71,0.4);
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 100px 0 80px;
+    text-align: center;
+    position: relative;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.82rem; font-weight: 600; letter-spacing: 0.04em;
+    color: var(--golden); margin-bottom: 32px;
+    padding: 10px 28px;
+    border-radius: 50px;
+    background: rgba(255,179,71,0.1);
+    border: 1px solid rgba(255,179,71,0.2);
+  }
+  .hero-badge::before {
+    content: '🌅';
+    font-size: 1rem;
+  }
+  .hero h1 {
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    max-width: 800px; margin: 0 auto 28px;
+    line-height: 1.05;
+    font-weight: 700;
+  }
+  .hero h1 .highlight {
+    position: relative; display: inline-block;
+    background: linear-gradient(135deg, var(--golden-light), var(--sunset-orange), var(--rose));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero p {
+    font-size: 1.15rem; color: var(--soft-pink);
+    max-width: 520px; margin: 0 auto 48px;
+    font-weight: 400; line-height: 1.7;
+  }
+  .hero-actions { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    font-family: 'Fraunces', serif;
+    font-size: 1rem; font-weight: 600;
+    padding: 18px 48px;
+    background: linear-gradient(135deg, var(--sunset-orange), var(--rose));
+    color: white; border: none; cursor: pointer;
+    border-radius: 50px;
+    box-shadow: 0 6px 30px rgba(232,120,138,0.3);
+    transition: all 0.3s; text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 40px rgba(232,120,138,0.4);
+  }
+  .btn-secondary {
+    font-family: 'Fraunces', serif;
+    font-size: 1rem; font-weight: 600;
+    padding: 18px 48px;
+    background: transparent; color: var(--golden);
+    border: 2px solid rgba(255,179,71,0.4); cursor: pointer;
+    border-radius: 50px;
+    transition: all 0.3s; text-decoration: none; display: inline-block;
+  }
+  .btn-secondary:hover {
+    transform: translateY(-3px);
+    border-color: var(--golden);
+    background: rgba(255,179,71,0.1);
+  }
+
+  /* ===== SILHOUETTE BIRDS ===== */
+  .hero-birds {
+    position: absolute; top: 20%; right: 5%;
+    opacity: 0.15; pointer-events: none;
+  }
+  .hero-birds svg { width: 120px; height: 80px; }
+  .hero-birds svg path {
+    fill: none; stroke: var(--golden); stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  /* ===== LOGOS ===== */
+  .logos {
+    padding: 80px 0;
+    position: relative;
+  }
+  .logos::before {
+    content: '';
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 40%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,179,71,0.3), transparent);
+  }
+  .logos-label {
+    text-align: center; font-size: 0.78rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 36px;
+  }
+  .logos-row {
+    display: flex; justify-content: center; align-items: center;
+    gap: 56px; flex-wrap: wrap; opacity: 0.4;
+  }
+  .logo-item {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem; color: var(--soft-pink);
+    font-weight: 500;
+  }
+
+  /* ===== FEATURES ===== */
+  .features { padding: 100px 0 120px; }
+  .section-label {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 16px;
+    color: var(--golden);
+  }
+  .section-title {
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+  .section-subtitle {
+    font-size: 1.05rem; color: var(--soft-pink); max-width: 500px;
+    font-weight: 400; line-height: 1.7; margin-bottom: 64px;
+  }
+  .features-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .feature-card {
+    padding: 36px 28px;
+    background: rgba(27,20,100,0.4);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius);
+    border: 1px solid rgba(255,179,71,0.1);
+    position: relative;
+    transition: all 0.4s;
+  }
+  .feature-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255,179,71,0.25);
+    background: rgba(27,20,100,0.6);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+  }
+  .feature-icon {
+    width: 48px; height: 48px; margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; color: var(--golden);
+    border-radius: 12px;
+    background: rgba(255,179,71,0.1);
+    border: 1px solid rgba(255,179,71,0.15);
+  }
+  .feature-card h3 {
+    font-size: 1.15rem; margin-bottom: 10px;
+    font-weight: 600;
+    color: var(--cream);
+  }
+  .feature-card p {
+    font-size: 0.9rem; color: var(--soft-pink); line-height: 1.65;
+    font-weight: 400;
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag { padding: 80px 0 120px; }
+  .zigzag-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 72px;
+    align-items: center; margin-bottom: 120px;
+  }
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-visual { order: -1; }
+  .zigzag-visual {
+    aspect-ratio: 4/3;
+    border-radius: var(--radius);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    border: 1px solid rgba(255,179,71,0.15);
+  }
+  .zigzag-visual.v1 {
+    background: linear-gradient(135deg, rgba(92,61,127,0.6), rgba(232,120,138,0.4));
+    box-shadow: 0 20px 60px rgba(92,61,127,0.2);
+  }
+  .zigzag-visual.v2 {
+    background: linear-gradient(135deg, rgba(255,107,53,0.4), rgba(255,179,71,0.3));
+    box-shadow: 0 20px 60px rgba(255,107,53,0.15);
+  }
+  .zigzag-visual::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 30% 40%, rgba(255,245,230,0.1) 0%, transparent 50%),
+      radial-gradient(circle at 70% 70%, rgba(255,179,71,0.08) 0%, transparent 40%);
+  }
+  .zigzag-visual .visual-content {
+    position: relative; z-index: 1;
+    font-family: 'Fraunces', serif;
+    font-size: 2.5rem; color: var(--cream);
+    font-weight: 600;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+  }
+  .zigzag-content .section-label { margin-bottom: 12px; }
+  .zigzag-content h3 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin-bottom: 16px;
+    font-weight: 600;
+    color: var(--cream);
+  }
+  .zigzag-content p {
+    font-size: 1rem; color: var(--soft-pink); line-height: 1.7;
+    margin-bottom: 24px;
+    font-weight: 400;
+  }
+  .zigzag-content ul {
+    list-style: none; padding: 0;
+  }
+  .zigzag-content ul li {
+    font-size: 0.92rem; color: var(--cream); font-weight: 500;
+    padding: 8px 0; padding-left: 28px; position: relative;
+  }
+  .zigzag-content ul li::before {
+    content: '✦';
+    position: absolute; left: 0;
+    color: var(--golden);
+    font-size: 0.8rem;
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial {
+    padding: 100px 0;
+    text-align: center;
+  }
+  .testimonial-card {
+    max-width: 700px; margin: 0 auto;
+    padding: 56px 48px;
+    background: rgba(27,20,100,0.35);
+    backdrop-filter: blur(12px);
+    border-radius: var(--radius);
+    border: 1px solid rgba(255,179,71,0.12);
+    position: relative;
+  }
+  .testimonial-card::before {
+    content: '';
+    position: absolute; inset: -1px;
+    background: linear-gradient(135deg, rgba(255,179,71,0.2), rgba(232,120,138,0.15), rgba(92,61,127,0.2));
+    border-radius: calc(var(--radius) + 1px);
+    z-index: -1;
+  }
+  .testimonial-quote {
+    font-size: 1.2rem; line-height: 1.7;
+    color: var(--cream); font-weight: 400;
+    margin-bottom: 32px; font-style: italic;
+    font-family: 'Fraunces', serif;
+  }
+  .testimonial-quote::before {
+    content: '\201C';
+    font-family: 'Fraunces', serif;
+    font-size: 4rem; line-height: 0;
+    color: var(--golden);
+    opacity: 0.5;
+    vertical-align: -16px; margin-right: 4px;
+  }
+  .testimonial-author {
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+  }
+  .testimonial-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--sunset-orange), var(--rose));
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-family: 'Fraunces', serif; font-size: 1.2rem;
+    font-weight: 600;
+  }
+  .testimonial-name {
+    font-family: 'Fraunces', serif;
+    font-size: 1rem; color: var(--cream);
+    font-weight: 600;
+  }
+  .testimonial-role {
+    font-size: 0.85rem; color: var(--soft-pink); font-weight: 400;
+  }
+
+  /* ===== PRICING ===== */
+  .pricing {
+    padding: 100px 0 120px;
+    text-align: center;
+  }
+  .pricing .section-title { margin-bottom: 12px; }
+  .pricing .section-subtitle {
+    margin: 0 auto 64px;
+    max-width: 480px;
+  }
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    max-width: 960px; margin: 0 auto;
+  }
+  .pricing-card {
+    padding: 44px 36px;
+    background: rgba(27,20,100,0.35);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius);
+    border: 1px solid rgba(255,179,71,0.1);
+    transition: all 0.4s;
+    position: relative;
+  }
+  .pricing-card.featured {
+    border-color: rgba(255,179,71,0.3);
+    transform: scale(1.04);
+    background: rgba(27,20,100,0.5);
+    box-shadow: 0 20px 60px rgba(255,179,71,0.1);
+  }
+  .pricing-card.featured::before {
+    content: 'MOST POPULAR';
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
+    color: var(--dusk-deep);
+    background: linear-gradient(135deg, var(--golden), var(--sunset-warm));
+    padding: 6px 20px; border-radius: 50px;
+    white-space: nowrap;
+  }
+  .pricing-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255,179,71,0.25);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+  }
+  .pricing-card.featured:hover {
+    transform: scale(1.04) translateY(-4px);
+  }
+  .pricing-tier {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem; margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--golden);
+  }
+  .pricing-amount {
+    font-family: 'Fraunces', serif;
+    font-size: 3rem; margin-bottom: 4px;
+    font-weight: 700;
+    color: var(--cream);
+  }
+  .pricing-amount span { font-size: 1rem; color: var(--soft-pink); font-weight: 400; }
+  .pricing-desc {
+    font-size: 0.88rem; color: var(--soft-pink); margin-bottom: 28px;
+    font-weight: 400;
+  }
+  .pricing-features {
+    list-style: none; padding: 0; text-align: left;
+    margin-bottom: 32px;
+  }
+  .pricing-features li {
+    font-size: 0.9rem; color: var(--cream); font-weight: 500;
+    padding: 8px 0; padding-left: 28px; position: relative;
+  }
+  .pricing-features li::before {
+    content: '✦';
+    position: absolute; left: 0; font-weight: 400;
+    color: var(--golden);
+    font-size: 0.75rem;
+  }
+  .pricing-btn {
+    font-family: 'Fraunces', serif;
+    font-size: 0.92rem; font-weight: 600;
+    padding: 14px 36px;
+    border-radius: 50px;
+    border: 2px solid rgba(255,179,71,0.3);
+    background: transparent; color: var(--golden);
+    cursor: pointer;
+    transition: all 0.3s; text-decoration: none; display: inline-block;
+    width: 100%; text-align: center;
+  }
+  .pricing-btn:hover {
+    background: rgba(255,179,71,0.1);
+    border-color: var(--golden);
+  }
+  .pricing-card.featured .pricing-btn {
+    background: linear-gradient(135deg, var(--sunset-orange), var(--rose));
+    border: none;
+    color: white;
+    box-shadow: 0 4px 20px rgba(232,120,138,0.3);
+  }
+  .pricing-card.featured .pricing-btn:hover {
+    box-shadow: 0 8px 30px rgba(232,120,138,0.4);
+    transform: translateY(-2px);
+  }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+  }
+  .final-cta-inner {
+    padding: 80px 48px;
+    background: linear-gradient(135deg,
+      rgba(27,20,100,0.6),
+      rgba(92,61,127,0.4),
+      rgba(232,120,138,0.3),
+      rgba(255,107,53,0.2)
+    );
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    border: 1px solid rgba(255,179,71,0.15);
+    position: relative; overflow: hidden;
+  }
+  .final-cta-inner::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(255,209,102,0.1) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(255,107,53,0.08) 0%, transparent 30%);
+  }
+  /* Silhouette mountains in CTA */
+  .final-cta-inner::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 80px;
+    background:
+      linear-gradient(135deg, transparent 33%, rgba(15,10,31,0.3) 33%, rgba(15,10,31,0.3) 66%, transparent 66%),
+      linear-gradient(225deg, transparent 33%, rgba(15,10,31,0.2) 33%, rgba(15,10,31,0.2) 66%, transparent 66%);
+    opacity: 0.3;
+  }
+  .final-cta h2 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    color: var(--cream); margin-bottom: 16px;
+    position: relative; z-index: 1;
+    font-weight: 700;
+  }
+  .final-cta p {
+    font-size: 1.1rem; color: var(--soft-pink);
+    max-width: 480px; margin: 0 auto 40px;
+    font-weight: 400; line-height: 1.7;
+    position: relative; z-index: 1;
+  }
+  .btn-cta {
+    font-family: 'Fraunces', serif;
+    font-size: 1.05rem; font-weight: 600;
+    padding: 20px 56px;
+    background: linear-gradient(135deg, var(--golden), var(--sunset-warm));
+    color: var(--dusk-deep);
+    border: none; cursor: pointer;
+    border-radius: 50px;
+    box-shadow: 0 8px 30px rgba(255,179,71,0.3);
+    transition: all 0.3s; text-decoration: none; display: inline-block;
+    position: relative; z-index: 1;
+  }
+  .btn-cta:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(255,179,71,0.4);
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 60px 0 40px;
+    border-top: 1px solid rgba(255,179,71,0.1);
+  }
+  .footer-top {
+    display: flex; justify-content: space-between; align-items: start;
+    margin-bottom: 48px; flex-wrap: wrap; gap: 40px;
+  }
+  .footer-brand {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem; color: var(--cream);
+    font-weight: 600;
+  }
+  .footer-brand span {
+    background: linear-gradient(135deg, var(--golden), var(--sunset-orange));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .footer-links {
+    display: flex; gap: 48px;
+  }
+  .footer-col h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 0.85rem; margin-bottom: 16px;
+    color: var(--cream);
+    font-weight: 600;
+  }
+  .footer-col a {
+    display: block; font-size: 0.88rem; color: var(--soft-pink);
+    text-decoration: none; padding: 4px 0; font-weight: 400;
+    transition: color 0.3s;
+  }
+  .footer-col a:hover { color: var(--golden); }
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255,179,71,0.08);
+  }
+  .footer-copy {
+    font-size: 0.82rem; color: var(--text-muted); font-weight: 400;
+  }
+  .footer-socials {
+    display: flex; gap: 16px;
+  }
+  .footer-socials a {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(27,20,100,0.4);
+    border: 1px solid rgba(255,179,71,0.1);
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none; font-size: 0.85rem;
+    color: var(--soft-pink);
+    transition: all 0.3s;
+  }
+  .footer-socials a:hover {
+    background: rgba(255,179,71,0.15);
+    border-color: rgba(255,179,71,0.3);
+    color: var(--golden);
+    transform: translateY(-2px);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+    .pricing-card.featured { transform: none; }
+    .pricing-card.featured:hover { transform: translateY(-4px); }
+    .zigzag-row { grid-template-columns: 1fr; gap: 40px; }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .footer-links { gap: 32px; }
+  }
+  @media (max-width: 600px) {
+    .container { padding: 0 20px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .hero h1 { font-size: 2.4rem; }
+    .footer-top { flex-direction: column; }
+    .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars">
+  <div class="star"></div><div class="star"></div><div class="star"></div>
+  <div class="star"></div><div class="star"></div><div class="star"></div>
+  <div class="star"></div><div class="star"></div><div class="star"></div>
+  <div class="star"></div>
+</div>
+
+<div class="sun-glow"></div>
+
+<!-- Silhouette horizon -->
+<div class="silhouette-horizon">
+  <svg viewBox="0 0 1440 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,200 L0,160 Q60,120 120,140 Q180,100 240,130 Q300,80 360,110 Q420,60 480,90 Q540,50 600,80 Q660,40 720,70 Q780,30 840,60 Q900,45 960,75 Q1020,55 1080,85 Q1140,65 1200,95 Q1260,70 1320,100 Q1380,80 1440,110 L1440,200 Z"/>
+  </svg>
+</div>
+
+<div class="container">
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo"><span>Meet</span></div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="nav-cta">Get Started</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <!-- Silhouette birds -->
+    <div class="hero-birds">
+      <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10,40 Q25,20 40,40 Q55,20 70,40 Q85,20 100,40"/>
+        <path d="M20,55 Q30,40 40,55 Q50,40 60,55"/>
+      </svg>
+    </div>
+    <div class="hero-badge">Now in Public Beta</div>
+    <h1>Meetings that <span class="highlight">actually</span> work</h1>
+    <p>Schedule, run, and follow up from meetings in half the time. Your week back, one meeting at a time.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Start Free Trial</a>
+      <a href="#" class="btn-secondary">Watch Demo</a>
+    </div>
+  </section>
+
+  <!-- LOGOS -->
+  <section class="logos">
+    <div class="logos-label">Trusted by teams at</div>
+    <div class="logos-row">
+      <div class="logo-item">Stripe</div>
+      <div class="logo-item">Linear</div>
+      <div class="logo-item">Vercel</div>
+      <div class="logo-item">Notion</div>
+      <div class="logo-item">Figma</div>
+      <div class="logo-item">Raycast</div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="section-label">Features</div>
+    <div class="section-title">Everything you need,<br>nothing you don't</div>
+    <div class="section-subtitle">Six tools that turn meeting chaos into calm, structured progress.</div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📅</div>
+        <h3>Smart Scheduling</h3>
+        <p>AI finds the perfect time slot across time zones. No more email ping-pong.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎙️</div>
+        <h3>Live Transcripts</h3>
+        <p>Real-time transcription with speaker detection. Never miss a decision.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">✅</div>
+        <h3>Action Items</h3>
+        <p>Auto-extracted tasks assigned to the right people. Follow-up on autopilot.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Meeting Analytics</h3>
+        <p>See where your team's time actually goes. Data-driven meeting culture.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔗</div>
+        <h3>Integrations</h3>
+        <p>Slack, Notion, Google Calendar, Jira. Connect everything in one click.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h3>Enterprise Ready</h3>
+        <p>SSO, SOC 2, data residency. Built for teams that take security seriously.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ZIGZAG -->
+  <section class="zigzag">
+    <div class="zigzag-row">
+      <div class="zigzag-content">
+        <div class="section-label">Why Meet</div>
+        <h3>Stop wasting hours on meetings about meetings</h3>
+        <p>The average worker spends 31 hours a month in meetings. Meet cuts that in half by making every minute count.</p>
+        <ul>
+          <li>Auto-agendas from calendar context</li>
+          <li>AI summaries sent within 60 seconds</li>
+          <li>Decision tracking across your org</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual v1">
+        <div class="visual-content">⏱️ 50%</div>
+      </div>
+    </div>
+    <div class="zigzag-row reverse">
+      <div class="zigzag-content">
+        <div class="section-label">How it works</div>
+        <h3>Three steps to meeting nirvana</h3>
+        <p>Set up once, benefit forever. Meet learns your team's patterns and gets smarter every week.</p>
+        <ul>
+          <li>Connect your calendar in 30 seconds</li>
+          <li>Join meetings as normal — Meet listens</li>
+          <li>Get summaries, tasks, and insights automatically</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual v2">
+        <div class="visual-content">🚀 3 Steps</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="testimonial">
+    <div class="section-label" style="margin-bottom: 16px;">What people say</div>
+    <div class="testimonial-card">
+      <div class="testimonial-quote">
+        Meet turned our weekly standup from a 45-minute slog into a focused 15-minute power session. Our entire team actually looks forward to it now.
+      </div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">S</div>
+        <div>
+          <div class="testimonial-name">Sarah Chen</div>
+          <div class="testimonial-role">VP of Engineering, TechCorp</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing" id="pricing">
+    <div class="section-label">Pricing</div>
+    <div class="section-title">Simple, transparent pricing</div>
+    <div class="section-subtitle">Start free. Upgrade when you're ready. No surprises.</div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-tier">Starter</div>
+        <div class="pricing-amount">$0<span>/mo</span></div>
+        <div class="pricing-desc">For individuals and small teams</div>
+        <ul class="pricing-features">
+          <li>5 meetings per month</li>
+          <li>Basic transcripts</li>
+          <li>Calendar integration</li>
+          <li>Email summaries</li>
+        </ul>
+        <a href="#" class="pricing-btn">Get Started</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-tier">Pro</div>
+        <div class="pricing-amount">$12<span>/mo</span></div>
+        <div class="pricing-desc">For growing teams that mean business</div>
+        <ul class="pricing-features">
+          <li>Unlimited meetings</li>
+          <li>AI action items</li>
+          <li>Analytics dashboard</li>
+          <li>Slack & Notion sync</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#" class="pricing-btn">Start Free Trial</a>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-tier">Enterprise</div>
+        <div class="pricing-amount">$29<span>/mo</span></div>
+        <div class="pricing-desc">For orgs that need control and scale</div>
+        <ul class="pricing-features">
+          <li>Everything in Pro</li>
+          <li>SSO & SAML</li>
+          <li>Custom integrations</li>
+          <li>Dedicated account manager</li>
+          <li>SLA guarantee</li>
+        </ul>
+        <a href="#" class="pricing-btn">Contact Sales</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta">
+    <div class="final-cta-inner">
+      <h2>Ready to love your meetings?</h2>
+      <p>Join 10,000+ teams who reclaimed their week. Free to start, no credit card needed.</p>
+      <a href="#" class="btn-cta">Get Started Free &rarr;</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand"><span>Meet</span></div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="#">Features</a>
+          <a href="#">Pricing</a>
+          <a href="#">Integrations</a>
+          <a href="#">Changelog</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About</a>
+          <a href="#">Blog</a>
+          <a href="#">Careers</a>
+          <a href="#">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Security</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">&copy; 2024 Meet. All rights reserved.</div>
+      <div class="footer-socials">
+        <a href="#">𝕏</a>
+        <a href="#">in</a>
+        <a href="#">gh</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>

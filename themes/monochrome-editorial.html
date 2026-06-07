@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Monochrome Editorial Theme</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #000000;
+    --white: #FFFFFF;
+    --off-white: #F7F7F7;
+    --grey-light: #E0E0E0;
+    --grey-mid: #999999;
+    --grey-dark: #555555;
+    --grey-darker: #333333;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+  /* ===== NAV ===== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--white);
+    border-bottom: 3px solid var(--black);
+    padding: 16px 0;
+  }
+  nav .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--black);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    color: var(--black);
+    text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: opacity 0.2s;
+  }
+  .nav-links a:hover { opacity: 0.5; }
+  .nav-cta {
+    background: var(--black) !important;
+    color: var(--white) !important;
+    padding: 10px 24px !important;
+    font-size: 0.7rem !important;
+    letter-spacing: 0.15em !important;
+    text-transform: uppercase;
+    font-weight: 700 !important;
+    transition: opacity 0.2s !important;
+  }
+  .nav-cta:hover { opacity: 0.8; }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 100px 0 80px;
+    text-align: center;
+    border-bottom: 3px solid var(--black);
+  }
+  .hero-edition {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    color: var(--grey-mid);
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 6rem;
+    font-weight: 900;
+    line-height: 0.95;
+    margin-bottom: 32px;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+  }
+  .hero h1 em {
+    font-style: italic;
+    text-transform: none;
+    font-weight: 400;
+  }
+  .hero-rule {
+    width: 80px;
+    height: 3px;
+    background: var(--black);
+    margin: 0 auto 32px;
+  }
+  .hero p {
+    font-size: 1.1rem;
+    color: var(--grey-dark);
+    max-width: 520px;
+    margin: 0 auto 40px;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+  .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--black);
+    color: var(--white);
+    padding: 16px 40px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: 2px solid var(--black);
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-primary:hover {
+    background: var(--white);
+    color: var(--black);
+  }
+  .btn-secondary {
+    background: var(--white);
+    color: var(--black);
+    padding: 16px 40px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: 2px solid var(--black);
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover {
+    background: var(--black);
+    color: var(--white);
+  }
+
+  /* ===== HERO MOCKUP ===== */
+  .hero-mockup {
+    margin-top: 80px;
+    max-width: 860px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .mockup-frame {
+    background: var(--white);
+    border: 3px solid var(--black);
+    overflow: hidden;
+  }
+  .mockup-topbar {
+    display: flex;
+    gap: 6px;
+    padding: 10px 16px;
+    border-bottom: 3px solid var(--black);
+    background: var(--off-white);
+  }
+  .mockup-dot {
+    width: 10px;
+    height: 10px;
+    border: 2px solid var(--black);
+    background: var(--white);
+  }
+  .mockup-body {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 60px 1fr 160px;
+    gap: 20px;
+    min-height: 200px;
+  }
+  .mockup-sidebar { display: flex; flex-direction: column; gap: 8px; }
+  .mockup-sidebar-item {
+    height: 8px;
+    background: var(--grey-light);
+    border: 1px solid var(--grey-light);
+  }
+  .mockup-sidebar-item.active {
+    background: var(--black);
+    border-color: var(--black);
+    width: 80%;
+  }
+  .mockup-main { display: flex; flex-direction: column; gap: 8px; }
+  .mockup-line {
+    height: 8px;
+    background: var(--grey-light);
+    border: 1px solid var(--grey-light);
+  }
+  .mockup-line.title { height: 12px; width: 60%; background: var(--black); border-color: var(--black); }
+  .mockup-line:nth-child(2) { width: 95%; }
+  .mockup-line:nth-child(3) { width: 80%; }
+  .mockup-line:nth-child(4) { width: 90%; }
+  .mockup-line:nth-child(5) { width: 70%; }
+  .mockup-right { display: flex; flex-direction: column; gap: 8px; justify-content: center; }
+  .mockup-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 2px solid var(--black);
+    background: var(--white);
+  }
+  .mockup-action-dot {
+    width: 8px;
+    height: 8px;
+    border: 2px solid var(--black);
+    flex-shrink: 0;
+  }
+  .mockup-action-line {
+    height: 6px;
+    flex: 1;
+    background: var(--grey-light);
+  }
+
+  /* ===== LOGOS ===== */
+  .logos {
+    padding: 48px 0;
+    text-align: center;
+    border-bottom: 1px solid var(--grey-light);
+  }
+  .logos p {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--grey-mid);
+    margin-bottom: 28px;
+  }
+  .logos-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+  .logo-item {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--grey-mid);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ===== FEATURES ===== */
+  .features {
+    padding: 80px 0;
+    border-bottom: 3px solid var(--black);
+  }
+  .section-header {
+    margin-bottom: 60px;
+  }
+  .section-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--grey-mid);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.2rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .section-rule {
+    width: 60px;
+    height: 3px;
+    background: var(--black);
+    margin-bottom: 20px;
+  }
+  .section-desc {
+    color: var(--grey-dark);
+    max-width: 480px;
+    font-weight: 300;
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+  .feature-card {
+    padding: 40px 32px;
+    border: 1px solid var(--grey-light);
+    margin: -1px 0 0 -1px;
+    transition: background 0.2s;
+  }
+  .feature-card:hover {
+    background: var(--off-white);
+  }
+  .feature-icon {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    margin-bottom: 20px;
+    line-height: 1;
+  }
+  .feature-card h3 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .feature-card p {
+    font-size: 0.88rem;
+    color: var(--grey-dark);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag {
+    padding: 80px 0;
+    border-bottom: 3px solid var(--black);
+  }
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    margin-bottom: 80px;
+  }
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-visual { order: -1; }
+  .zigzag-content .section-number { margin-bottom: 8px; }
+  .zigzag-content h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    text-transform: uppercase;
+  }
+  .zigzag-content p {
+    color: var(--grey-dark);
+    margin-bottom: 28px;
+    font-weight: 300;
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+  .zigzag-visual {
+    background: var(--white);
+    border: 3px solid var(--black);
+    padding: 32px;
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .zigzag-visual-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+  .zigzag-bar {
+    height: 12px;
+    background: var(--grey-light);
+    border: 1px solid var(--grey-light);
+  }
+  .zigzag-bar:nth-child(1) { width: 90%; background: var(--black); border-color: var(--black); }
+  .zigzag-bar:nth-child(2) { width: 75%; }
+  .zigzag-bar:nth-child(3) { width: 85%; }
+  .zigzag-bar:nth-child(4) { width: 60%; }
+  .zigzag-bar:nth-child(5) { width: 70%; }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial {
+    padding: 100px 0;
+    border-bottom: 3px solid var(--black);
+    background: var(--black);
+    color: var(--white);
+  }
+  .testimonial-card {
+    max-width: 760px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .testimonial-quote-mark {
+    font-family: 'Playfair Display', serif;
+    font-size: 6rem;
+    line-height: 0.5;
+    margin-bottom: 24px;
+    opacity: 0.3;
+  }
+  .testimonial-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.5;
+    margin-bottom: 40px;
+  }
+  .testimonial-rule {
+    width: 40px;
+    height: 2px;
+    background: var(--white);
+    margin: 0 auto 24px;
+    opacity: 0.4;
+  }
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  .testimonial-avatar {
+    width: 48px;
+    height: 48px;
+    border: 2px solid var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+  }
+  .testimonial-info { text-align: left; }
+  .testimonial-name {
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .testimonial-role {
+    font-size: 0.78rem;
+    opacity: 0.5;
+    font-weight: 300;
+  }
+
+  /* ===== PRICING ===== */
+  .pricing {
+    padding: 80px 0;
+    text-align: center;
+    border-bottom: 3px solid var(--black);
+  }
+  .pricing .section-header { text-align: center; }
+  .pricing .section-rule { margin: 0 auto 20px; }
+  .pricing .section-desc { margin: 0 auto; }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-top: 60px;
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .pricing-card {
+    padding: 48px 32px;
+    border: 1px solid var(--grey-light);
+    margin: -1px 0 0 -1px;
+    text-align: left;
+    position: relative;
+    transition: background 0.2s;
+  }
+  .pricing-card:hover { background: var(--off-white); }
+  .pricing-card.featured {
+    background: var(--black);
+    color: var(--white);
+    border: 3px solid var(--black);
+    margin: -3px 0 0 -3px;
+    z-index: 1;
+  }
+  .pricing-card.featured:hover { background: var(--black); }
+  .pricing-badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--white);
+    color: var(--black);
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 4px 16px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: 2px solid var(--black);
+    white-space: nowrap;
+  }
+  .pricing-tier {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    color: var(--grey-mid);
+  }
+  .pricing-card.featured .pricing-tier { color: var(--grey-mid); }
+  .pricing-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.2rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    margin-bottom: 4px;
+    line-height: 1;
+  }
+  .pricing-price span {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--grey-mid);
+  }
+  .pricing-desc {
+    font-size: 0.85rem;
+    color: var(--grey-dark);
+    margin-bottom: 32px;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+  .pricing-card.featured .pricing-desc { color: var(--grey-mid); }
+  .pricing-features {
+    list-style: none;
+    margin-bottom: 32px;
+    border-top: 1px solid var(--grey-light);
+    padding-top: 20px;
+  }
+  .pricing-card.featured .pricing-features { border-top-color: var(--grey-darker); }
+  .pricing-features li {
+    padding: 6px 0;
+    font-size: 0.82rem;
+    color: var(--grey-dark);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 400;
+  }
+  .pricing-card.featured .pricing-features li { color: var(--grey-mid); }
+  .pricing-features li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--black);
+    flex-shrink: 0;
+  }
+  .pricing-card.featured .pricing-features li::before { background: var(--white); }
+  .pricing-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: background 0.2s, color 0.2s;
+    border: 2px solid var(--black);
+    color: var(--black);
+    background: var(--white);
+  }
+  .pricing-btn:hover {
+    background: var(--black);
+    color: var(--white);
+  }
+  .pricing-card.featured .pricing-btn {
+    border-color: var(--white);
+    color: var(--white);
+    background: transparent;
+  }
+  .pricing-card.featured .pricing-btn:hover {
+    background: var(--white);
+    color: var(--black);
+  }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    padding: 80px 0;
+    text-align: center;
+  }
+  .cta-box {
+    border: 3px solid var(--black);
+    padding: 80px 48px;
+    position: relative;
+  }
+  .cta-box::before {
+    content: 'Meet';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Playfair Display', serif;
+    font-size: 12rem;
+    font-weight: 900;
+    opacity: 0.03;
+    letter-spacing: -0.05em;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .cta-box .section-number { text-align: center; }
+  .cta-box h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.6rem;
+    font-weight: 900;
+    margin-bottom: 16px;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    line-height: 1.05;
+    position: relative;
+  }
+  .cta-box p {
+    color: var(--grey-dark);
+    margin-bottom: 40px;
+    font-size: 1.05rem;
+    font-weight: 300;
+    position: relative;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 48px 0;
+    border-top: 3px solid var(--black);
+    text-align: center;
+  }
+  .footer-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  footer p {
+    font-size: 0.72rem;
+    color: var(--grey-mid);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 3.2rem; }
+    .section-title { font-size: 2.2rem; }
+    .features-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+    .pricing-card.featured { margin: 24px 0; }
+    .zigzag-row { grid-template-columns: 1fr; gap: 32px; }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .mockup-body { grid-template-columns: 1fr; }
+    .mockup-sidebar, .mockup-right { display: none; }
+    .nav-links { gap: 16px; }
+    .nav-links a:not(.nav-cta) { display: none; }
+    .cta-box { padding: 48px 24px; }
+    .cta-box h2 { font-size: 2.2rem; }
+    .cta-box::before { font-size: 5rem; }
+    .testimonial-quote { font-size: 1.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="#" class="nav-logo">Meet</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="nav-cta">Start Free</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-edition">Vol. I — The Knowledge Operating System</div>
+    <h1>Weave Ideas<br>Into <em>Order</em></h1>
+    <div class="hero-rule"></div>
+    <p>Meet connects your team's knowledge in one searchable canvas. No lost notes. No context switching. Just clarity, distilled to its purest form.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Begin</a>
+      <a href="#" class="btn-secondary">Read the Manifesto</a>
+    </div>
+    <div class="hero-mockup">
+      <div class="mockup-frame">
+        <div class="mockup-topbar">
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-sidebar">
+            <div class="mockup-sidebar-item active"></div>
+            <div class="mockup-sidebar-item"></div>
+            <div class="mockup-sidebar-item"></div>
+            <div class="mockup-sidebar-item"></div>
+          </div>
+          <div class="mockup-main">
+            <div class="mockup-line title"></div>
+            <div class="mockup-line"></div>
+            <div class="mockup-line"></div>
+            <div class="mockup-line"></div>
+            <div class="mockup-line"></div>
+          </div>
+          <div class="mockup-right">
+            <div class="mockup-action">
+              <div class="mockup-action-dot"></div>
+              <div class="mockup-action-line"></div>
+            </div>
+            <div class="mockup-action">
+              <div class="mockup-action-dot"></div>
+              <div class="mockup-action-line"></div>
+            </div>
+            <div class="mockup-action">
+              <div class="mockup-action-dot"></div>
+              <div class="mockup-action-line"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="logos">
+  <div class="container">
+    <p>Trusted by editorial teams at</p>
+    <div class="logos-grid">
+      <span class="logo-item">The New York Times</span>
+      <span class="logo-item">Monocle</span>
+      <span class="logo-item">Kinfolk</span>
+      <span class="logo-item">Vogue</span>
+      <span class="logo-item">Esquire</span>
+      <span class="logo-item">Wired</span>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-number">Chapter One</div>
+      <h2 class="section-title">The Architecture<br>of Thought</h2>
+      <div class="section-rule"></div>
+      <p class="section-desc">Every feature is an editorial decision. Nothing extraneous. Nothing superfluous. Only what serves the story.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">01</div>
+        <h3>Flow States</h3>
+        <p>Capture ideas the moment they arrive. Rich text, code blocks, images — all woven into one continuous canvas.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">02</div>
+        <h3>Living Docs</h3>
+        <p>Your documents grow and evolve. Version history, branching, and merging without the version control overhead.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">03</div>
+        <h3>Precision Search</h3>
+        <p>Find anything instantly. Full-text search across every doc, comment, and attachment in your workspace.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">04</div>
+        <h3>Silent Sync</h3>
+        <p>Real-time collaboration without the chaos. See cursors, edits, and comments flow with purpose.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">05</div>
+        <h3>Knowledge Graph</h3>
+        <p>Connections between docs surface automatically. Your collective intelligence, mapped and navigable.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">06</div>
+        <h3>Integrations</h3>
+        <p>Slack, GitHub, Figma, Linear — your tools talk to each other. One workspace, every context.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="zigzag">
+  <div class="container">
+    <div class="zigzag-row">
+      <div class="zigzag-content">
+        <div class="section-number">Chapter Two</div>
+        <h3>From Scattered Notes to Unified Archive</h3>
+        <p>Stop hunting through Slack threads and Google Docs. Meet weaves everything into one searchable, living document that your whole team can build upon.</p>
+        <a href="#" class="btn-primary">Explore Canvas</a>
+      </div>
+      <div class="zigzag-visual">
+        <div class="zigzag-visual-inner">
+          <div class="zigzag-bar"></div>
+          <div class="zigzag-bar"></div>
+          <div class="zigzag-bar"></div>
+          <div class="zigzag-bar"></div>
+          <div class="zigzag-bar"></div>
+        </div>
+      </div>
+    </div>
+    <div class="zigzag-row reverse">
+      <div class="zigzag-content">
+        <div class="section-number">Chapter Three</div>
+        <h3>Collaboration With Editorial Rigor</h3>
+        <p>Everyone contributes. Comments thread naturally. Decisions get captured automatically. Your team's collective intelligence, woven together with precision.</p>
+        <a href="#" class="btn-secondary">See Collaboration</a>
+      </div>
+      <div class="zigzag-visual">
+        <div class="zigzag-visual-inner">
+          <div class="zigzag-bar"></div>
+          <div class="zigzag-bar"></div>
+          <div class="zigzag-bar"></div>
+          <div class="zigzag-bar"></div>
+          <div class="zigzag-bar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonial">
+  <div class="container">
+    <div class="testimonial-card">
+      <div class="testimonial-quote-mark">&ldquo;</div>
+      <p class="testimonial-quote">Switching to Meet was like moving from a cluttered desk to a pristine editorial suite. Our team's knowledge is finally organized, elegant, and a pleasure to navigate every day.</p>
+      <div class="testimonial-rule"></div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">MR</div>
+        <div class="testimonial-info">
+          <div class="testimonial-name">Maria Rodriguez</div>
+          <div class="testimonial-role">Head of Product, Solara</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-number">Chapter Four</div>
+      <h2 class="section-title">Select Your<br>Edition</h2>
+      <div class="section-rule"></div>
+      <p class="section-desc">No hidden fees. No surprise charges. Start with the free edition, upgrade when your story demands more.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-tier">Standard</div>
+        <div class="pricing-price">$0 <span>/ mo</span></div>
+        <p class="pricing-desc">For solo writers and small teams beginning their journey.</p>
+        <ul class="pricing-features">
+          <li>Up to 5 team members</li>
+          <li>10 documents</li>
+          <li>Basic search</li>
+          <li>Community support</li>
+        </ul>
+        <a href="#" class="pricing-btn">Start Free</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">Most Popular</div>
+        <div class="pricing-tier">Premium</div>
+        <div class="pricing-price">$12 <span>/ mo</span></div>
+        <p class="pricing-desc">For growing teams that need more space and editorial power.</p>
+        <ul class="pricing-features">
+          <li>Unlimited members</li>
+          <li>Unlimited documents</li>
+          <li>Advanced search & AI</li>
+          <li>Priority support</li>
+          <li>Integrations</li>
+        </ul>
+        <a href="#" class="pricing-btn">Start Free Trial</a>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-tier">Institutional</div>
+        <div class="pricing-price">$29 <span>/ mo</span></div>
+        <p class="pricing-desc">Enterprise-grade for organizations that demand everything.</p>
+        <ul class="pricing-features">
+          <li>Everything in Premium</li>
+          <li>SSO & SAML</li>
+          <li>Audit logs</li>
+          <li>Dedicated support</li>
+          <li>Custom integrations</li>
+        </ul>
+        <a href="#" class="pricing-btn">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="container">
+    <div class="cta-box">
+      <div class="section-number">Final Chapter</div>
+      <h2>Ready to<br>Elevate Your<br>Workspace?</h2>
+      <p>Join thousands of teams who've chosen clarity over chaos. Start weaving today — it's free.</p>
+      <a href="#" class="btn-primary">Get Started</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-brand">Meet</div>
+    <p>&copy; 2026 Meet. All rights reserved. Designed in monochrome.</p>
+  </div>
+</footer>
+
+</body>
+</html>

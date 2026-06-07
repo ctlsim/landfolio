@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --walnut: #1E120B;
+    --walnut-light: #2C1E14;
+    --walnut-mid: #3D2B1F;
+    --walnut-dark: #140C06;
+    --brass: #B8943E;
+    --brass-light: #D4AF37;
+    --brass-bright: #F0D060;
+    --brass-dim: #8B7332;
+    --gold: #C9A84C;
+    --gold-light: #E8C84A;
+    --velvet: #1B3D2F;
+    --velvet-light: #2D5A3D;
+    --velvet-mid: #234D3A;
+    --cream: #F5E6C8;
+    --cream-dim: #D4C4A0;
+    --cream-muted: #A89470;
+    --text: #E8DCC8;
+    --text-dim: #B8A88C;
+    --text-muted: #7A6A54;
+    --brass-glow: rgba(184,148,62,0.15);
+    --brass-glow-strong: rgba(184,148,62,0.35);
+    --velvet-glow: rgba(27,61,47,0.3);
+    --font-display: 'Cinzel', serif;
+    --font-body: 'Lora', serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--walnut);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    line-height: 1.15;
+    letter-spacing: 0.04em;
+  }
+
+  h1 { font-size: clamp(2.4rem, 5.5vw, 4.5rem); }
+  h2 { font-size: clamp(1.8rem, 3.5vw, 2.8rem); }
+  h3 { font-size: clamp(1.1rem, 1.4vw, 1.4rem); }
+
+  h4 {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--brass);
+  }
+
+  p { color: var(--text-dim); font-size: 0.92rem; }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ===== AMBIENT LIGHT DOTS ===== */
+  .ambient-light {
+    position: fixed;
+    width: 2px; height: 2px;
+    background: var(--brass-bright);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    box-shadow: 0 0 8px 2px rgba(184,148,62,0.2), 0 0 20px 4px rgba(184,148,62,0.05);
+    animation: ambient-float linear infinite;
+    opacity: 0;
+  }
+
+  .ambient-light:nth-child(1)  { left: 8%;  animation-duration: 7s;  animation-delay: 0s; }
+  .ambient-light:nth-child(2)  { left: 18%; animation-duration: 9s;  animation-delay: 1s; }
+  .ambient-light:nth-child(3)  { left: 30%; animation-duration: 6s;  animation-delay: 2s; }
+  .ambient-light:nth-child(4)  { left: 42%; animation-duration: 8s;  animation-delay: 0.5s; }
+  .ambient-light:nth-child(5)  { left: 55%; animation-duration: 10s; animation-delay: 3s; }
+  .ambient-light:nth-child(6)  { left: 65%; animation-duration: 7.5s; animation-delay: 1.5s; }
+  .ambient-light:nth-child(7)  { left: 75%; animation-duration: 8.5s; animation-delay: 2.5s; }
+  .ambient-light:nth-child(8)  { left: 88%; animation-duration: 6.5s; animation-delay: 0.8s; }
+
+  @keyframes ambient-float {
+    0%   { transform: translateY(110vh) scale(0); opacity: 0; }
+    5%   { opacity: 0.8; transform: translateY(100vh) scale(1); }
+    50%  { opacity: 0.3; transform: translateY(50vh) scale(0.6); }
+    95%  { opacity: 0.6; transform: translateY(5vh) scale(1); }
+    100% { transform: translateY(-10vh) scale(0); opacity: 0; }
+  }
+
+  /* ===== ART DECO GEOMETRY BG ===== */
+  .deco-bg {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.03;
+    background-image:
+      repeating-linear-gradient(0deg, var(--brass) 0px, var(--brass) 1px, transparent 1px, transparent 80px),
+      repeating-linear-gradient(90deg, var(--brass) 0px, var(--brass) 1px, transparent 1px, transparent 80px);
+  }
+
+  /* ===== MOODY LIGHTING OVERLAY ===== */
+  .moody-lighting {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(184,148,62,0.06) 0%, transparent 40%),
+      radial-gradient(ellipse at 70% 60%, rgba(27,61,47,0.08) 0%, transparent 35%),
+      radial-gradient(ellipse at 50% 90%, rgba(184,148,62,0.04) 0%, transparent 30%);
+  }
+
+  /* ===== ART DECO DIVIDER ===== */
+  .deco-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .deco-divider .deco-line {
+    width: 40px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--brass));
+  }
+
+  .deco-divider .deco-line:last-child {
+    background: linear-gradient(90deg, var(--brass), transparent);
+  }
+
+  .deco-divider .deco-diamond {
+    width: 8px; height: 8px;
+    background: var(--brass);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  .deco-divider .deco-diamond.small {
+    width: 5px; height: 5px;
+  }
+
+  .deco-divider.center { margin-left: auto; margin-right: auto; }
+
+  /* ===== ART DECO STEPPED BORDER ===== */
+  .deco-stepped {
+    position: relative;
+    padding: 3px;
+  }
+
+  .deco-stepped::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--brass-dim);
+    opacity: 0.3;
+  }
+
+  .deco-stepped::after {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid var(--brass-dim);
+    opacity: 0.15;
+  }
+
+  /* ===== NAVIGATION ===== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(20,12,6,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(184,148,62,0.15);
+  }
+
+  /* Art deco top line on nav */
+  nav::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 5%, var(--brass-dim) 20%, var(--brass) 50%, var(--brass-dim) 80%, transparent 95%);
+  }
+
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px;
+  }
+
+  .logo {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--brass-light);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    text-decoration: none;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--brass-light); }
+
+  .nav-cta {
+    background: transparent !important;
+    color: var(--brass-light) !important;
+    padding: 8px 22px !important;
+    border: 1px solid var(--brass-dim) !important;
+    transition: all 0.3s !important;
+    font-family: var(--font-display) !important;
+    letter-spacing: 0.15em !important;
+  }
+  .nav-cta:hover {
+    background: var(--brass) !important;
+    color: var(--walnut-dark) !important;
+    border-color: var(--brass) !important;
+  }
+
+  /* ===== BUTTONS ===== */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-display);
+    font-size: 0.78rem; font-weight: 600;
+    padding: 14px 32px;
+    text-decoration: none; border: none; cursor: pointer;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: all 0.3s;
+  }
+
+  .btn-primary {
+    background: linear-gradient(180deg, var(--brass-light), var(--brass));
+    color: var(--walnut-dark);
+    box-shadow: 0 4px 20px var(--brass-glow);
+    position: relative;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(255,255,255,0.15);
+    pointer-events: none;
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 6px 35px var(--brass-glow-strong);
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--cream-dim);
+    border: 1px solid var(--walnut-mid);
+  }
+  .btn-secondary:hover {
+    border-color: var(--brass-dim);
+    color: var(--brass-light);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--walnut-mid);
+  }
+  .btn-outline:hover {
+    border-color: var(--brass-dim);
+    color: var(--brass-light);
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 170px 0 100px;
+    position: relative;
+    overflow: hidden;
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    background: var(--walnut-dark);
+  }
+
+  /* Warm spotlight behind hero */
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 5%; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(184,148,62,0.08) 0%, rgba(27,61,47,0.04) 40%, transparent 65%);
+    pointer-events: none;
+    animation: spotlight-sway 15s ease-in-out infinite;
+  }
+
+  @keyframes spotlight-sway {
+    0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.6; }
+    50% { transform: translateX(-50%) scale(1.1); opacity: 0.9; }
+  }
+
+  .hero-content {
+    position: relative;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .hero h1 {
+    margin-bottom: 24px;
+    color: var(--cream);
+    letter-spacing: 0.06em;
+  }
+
+  .hero h1 .brass-word {
+    background: linear-gradient(180deg, var(--brass-bright), var(--brass), var(--brass-dim));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Art deco ornament */
+  .hero-ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+
+  .hero-ornament .orn-line {
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--brass-dim));
+  }
+
+  .hero-ornament .orn-line:last-child {
+    background: linear-gradient(90deg, var(--brass-dim), transparent);
+  }
+
+  .hero-ornament .orn-diamond {
+    width: 10px; height: 10px;
+    background: var(--brass);
+    transform: rotate(45deg);
+    animation: diamond-pulse 4s ease-in-out infinite;
+  }
+
+  @keyframes diamond-pulse {
+    0%, 100% { box-shadow: 0 0 8px var(--brass-glow); }
+    50% { box-shadow: 0 0 16px var(--brass-glow-strong); }
+  }
+
+  .hero p {
+    font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+    max-width: 520px;
+    margin: 0 auto 40px;
+    color: var(--text-dim);
+    line-height: 1.8;
+    font-style: italic;
+  }
+
+  .hero-buttons {
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 72px;
+  }
+
+  /* ===== HERO MOCKUP ===== */
+  .hero-visual {
+    position: relative;
+    max-width: 920px;
+    margin: 0 auto;
+  }
+
+  .hero-mockup {
+    background: var(--walnut-light);
+    border: 1px solid var(--walnut-mid);
+    padding: 2px;
+    position: relative;
+  }
+
+  /* Brass accent on top */
+  .hero-mockup::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--brass-dim), var(--brass), var(--brass-dim), transparent);
+    opacity: 0.5;
+  }
+
+  .mockup-inner {
+    background: var(--walnut-dark);
+  }
+
+  .mockup-bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    background: var(--walnut-light);
+    border-bottom: 1px solid var(--walnut-mid);
+  }
+
+  .mockup-dot {
+    width: 8px; height: 8px;
+    background: var(--walnut-mid);
+  }
+  .mockup-dot:first-child {
+    background: var(--brass);
+    box-shadow: 0 0 6px var(--brass-glow);
+  }
+
+  .mockup-body {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 20px;
+    min-height: 280px;
+  }
+
+  .mockup-sidebar {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+
+  .mockup-sidebar-item {
+    height: 28px;
+    background: var(--walnut-light);
+    border: 1px solid var(--walnut-mid);
+  }
+  .mockup-sidebar-item.active {
+    background: var(--velvet);
+    border-color: var(--velvet-light);
+    box-shadow: 0 0 10px var(--velvet-glow);
+  }
+
+  .mockup-content {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+
+  .mockup-line {
+    height: 10px;
+    background: var(--walnut-light);
+    border: 1px solid var(--walnut-mid);
+  }
+  .mockup-line:nth-child(1) { width: 45%; background: var(--walnut-mid); border-color: var(--brass-dim); }
+  .mockup-line:nth-child(2) { width: 100%; }
+  .mockup-line:nth-child(3) { width: 80%; }
+  .mockup-line:nth-child(4) { width: 90%; }
+  .mockup-line:nth-child(5) { width: 65%; }
+
+  .mockup-cards {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px; margin-top: 14px;
+  }
+
+  .mockup-card {
+    height: 70px;
+    background: var(--walnut-light);
+    border: 1px solid var(--walnut-mid);
+  }
+  .mockup-card:first-child {
+    border-color: var(--brass-dim);
+    background: linear-gradient(135deg, var(--walnut-mid), var(--walnut-light));
+    box-shadow: 0 0 12px var(--brass-glow);
+  }
+
+  /* ===== LOGOS ===== */
+  .logos {
+    padding: 50px 0;
+    border-top: 1px solid var(--walnut-mid);
+    border-bottom: 1px solid var(--walnut-mid);
+    background: var(--walnut-dark);
+    position: relative;
+  }
+
+  .logos p {
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .logos-grid {
+    display: flex; align-items: center; justify-content: center;
+    gap: 40px; flex-wrap: wrap;
+  }
+
+  .logo-item {
+    font-family: var(--font-display);
+    font-size: 0.85rem; font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .logo-item:hover { color: var(--cream-dim); }
+
+  /* ===== FEATURES ===== */
+  .features {
+    padding: 110px 0;
+    background: var(--walnut);
+    position: relative;
+  }
+
+  .features-header {
+    text-align: center; margin-bottom: 64px;
+  }
+
+  .features-header h4 { margin-bottom: 16px; }
+  .features-header h2 { margin-bottom: 16px; color: var(--cream); }
+  .features-header p {
+    max-width: 520px; margin: 0 auto;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .feature-card {
+    padding: 32px 24px;
+    background: var(--walnut-light);
+    border: 1px solid var(--walnut-mid);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Art deco corner accents */
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 20px; height: 20px;
+    border-top: 1px solid var(--brass-dim);
+    border-left: 1px solid var(--brass-dim);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .feature-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 20px; height: 20px;
+    border-bottom: 1px solid var(--brass-dim);
+    border-right: 1px solid var(--brass-dim);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .feature-card:hover {
+    border-color: var(--brass-dim);
+    box-shadow: 0 0 30px var(--brass-glow), 0 8px 30px rgba(0,0,0,0.3);
+    transform: translateY(-3px);
+  }
+
+  .feature-card:hover::before,
+  .feature-card:hover::after { opacity: 0.5; }
+
+  .feature-icon {
+    width: 44px; height: 44px;
+    background: var(--velvet);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 18px;
+    font-size: 1.2rem;
+    border: 1px solid var(--velvet-light);
+    position: relative;
+  }
+
+  /* Diamond shape on icon */
+  .feature-icon::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(184,148,62,0.15);
+  }
+
+  .feature-card h3 { margin-bottom: 10px; color: var(--cream); }
+  .feature-card p { font-size: 0.84rem; line-height: 1.6; }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag { padding: 80px 0; background: var(--walnut-dark); }
+
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    padding: 70px 0;
+    border-bottom: 1px solid var(--walnut-mid);
+  }
+  .zigzag-row:last-child { border-bottom: none; }
+  .zigzag-row.reverse .zigzag-visual { order: -1; }
+
+  .zigzag-content h4 { margin-bottom: 12px; }
+  .zigzag-content h3 {
+    font-size: clamp(1.3rem, 2vw, 1.8rem);
+    margin-bottom: 14px; color: var(--cream);
+  }
+  .zigzag-content p { margin-bottom: 20px; line-height: 1.8; font-style: italic; }
+
+  .zigzag-list {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .zigzag-list li {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.84rem; color: var(--text-dim);
+  }
+  .zigzag-list li::before {
+    content: '◆';
+    color: var(--brass);
+    font-size: 0.4rem;
+    flex-shrink: 0;
+  }
+
+  .zigzag-visual {
+    background: var(--walnut-light);
+    border: 1px solid var(--walnut-mid);
+    aspect-ratio: 4/3;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Brass accent line */
+  .zigzag-visual::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--brass-dim), transparent);
+    opacity: 0.4;
+  }
+
+  .zigzag-bar-chart {
+    display: flex; align-items: flex-end; gap: 6px;
+    height: 110px; padding: 20px; width: 100%;
+  }
+
+  .zigzag-bar {
+    flex: 1;
+    background: var(--walnut-mid);
+    border: 1px solid rgba(184,148,62,0.1);
+    transition: background 0.3s;
+  }
+  .zigzag-bar.highlight {
+    background: linear-gradient(180deg, var(--brass-light), var(--brass));
+    border-color: var(--brass);
+    box-shadow: 0 0 10px var(--brass-glow);
+  }
+
+  .zigzag-visual-inner {
+    display: flex; flex-direction: column; gap: 10px;
+    padding: 24px; width: 100%;
+  }
+
+  .zigzag-stat {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px;
+    background: var(--walnut-dark);
+    border: 1px solid var(--walnut-mid);
+  }
+  .zigzag-stat-label {
+    font-size: 0.78rem; color: var(--text-dim);
+    font-style: italic;
+  }
+  .zigzag-stat-value {
+    font-family: var(--font-display);
+    font-size: 1.4rem; color: var(--brass-light);
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial {
+    padding: 110px 0;
+    position: relative;
+    overflow: hidden;
+    background: var(--walnut);
+  }
+
+  /* Warm glow */
+  .testimonial::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 500px; height: 500px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(184,148,62,0.06) 0%, rgba(27,61,47,0.04) 35%, transparent 60%);
+    pointer-events: none;
+    animation: testimonial-glow 10s ease-in-out infinite;
+  }
+
+  @keyframes testimonial-glow {
+    0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.1); }
+  }
+
+  .testimonial-inner {
+    max-width: 720px; margin: 0 auto; text-align: center;
+    position: relative;
+  }
+
+  .testimonial-quote {
+    font-family: var(--font-body);
+    font-size: clamp(1.2rem, 2vw, 1.6rem);
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--cream);
+    margin-bottom: 36px;
+  }
+
+  .testimonial-quote::before {
+    content: '\201C';
+    color: var(--brass);
+    font-size: 3.5rem;
+    font-style: normal;
+    display: block;
+    margin-bottom: 8px;
+    line-height: 1;
+    opacity: 0.6;
+    font-family: var(--font-display);
+  }
+
+  .testimonial-author {
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+  }
+
+  .testimonial-avatar {
+    width: 48px; height: 48px;
+    background: var(--velvet);
+    border: 1px solid var(--velvet-light);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    color: var(--brass-light);
+    position: relative;
+  }
+
+  /* Diamond frame on avatar */
+  .testimonial-avatar::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 1px solid rgba(184,148,62,0.2);
+  }
+
+  .testimonial-info { text-align: left; }
+  .testimonial-name {
+    font-family: var(--font-display);
+    color: var(--cream); font-size: 1rem;
+    letter-spacing: 0.06em;
+  }
+  .testimonial-role {
+    font-size: 0.78rem; color: var(--text-muted);
+    letter-spacing: 0.04em;
+    font-style: italic;
+  }
+
+  /* ===== PRICING ===== */
+  .pricing { padding: 110px 0; background: var(--walnut-dark); }
+
+  .pricing-header {
+    text-align: center; margin-bottom: 56px;
+  }
+  .pricing-header h4 { margin-bottom: 16px; }
+  .pricing-header h2 { margin-bottom: 16px; color: var(--cream); }
+  .pricing-header p { color: var(--text-dim); font-style: italic; }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .pricing-card {
+    padding: 36px 28px;
+    background: var(--walnut-light);
+    border: 1px solid var(--walnut-mid);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .pricing-card.featured {
+    border-color: var(--brass-dim);
+    background: linear-gradient(180deg, var(--walnut-mid) 0%, var(--walnut-light) 100%);
+    box-shadow: 0 0 40px var(--brass-glow);
+  }
+
+  /* Art deco stepped border on featured */
+  .pricing-card.featured::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid var(--brass-dim);
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .pricing-card.featured::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--brass), transparent);
+    opacity: 0.5;
+  }
+
+  .pricing-badge {
+    position: absolute; top: -10px; right: 24px;
+    background: linear-gradient(180deg, var(--brass-light), var(--brass));
+    color: var(--walnut-dark);
+    padding: 3px 14px;
+    font-family: var(--font-display);
+    font-size: 0.58rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+
+  .pricing-tier {
+    font-family: var(--font-display);
+    font-size: 0.65rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--text-muted); margin-bottom: 10px;
+  }
+  .pricing-card.featured .pricing-tier { color: var(--brass); }
+
+  .pricing-price {
+    font-family: var(--font-display);
+    font-size: 2.6rem;
+    color: var(--cream);
+    margin-bottom: 4px;
+  }
+  .pricing-price span {
+    font-size: 0.85rem; font-weight: 400;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-style: italic;
+  }
+
+  .pricing-desc {
+    font-size: 0.82rem; color: var(--text-dim);
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+
+  .pricing-features {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 12px;
+    margin-bottom: 28px;
+  }
+  .pricing-features li {
+    font-size: 0.82rem; color: var(--text-dim);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pricing-features li::before {
+    content: '◆';
+    color: var(--brass);
+    font-size: 0.35rem;
+    flex-shrink: 0;
+  }
+
+  .pricing-card .btn { width: 100%; justify-content: center; }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    padding: 110px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    background: var(--walnut);
+  }
+
+  /* Warm spotlight */
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    top: 30%; left: 50%;
+    transform: translateX(-50%);
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(184,148,62,0.07) 0%, rgba(27,61,47,0.03) 40%, transparent 65%);
+    pointer-events: none;
+    animation: cta-glow 8s ease-in-out infinite;
+  }
+
+  @keyframes cta-glow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.7; }
+  }
+
+  .final-cta h2 {
+    margin-bottom: 18px; color: var(--cream);
+    position: relative;
+  }
+
+  .final-cta h2 .brass-word {
+    background: linear-gradient(180deg, var(--brass-bright), var(--brass));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .final-cta p {
+    font-size: 1rem; color: var(--text-dim);
+    max-width: 480px; margin: 0 auto 36px;
+    position: relative;
+    font-style: italic;
+  }
+
+  .final-cta .hero-buttons { position: relative; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 56px 0 36px;
+    border-top: 1px solid var(--walnut-mid);
+    background: var(--walnut-dark);
+  }
+
+  /* Art deco top line on footer */
+  footer::before {
+    content: '';
+    position: absolute;
+    top: 2px; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--brass-dim), transparent);
+    opacity: 0.2;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+
+  .footer-brand .logo { margin-bottom: 14px; display: inline-block; }
+  .footer-brand p {
+    font-size: 0.82rem; color: var(--text-muted); max-width: 260px; line-height: 1.6;
+    font-style: italic;
+  }
+
+  .footer-col h4 {
+    font-size: 0.58rem; margin-bottom: 14px;
+    letter-spacing: 0.25em;
+  }
+
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 8px; }
+
+  .footer-col a {
+    font-size: 0.82rem; color: var(--text-muted);
+    text-decoration: none; transition: color 0.3s;
+    font-family: var(--font-body);
+    font-style: italic;
+  }
+  .footer-col a:hover { color: var(--brass-light); }
+
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 28px; border-top: 1px solid var(--walnut-mid);
+  }
+  .footer-bottom p {
+    font-size: 0.72rem; color: var(--text-muted);
+    font-family: var(--font-display);
+    letter-spacing: 0.08em;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .features-grid { grid-template-columns: 1fr; }
+    .zigzag-row {
+      grid-template-columns: 1fr;
+      gap: 36px;
+    }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+    .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+    .mockup-body { grid-template-columns: 1fr; }
+    .mockup-sidebar { display: none; }
+    .mockup-cards { grid-template-columns: 1fr 1fr; }
+    .hero { min-height: auto; padding: 140px 0 80px; }
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+  }
+  .fade-in:nth-child(2) { animation-delay: 0.15s; }
+  .fade-in:nth-child(3) { animation-delay: 0.3s; }
+  .fade-in:nth-child(4) { animation-delay: 0.45s; }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+  <!-- AMBIENT LIGHT DOTS -->
+  <div class="ambient-light"></div>
+  <div class="ambient-light"></div>
+  <div class="ambient-light"></div>
+  <div class="ambient-light"></div>
+  <div class="ambient-light"></div>
+  <div class="ambient-light"></div>
+  <div class="ambient-light"></div>
+  <div class="ambient-light"></div>
+
+  <!-- ART DECO BG -->
+  <div class="deco-bg"></div>
+
+  <!-- MOODY LIGHTING -->
+  <div class="moody-lighting"></div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <div class="logo">Meet</div>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#testimonials">Reviews</a>
+        <a href="#" class="nav-cta">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-ornament fade-in">
+          <span class="orn-line"></span>
+          <span class="orn-diamond"></span>
+          <span class="orn-line"></span>
+        </div>
+        <h1 class="fade-in">
+          Meetings that<br>
+          don't <span class="brass-word">waste</span><br>
+          your week
+        </h1>
+        <p class="fade-in">One platform to schedule, run, and follow up on every meeting. Cut meeting overhead by 60%.</p>
+        <div class="hero-buttons fade-in">
+          <a href="#" class="btn btn-primary">Start free &#10148;</a>
+          <a href="#" class="btn btn-secondary">Watch demo</a>
+        </div>
+      </div>
+      <div class="hero-visual fade-in">
+        <div class="hero-mockup">
+          <div class="mockup-inner">
+            <div class="mockup-bar">
+              <div class="mockup-dot"></div>
+              <div class="mockup-dot"></div>
+              <div class="mockup-dot"></div>
+            </div>
+            <div class="mockup-body">
+              <div class="mockup-sidebar">
+                <div class="mockup-sidebar-item active"></div>
+                <div class="mockup-sidebar-item"></div>
+                <div class="mockup-sidebar-item"></div>
+                <div class="mockup-sidebar-item"></div>
+                <div class="mockup-sidebar-item"></div>
+              </div>
+              <div class="mockup-content">
+                <div class="mockup-line"></div>
+                <div class="mockup-line"></div>
+                <div class="mockup-line"></div>
+                <div class="mockup-line"></div>
+                <div class="mockup-line"></div>
+                <div class="mockup-cards">
+                  <div class="mockup-card"></div>
+                  <div class="mockup-card"></div>
+                  <div class="mockup-card"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGOS -->
+  <section class="logos">
+    <div class="container">
+      <p>Trusted by teams at</p>
+      <div class="logos-grid">
+        <div class="logo-item">Stripe</div>
+        <div class="logo-item">Vercel</div>
+        <div class="logo-item">Linear</div>
+        <div class="logo-item">Notion</div>
+        <div class="logo-item">Figma</div>
+        <div class="logo-item">Raycast</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="features-header reveal">
+        <h4>Features</h4>
+        <div class="deco-divider center">
+          <span class="deco-line"></span>
+          <span class="deco-diamond small"></span>
+          <span class="deco-diamond"></span>
+          <span class="deco-diamond small"></span>
+          <span class="deco-line"></span>
+        </div>
+        <h2>Everything you need.<br>Nothing you don't.</h2>
+        <p>Six tools that replace your entire meeting stack. No integrations required.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon">&#9889;</div>
+          <h3>Smart Scheduling</h3>
+          <p>AI reads calendars, finds slots, sends invites. Zero back-and-forth emails.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">&#128203;</div>
+          <h3>Auto Agendas</h3>
+          <p>Generates structured agendas from project context. Everyone arrives prepared.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">&#127909;</div>
+          <h3>Live Transcripts</h3>
+          <p>Real-time transcription with speaker detection. Searchable within seconds.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">&#9989;</div>
+          <h3>Action Items</h3>
+          <p>Extracts tasks automatically. Pushes to Jira, Asana, or Linear on save.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">&#128202;</div>
+          <h3>Meeting Analytics</h3>
+          <p>Track time spent, decisions made, follow-ups pending. Data-driven meetings.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">&#128279;</div>
+          <h3>Integrations</h3>
+          <p>Slack, Google, Notion, GitHub. 40+ connectors. Works where you already work.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ZIGZAG -->
+  <section class="zigzag">
+    <div class="container">
+      <div class="zigzag-row reveal">
+        <div class="zigzag-content">
+          <h4>Why Meet</h4>
+          <div class="deco-divider">
+            <span class="deco-line"></span>
+            <span class="deco-diamond small"></span>
+            <span class="deco-line"></span>
+          </div>
+          <h3>Cut meeting time by 60%</h3>
+          <p>Our AI trims every meeting to its essential core. Shorter meetings, better outcomes, more focus time.</p>
+          <ul class="zigzag-list">
+            <li>Auto-generated agendas save 15 min prep</li>
+            <li>Smart timeboxing keeps meetings on track</li>
+            <li>Async summaries replace 30% of meetings entirely</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <div class="zigzag-bar-chart">
+            <div class="zigzag-bar" style="height:40%"></div>
+            <div class="zigzag-bar" style="height:55%"></div>
+            <div class="zigzag-bar" style="height:45%"></div>
+            <div class="zigzag-bar highlight" style="height:80%"></div>
+            <div class="zigzag-bar highlight" style="height:90%"></div>
+            <div class="zigzag-bar highlight" style="height:95%"></div>
+            <div class="zigzag-bar" style="height:60%"></div>
+            <div class="zigzag-bar" style="height:50%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="zigzag-row reverse reveal">
+        <div class="zigzag-content">
+          <h4>Follow-up</h4>
+          <div class="deco-divider">
+            <span class="deco-line"></span>
+            <span class="deco-diamond small"></span>
+            <span class="deco-line"></span>
+          </div>
+          <h3>Decisions that actually stick</h3>
+          <p>No more "what did we decide?" Follow-ups are automatic, assigned, and tracked until resolution.</p>
+          <ul class="zigzag-list">
+            <li>Decision log with full context and timestamps</li>
+            <li>Task assignment with due dates and owners</li>
+            <li>Weekly digest emails for the whole team</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <div class="zigzag-visual-inner">
+            <div class="zigzag-stat">
+              <span class="zigzag-stat-label">Meetings saved</span>
+              <span class="zigzag-stat-value">2,847</span>
+            </div>
+            <div class="zigzag-stat">
+              <span class="zigzag-stat-label">Hours recovered</span>
+              <span class="zigzag-stat-value">1,204</span>
+            </div>
+            <div class="zigzag-stat">
+              <span class="zigzag-stat-label">Tasks completed</span>
+              <span class="zigzag-stat-value">94%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="testimonial" id="testimonials">
+    <div class="container">
+      <div class="testimonial-inner reveal">
+        <div class="deco-divider center">
+          <span class="deco-line"></span>
+          <span class="deco-diamond small"></span>
+          <span class="deco-diamond"></span>
+          <span class="deco-diamond small"></span>
+          <span class="deco-line"></span>
+        </div>
+        <p class="testimonial-quote">We went from 18 meetings a week to 7. The ones we kept were actually useful. Meet changed how our entire org communicates.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">SK</div>
+          <div class="testimonial-info">
+            <div class="testimonial-name">Sarah Kim</div>
+            <div class="testimonial-role">VP of Engineering, Linear</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <div class="pricing-header reveal">
+        <h4>Pricing</h4>
+        <div class="deco-divider center">
+          <span class="deco-line"></span>
+          <span class="deco-diamond small"></span>
+          <span class="deco-diamond"></span>
+          <span class="deco-diamond small"></span>
+          <span class="deco-line"></span>
+        </div>
+        <h2>Simple pricing.<br>Powerful results.</h2>
+        <p>Start free. Upgrade when your team outgrows it.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card reveal">
+          <div class="pricing-tier">Starter</div>
+          <div class="pricing-price">$0 <span>/mo</span></div>
+          <p class="pricing-desc">For individuals and small teams getting started.</p>
+          <ul class="pricing-features">
+            <li>5 meetings per month</li>
+            <li>Basic transcription</li>
+            <li>Calendar integration</li>
+            <li>Email summaries</li>
+          </ul>
+          <a href="#" class="btn btn-secondary">Get started</a>
+        </div>
+        <div class="pricing-card featured reveal">
+          <div class="pricing-badge">Most popular</div>
+          <div class="pricing-tier">Pro</div>
+          <div class="pricing-price">$12 <span>/user/mo</span></div>
+          <p class="pricing-desc">For teams that need the full power of Meet.</p>
+          <ul class="pricing-features">
+            <li>Unlimited meetings</li>
+            <li>AI agendas &amp; action items</li>
+            <li>All integrations</li>
+            <li>Meeting analytics</li>
+            <li>Priority support</li>
+          </ul>
+          <a href="#" class="btn btn-primary">Start free trial &#10148;</a>
+        </div>
+        <div class="pricing-card reveal">
+          <div class="pricing-tier">Enterprise</div>
+          <div class="pricing-price">Custom</div>
+          <p class="pricing-desc">For orgs that need security, scale, and control.</p>
+          <ul class="pricing-features">
+            <li>SSO &amp; SAML</li>
+            <li>Audit logs</li>
+            <li>Dedicated support</li>
+            <li>Custom SLA</li>
+            <li>On-premise option</li>
+          </ul>
+          <a href="#" class="btn btn-outline">Contact sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta">
+    <div class="container">
+      <div class="reveal">
+        <h2>Ready to <span class="brass-word">reclaim</span> your week?</h2>
+        <p>Join 12,000+ teams who stopped wasting time in bad meetings.</p>
+        <div class="hero-buttons">
+          <a href="#" class="btn btn-primary">Start free — no card needed &#10148;</a>
+          <a href="#" class="btn btn-secondary">Talk to sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo">Meet</div>
+          <p>Meetings that don't waste your week. Built for teams who value their time.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#">Features</a></li>
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">Integrations</a></li>
+            <li><a href="#">Changelog</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Terms</a></li>
+            <li><a href="#">Security</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 Meet. All rights reserved.</p>
+        <p>◆ Built with care</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Intersection Observer for reveal animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Smooth scroll for nav links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // Animate bars on scroll
+    const barObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const bars = entry.target.querySelectorAll('.zigzag-bar');
+          bars.forEach((bar, i) => {
+            const height = bar.style.height;
+            bar.style.height = '0%';
+            setTimeout(() => {
+              bar.style.transition = 'height 0.6s ease';
+              bar.style.height = height;
+            }, i * 80);
+          });
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('.zigzag-bar-chart').forEach(el => barObserver.observe(el));
+  </script>
+</body>
+</html>

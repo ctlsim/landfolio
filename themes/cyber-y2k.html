@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Arial+Rounded+MT+Bold&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0A0A0F;
+    --bg-mid: #12121F;
+    --chrome-light: #E8E8F0;
+    --chrome-mid: #A0A0B8;
+    --chrome-dark: #5A5A72;
+    --pink-hot: #FF1493;
+    --pink-metallic: #FF69B4;
+    --pink-soft: #FFB6D9;
+    --cyan-electric: #00F0FF;
+    --purple-neon: #B44AFF;
+    --silver-grad: linear-gradient(135deg, #E8E8F0 0%, #A0A0B8 30%, #E8E8F0 50%, #8888A0 70%, #E8E8F0 100%);
+    --pink-grad: linear-gradient(135deg, #FF1493 0%, #FF69B4 50%, #FFB6D9 100%);
+    --chrome-text: linear-gradient(180deg, #FFFFFF 0%, #C0C0D0 40%, #FFFFFF 50%, #A0A0B8 80%, #D0D0E0 100%);
+    --font-display: 'Orbitron', sans-serif;
+    --font-body: 'Arial Rounded MT Bold', 'Segoe UI', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg-deep);
+    color: var(--chrome-light);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ===== ANIMATED GRID BACKGROUND ===== */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+    animation: gridScroll 20s linear infinite;
+  }
+  @keyframes gridScroll {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(60px, 60px); }
+  }
+
+  /* ===== FLOATING BUBBLES ===== */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 20%; left: 10%;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(255, 20, 147, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    animation: floatBubble 15s ease-in-out infinite;
+  }
+  @keyframes floatBubble {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(100px, -50px) scale(1.1); }
+    50% { transform: translate(50px, -100px) scale(0.9); }
+    75% { transform: translate(-50px, -30px) scale(1.05); }
+  }
+
+  section { position: relative; z-index: 1; }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: 0.02em;
+  }
+
+  h1 {
+    font-size: clamp(2.4rem, 5.5vw, 4.5rem);
+    background: var(--chrome-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  h2 {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    color: var(--chrome-light);
+  }
+  h3 {
+    font-size: clamp(1rem, 1.8vw, 1.3rem);
+    font-weight: 600;
+    color: var(--chrome-light);
+  }
+
+  a { color: var(--pink-metallic); text-decoration: none; transition: all 0.3s; }
+  a:hover { color: var(--cyan-electric); }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ===== CHROME TEXT EFFECT ===== */
+  .chrome-text {
+    background: var(--chrome-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ===== PINK GLOW TEXT ===== */
+  .pink-glow {
+    color: var(--pink-hot);
+    text-shadow: 0 0 20px rgba(255, 20, 147, 0.5), 0 0 40px rgba(255, 20, 147, 0.3);
+  }
+
+  /* ===== CYAN GLOW TEXT ===== */
+  .cyan-glow {
+    color: var(--cyan-electric);
+    text-shadow: 0 0 20px rgba(0, 240, 255, 0.5), 0 0 40px rgba(0, 240, 255, 0.3);
+  }
+
+  /* ===== BUBBLY BUTTONS ===== */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 16px 36px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 100%);
+    border-radius: 50px 50px 0 0;
+    pointer-events: none;
+  }
+  .btn-primary {
+    background: var(--pink-grad);
+    color: #fff;
+    box-shadow: 0 4px 25px rgba(255, 20, 147, 0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+  }
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 35px rgba(255, 20, 147, 0.6), inset 0 1px 0 rgba(255,255,255,0.3);
+    text-decoration: none;
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--chrome-light);
+    border: 2px solid var(--chrome-dark);
+    box-shadow: 0 0 15px rgba(160, 160, 184, 0.15);
+  }
+  .btn-secondary:hover {
+    border-color: var(--cyan-electric);
+    color: var(--cyan-electric);
+    box-shadow: 0 0 25px rgba(0, 240, 255, 0.2);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+
+  /* ===== GLASSY CARD ===== */
+  .glassy {
+    background: rgba(18, 18, 31, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(160, 160, 184, 0.15);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    padding: 16px 0;
+    position: sticky;
+    top: 0;
+    background: rgba(10, 10, 15, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(160, 160, 184, 0.1);
+    z-index: 100;
+  }
+  nav .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: 0.05em;
+    background: var(--chrome-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-decoration: none;
+  }
+  .logo span {
+    background: var(--pink-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--chrome-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .nav-links a:hover { color: var(--cyan-electric); }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 120px 0 100px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(255, 20, 147, 0.12) 0%, transparent 60%);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: pulseGlow 4s ease-in-out infinite;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(0, 240, 255, 0.08) 0%, transparent 60%);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: pulseGlow 6s ease-in-out infinite reverse;
+  }
+  @keyframes pulseGlow {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.7; }
+  }
+  .hero-content {
+    max-width: 800px;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 8px 20px;
+    border-radius: 50px;
+    background: rgba(255, 20, 147, 0.1);
+    border: 1px solid rgba(255, 20, 147, 0.3);
+    color: var(--pink-metallic);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 32px;
+    box-shadow: 0 0 20px rgba(255, 20, 147, 0.15);
+  }
+  .hero-badge::before {
+    content: '';
+    width: 8px; height: 8px;
+    background: var(--pink-hot);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--pink-hot);
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .hero h1 {
+    margin-bottom: 28px;
+  }
+  .hero p {
+    font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+    max-width: 580px;
+    margin-bottom: 44px;
+    color: var(--chrome-mid);
+  }
+  .hero-actions {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .hero-note {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    margin-top: 24px;
+    color: var(--chrome-dark);
+    letter-spacing: 0.05em;
+  }
+
+  /* ===== ORBITING RING DECORATION ===== */
+  .orbit-ring {
+    position: absolute;
+    top: 50%; right: 5%;
+    width: 350px; height: 350px;
+    border: 1px solid rgba(0, 240, 255, 0.1);
+    border-radius: 50%;
+    animation: orbitSpin 30s linear infinite;
+    pointer-events: none;
+  }
+  .orbit-ring::before {
+    content: '';
+    position: absolute;
+    top: -6px; left: 50%;
+    width: 12px; height: 12px;
+    background: var(--cyan-electric);
+    border-radius: 50%;
+    box-shadow: 0 0 20px var(--cyan-electric);
+    transform: translateX(-50%);
+  }
+  .orbit-ring::after {
+    content: '';
+    position: absolute;
+    bottom: 20%; right: 10%;
+    width: 8px; height: 8px;
+    background: var(--pink-hot);
+    border-radius: 50%;
+    box-shadow: 0 0 15px var(--pink-hot);
+  }
+  @keyframes orbitSpin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  /* ===== LOGOS ===== */
+  .logos {
+    padding: 60px 0;
+    border-top: 1px solid rgba(160, 160, 184, 0.08);
+    border-bottom: 1px solid rgba(160, 160, 184, 0.08);
+    background: rgba(18, 18, 31, 0.4);
+  }
+  .logos-label {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--chrome-dark);
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .logos-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+  .logo-item {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--chrome-dark);
+    letter-spacing: 0.05em;
+    transition: all 0.3s;
+  }
+  .logo-item:hover {
+    color: var(--chrome-light);
+    text-shadow: 0 0 15px rgba(232, 232, 240, 0.3);
+  }
+
+  /* ===== FEATURES ===== */
+  .features {
+    padding: 100px 0;
+  }
+  .features-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  .features-header h2 { margin-bottom: 16px; }
+  .features-header p {
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    color: var(--chrome-mid);
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .feature-card {
+    padding: 40px 32px;
+    border-radius: 20px;
+    background: rgba(18, 18, 31, 0.5);
+    border: 1px solid rgba(160, 160, 184, 0.1);
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--pink-metallic), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .feature-card:hover {
+    border-color: rgba(255, 20, 147, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 20, 147, 0.08);
+  }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon {
+    width: 56px; height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .feature-icon::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 16px;
+    background: var(--pink-grad);
+    opacity: 0.15;
+  }
+  .feature-icon span {
+    position: relative;
+    z-index: 1;
+    background: var(--pink-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .feature-card:nth-child(even) .feature-icon::before {
+    background: linear-gradient(135deg, var(--cyan-electric), var(--purple-neon));
+  }
+  .feature-card:nth-child(even) .feature-icon span {
+    background: linear-gradient(135deg, var(--cyan-electric), var(--purple-neon));
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  .feature-card h3 { margin-bottom: 12px; }
+  .feature-card p {
+    font-size: 0.92rem;
+    color: var(--chrome-mid);
+    line-height: 1.65;
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag-section {
+    padding: 100px 0;
+    background: rgba(18, 18, 31, 0.3);
+    border-top: 1px solid rgba(160, 160, 184, 0.06);
+    border-bottom: 1px solid rgba(160, 160, 184, 0.06);
+  }
+  .zigzag {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+    margin-bottom: 80px;
+  }
+  .zigzag:last-child { margin-bottom: 0; }
+  .zigzag.reverse .zigzag-visual { order: 2; }
+  .zigzag-text h2 {
+    margin-bottom: 20px;
+  }
+  .zigzag-text p {
+    font-size: 1rem;
+    color: var(--chrome-mid);
+    margin-bottom: 28px;
+  }
+  .zigzag-list {
+    list-style: none;
+    padding: 0;
+  }
+  .zigzag-list li {
+    padding: 10px 0;
+    font-size: 0.9rem;
+    color: var(--chrome-mid);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 1px solid rgba(160, 160, 184, 0.06);
+  }
+  .zigzag-list li::before {
+    content: '◆';
+    font-size: 0.6rem;
+    background: var(--pink-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .zigzag-visual {
+    border-radius: 24px;
+    background: rgba(18, 18, 31, 0.7);
+    border: 1px solid rgba(160, 160, 184, 0.12);
+    padding: 36px;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .zigzag-visual::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: conic-gradient(from 0deg, transparent, rgba(255, 20, 147, 0.03), transparent, rgba(0, 240, 255, 0.03), transparent);
+    animation: rotateSheen 10s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes rotateSheen {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* ===== MOCK CALENDAR ===== */
+  .mock-cal {
+    width: 100%;
+    font-family: var(--font-display);
+    position: relative;
+    z-index: 1;
+  }
+  .mock-cal-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .mock-cal-header {
+    text-align: center;
+    font-size: 0.55rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(160, 160, 184, 0.15);
+    margin-bottom: 6px;
+    color: var(--chrome-dark);
+  }
+  .mock-cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    border-radius: 10px;
+    border: 1px solid rgba(160, 160, 184, 0.08);
+    color: var(--chrome-mid);
+    transition: all 0.3s;
+  }
+  .mock-cal-day:hover {
+    border-color: rgba(255, 20, 147, 0.3);
+    background: rgba(255, 20, 147, 0.05);
+  }
+  .mock-cal-day.active {
+    background: var(--pink-grad);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 0 15px rgba(255, 20, 147, 0.3);
+  }
+  .mock-cal-day.has-event {
+    background: rgba(0, 240, 255, 0.1);
+    border-color: rgba(0, 240, 255, 0.3);
+    color: var(--cyan-electric);
+  }
+  .mock-cal-day.today {
+    border: 2px solid var(--purple-neon);
+    font-weight: 700;
+    color: var(--purple-neon);
+    box-shadow: 0 0 10px rgba(180, 74, 255, 0.2);
+  }
+
+  /* ===== MOCK DECISION LOG ===== */
+  .mock-log {
+    width: 100%;
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    position: relative;
+    z-index: 1;
+  }
+  .mock-log-block {
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 10px;
+    background: rgba(18, 18, 31, 0.8);
+    border: 1px solid rgba(160, 160, 184, 0.1);
+  }
+  .mock-log-block:last-child { margin-bottom: 0; }
+  .mock-log-title {
+    font-weight: 700;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mock-log-title::before {
+    content: '';
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+  .mock-log-block:first-child .mock-log-title { color: var(--pink-metallic); }
+  .mock-log-block:first-child .mock-log-title::before { background: var(--pink-hot); box-shadow: 0 0 8px var(--pink-hot); }
+  .mock-log-block:last-child .mock-log-title { color: var(--cyan-electric); }
+  .mock-log-block:last-child .mock-log-title::before { background: var(--cyan-electric); box-shadow: 0 0 8px var(--cyan-electric); }
+  .mock-log-item {
+    padding: 6px 0;
+    color: var(--chrome-mid);
+    border-bottom: 1px solid rgba(160, 160, 184, 0.06);
+    font-size: 0.65rem;
+    letter-spacing: 0.03em;
+  }
+  .mock-log-item:last-child { border-bottom: none; }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial {
+    padding: 100px 0;
+    text-align: center;
+  }
+  .testimonial-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .testimonial-mark {
+    font-size: 5rem;
+    line-height: 1;
+    background: var(--pink-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0.4;
+    font-family: Georgia, serif;
+  }
+  .testimonial blockquote {
+    font-size: clamp(1.2rem, 2.2vw, 1.7rem);
+    font-weight: 400;
+    line-height: 1.55;
+    margin: -20px 0 36px;
+    color: var(--chrome-light);
+    font-style: italic;
+  }
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  .testimonial-avatar {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--pink-grad);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 0 25px rgba(255, 20, 147, 0.3);
+  }
+  .testimonial-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--chrome-light);
+    letter-spacing: 0.03em;
+  }
+  .testimonial-role {
+    font-size: 0.8rem;
+    color: var(--chrome-dark);
+  }
+
+  /* ===== PRICING ===== */
+  .pricing {
+    padding: 100px 0;
+    background: rgba(18, 18, 31, 0.3);
+    border-top: 1px solid rgba(160, 160, 184, 0.06);
+    border-bottom: 1px solid rgba(160, 160, 184, 0.06);
+  }
+  .pricing-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  .pricing-header h2 { margin-bottom: 16px; }
+  .pricing-header p {
+    font-size: 1.05rem;
+    color: var(--chrome-mid);
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .pricing-card {
+    padding: 40px 32px;
+    border-radius: 24px;
+    background: rgba(18, 18, 31, 0.5);
+    border: 1px solid rgba(160, 160, 184, 0.1);
+    position: relative;
+    transition: all 0.4s;
+  }
+  .pricing-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+  }
+  .pricing-card.featured {
+    background: rgba(255, 20, 147, 0.06);
+    border-color: rgba(255, 20, 147, 0.25);
+    transform: scale(1.05);
+    z-index: 2;
+    box-shadow: 0 0 50px rgba(255, 20, 147, 0.1), 0 20px 60px rgba(0, 0, 0, 0.4);
+  }
+  .pricing-card.featured:hover {
+    transform: scale(1.05) translateY(-5px);
+  }
+  .pricing-label {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 16px;
+    color: var(--chrome-dark);
+  }
+  .pricing-card.featured .pricing-label {
+    color: var(--pink-metallic);
+    text-shadow: 0 0 10px rgba(255, 20, 147, 0.3);
+  }
+  .pricing-price {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+    letter-spacing: 0.02em;
+    background: var(--chrome-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .pricing-price span {
+    font-size: 0.9rem;
+    font-weight: 400;
+    -webkit-text-fill-color: var(--chrome-dark);
+  }
+  .pricing-desc {
+    font-size: 0.88rem;
+    color: var(--chrome-dark);
+    margin-bottom: 28px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid rgba(160, 160, 184, 0.08);
+  }
+  .pricing-features {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 36px;
+  }
+  .pricing-feature {
+    padding: 7px 0;
+    font-size: 0.88rem;
+    color: var(--chrome-mid);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pricing-feature::before {
+    content: '✦';
+    font-size: 0.6rem;
+    color: var(--pink-metallic);
+  }
+  .pricing-card .btn { width: 100%; justify-content: center; }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(255, 20, 147, 0.06) 0%, transparent 60%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .final-cta h2 {
+    margin-bottom: 20px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 1;
+  }
+  .final-cta p {
+    font-size: 1.1rem;
+    color: var(--chrome-mid);
+    margin-bottom: 44px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 1;
+  }
+  .final-cta-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 60px 0 40px;
+    border-top: 1px solid rgba(160, 160, 184, 0.08);
+    background: rgba(10, 10, 15, 0.9);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+  .footer-brand .logo {
+    margin-bottom: 16px;
+    display: inline-block;
+  }
+  .footer-brand p {
+    font-size: 0.88rem;
+    color: var(--chrome-dark);
+    max-width: 280px;
+  }
+  .footer-col h4 {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 20px;
+    color: var(--pink-metallic);
+  }
+  .footer-col a {
+    display: block;
+    color: var(--chrome-dark);
+    font-size: 0.88rem;
+    padding: 5px 0;
+    transition: all 0.3s;
+  }
+  .footer-col a:hover {
+    color: var(--cyan-electric);
+    text-decoration: none;
+  }
+  .footer-bottom {
+    padding-top: 32px;
+    border-top: 1px solid rgba(160, 160, 184, 0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    color: var(--chrome-dark);
+  }
+  .footer-bottom a { color: var(--chrome-dark); }
+  .footer-bottom a:hover { color: var(--chrome-light); }
+
+  /* ===== Y2K STAMP ===== */
+  .y2k-stamp {
+    position: absolute;
+    top: 24px; right: 24px;
+    font-family: var(--font-display);
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    padding: 6px 14px;
+    border-radius: 50px;
+    background: rgba(0, 240, 255, 0.08);
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    color: var(--cyan-electric);
+    transform: rotate(-3deg);
+    opacity: 0.5;
+    z-index: 2;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
+    .pricing-card.featured { transform: none; }
+    .pricing-card.featured:hover { transform: translateY(-5px); }
+    .zigzag { grid-template-columns: 1fr; gap: 40px; }
+    .zigzag.reverse .zigzag-visual { order: 0; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .orbit-ring { display: none; }
+  }
+  @media (max-width: 600px) {
+    .features-grid { grid-template-columns: 1fr; }
+    .nav-links { gap: 16px; }
+    .hero { padding: 70px 0; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <a href="#" class="logo">meet<span>.</span></a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#cta" class="btn btn-primary" style="padding:10px 20px;font-size:0.7rem;">Get Early Access</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">v0.1 — Now in Beta</div>
+      <h1>
+        <span class="chrome-text">Meetings that</span><br>
+        <span class="pink-glow">don't waste</span> your week
+      </h1>
+      <p>One calendar. Zero double-bookings. Real-time sync across your whole team. Built for people who'd rather ship code than schedule standups.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn btn-primary">Start Free Trial →</a>
+        <a href="#" class="btn btn-secondary">Watch Demo</a>
+      </div>
+      <p class="hero-note">No credit card required · Free for teams under 10</p>
+    </div>
+  </div>
+  <div class="orbit-ring"></div>
+  <div class="y2k-stamp">cyber Y2K build</div>
+</section>
+
+<!-- LOGOS -->
+<section class="logos">
+  <div class="container">
+    <p class="logos-label">Trusted by teams who value their time</p>
+    <div class="logos-grid">
+      <span class="logo-item">Vercel</span>
+      <span class="logo-item">Linear</span>
+      <span class="logo-item">Notion</span>
+      <span class="logo-item">Figma</span>
+      <span class="logo-item">Raycast</span>
+      <span class="logo-item">Arc</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header">
+      <h2>Everything you need,<br>nothing you don't</h2>
+      <p>Six tools that replace your entire meeting stack. No plugins. No integrations. Just works.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><span>01</span></div>
+        <h3>Smart Scheduling</h3>
+        <p>AI finds the perfect slot across time zones. No more "does 3pm work?" email threads.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><span>02</span></div>
+        <h3>Auto Agendas</h3>
+        <p>Generates meeting agendas from your project management tools. Everyone arrives prepared.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><span>03</span></div>
+        <h3>Live Transcripts</h3>
+        <p>Real-time transcription with action item detection. Missed the meeting? Read the summary.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><span>04</span></div>
+        <h3>Focus Guard</h3>
+        <p>Blocks back-to-back meetings. Enforces focus time automatically. Protects deep work.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><span>05</span></div>
+        <h3>One-Click Join</h3>
+        <p>No app switching. Meet links embed everywhere. Slack, email, calendar — always one tap.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><span>06</span></div>
+        <h3>Usage Analytics</h3>
+        <p>See where meeting time goes. Cut the bloat. Data-driven calendar hygiene.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZIGZAG -->
+<section class="zigzag-section">
+  <div class="container">
+    <div class="zigzag">
+      <div class="zigzag-text">
+        <h2>Your calendar,<br>finally makes sense</h2>
+        <p>Meet scans your team's availability, project deadlines, and energy patterns to suggest the optimal schedule. No more manual herding.</p>
+        <ul class="zigzag-list">
+          <li>Auto-detects time zone overlaps</li>
+          <li>Respects focus blocks &amp; PTO</li>
+          <li>Prioritizes cross-team syncs</li>
+          <li>Learns from your preferences</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <div class="mock-cal">
+          <div class="mock-cal-row mock-cal-header">
+            <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
+          </div>
+          <div class="mock-cal-row">
+            <div class="mock-cal-day">1</div><div class="mock-cal-day">2</div><div class="mock-cal-day has-event">3</div><div class="mock-cal-day">4</div><div class="mock-cal-day">5</div><div class="mock-cal-day">6</div><div class="mock-cal-day">7</div>
+          </div>
+          <div class="mock-cal-row">
+            <div class="mock-cal-day">8</div><div class="mock-cal-day has-event">9</div><div class="mock-cal-day">10</div><div class="mock-cal-day today">11</div><div class="mock-cal-day active">12</div><div class="mock-cal-day">13</div><div class="mock-cal-day">14</div>
+          </div>
+          <div class="mock-cal-row">
+            <div class="mock-cal-day">15</div><div class="mock-cal-day">16</div><div class="mock-cal-day has-event">17</div><div class="mock-cal-day">18</div><div class="mock-cal-day">19</div><div class="mock-cal-day">20</div><div class="mock-cal-day">21</div>
+          </div>
+          <div class="mock-cal-row">
+            <div class="mock-cal-day active">22</div><div class="mock-cal-day">23</div><div class="mock-cal-day">24</div><div class="mock-cal-day has-event">25</div><div class="mock-cal-day">26</div><div class="mock-cal-day">27</div><div class="mock-cal-day">28</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="zigzag reverse">
+      <div class="zigzag-text">
+        <h2>Post-meeting,<br>pre-burnout</h2>
+        <p>Every meeting auto-generates a summary with decisions, action items, and deadlines. Distributed to the right people. No more "what did we decide?"</p>
+        <ul class="zigzag-list">
+          <li>Decision log with timestamps</li>
+          <li>Action items assigned automatically</li>
+          <li>Follow-up reminders at 24h / 7d</li>
+          <li>Integrates with Jira, Linear, Asana</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <div class="mock-log">
+          <div class="mock-log-block">
+            <div class="mock-log-title">Decision Log</div>
+            <div class="mock-log-item">[14:02] Ship auth v2 on Friday</div>
+            <div class="mock-log-item">[14:15] Migrate to new API gateway</div>
+            <div class="mock-log-item">[14:28] Freeze feature branch EOD</div>
+          </div>
+          <div class="mock-log-block">
+            <div class="mock-log-title">Action Items</div>
+            <div class="mock-log-item">◇ @sarah — write migration docs</div>
+            <div class="mock-log-item">◇ @james — update load tests</div>
+            <div class="mock-log-item">◇ @all — review PR #482</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial">
+  <div class="container">
+    <div class="testimonial-inner">
+      <div class="testimonial-mark">"</div>
+      <blockquote>We cut our weekly meeting time by 40%. The auto-agendas alone saved us 10 hours per week. Meet paid for itself in the first sprint.</blockquote>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">KR</div>
+        <div>
+          <div class="testimonial-name">Kara Rodriguez</div>
+          <div class="testimonial-role">VP of Engineering, Streamline</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="pricing-header">
+      <h2>Simple pricing.<br>Zero surprises.</h2>
+      <p>Start free. Scale when you're ready.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-label">Starter</div>
+        <div class="pricing-price">$0 <span>/mo</span></div>
+        <p class="pricing-desc">For solo devs and tiny teams</p>
+        <ul class="pricing-features">
+          <li class="pricing-feature">Up to 5 team members</li>
+          <li class="pricing-feature">Smart scheduling</li>
+          <li class="pricing-feature">Basic transcripts</li>
+          <li class="pricing-feature">50 meetings / month</li>
+        </ul>
+        <a href="#" class="btn btn-secondary">Get Started</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-label">Pro — Most Popular</div>
+        <div class="pricing-price">$12 <span>/user/mo</span></div>
+        <p class="pricing-desc">For teams that ship fast</p>
+        <ul class="pricing-features">
+          <li class="pricing-feature">Unlimited members</li>
+          <li class="pricing-feature">AI agendas &amp; summaries</li>
+          <li class="pricing-feature">Focus Guard</li>
+          <li class="pricing-feature">Unlimited meetings</li>
+          <li class="pricing-feature">Analytics dashboard</li>
+          <li class="pricing-feature">Priority support</li>
+        </ul>
+        <a href="#" class="btn btn-primary">Start Free Trial</a>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-label">Enterprise</div>
+        <div class="pricing-price">Custom</div>
+        <p class="pricing-desc">For orgs with compliance needs</p>
+        <ul class="pricing-features">
+          <li class="pricing-feature">SSO &amp; SAML</li>
+          <li class="pricing-feature">Audit logs</li>
+          <li class="pricing-feature">Dedicated support</li>
+          <li class="pricing-feature">Custom integrations</li>
+          <li class="pricing-feature">SLA guarantee</li>
+        </ul>
+        <a href="#" class="btn btn-secondary">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" id="cta">
+  <div class="container">
+    <h2>Stop wasting hours<br>on meeting logistics</h2>
+    <p>Join 2,000+ teams who reclaim their week with Meet. Free for 14 days.</p>
+    <div class="final-cta-actions">
+      <a href="#" class="btn btn-primary">Start Your Free Trial →</a>
+      <a href="#" class="btn btn-secondary">Talk to Sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">meet<span>.</span></a>
+        <p>Meetings that don't waste your week. Built by engineers, for engineers.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Changelog</a>
+        <a href="#">Roadmap</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Blog</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Security</a>
+        <a href="#">GDPR</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 Meet Inc. All rights reserved.</span>
+      <span>Built with chrome &amp; neon</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000000;
+    --bg-subtle: #0A0A0A;
+    --surface: #111111;
+    --gold: #C9A84C;
+    --gold-light: #D4B96A;
+    --gold-dim: rgba(201,168,76,0.15);
+    --gold-glow: rgba(201,168,76,0.06);
+    --text: #F5F0E8;
+    --text-secondary: #8A8578;
+    --text-muted: #4A4740;
+    --border: rgba(201,168,76,0.1);
+    --border-hover: rgba(201,168,76,0.25);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 300;
+    line-height: 1.15;
+    letter-spacing: 0;
+  }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+  .container--narrow { max-width: 800px; }
+
+  /* Gold line accent */
+  .gold-line {
+    width: 48px; height: 1px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    margin: 24px 0;
+  }
+  .gold-line--center { margin: 24px auto; }
+
+  /* Section spacing */
+  section { padding: 120px 0; position: relative; }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .container {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 32px;
+  }
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem; font-weight: 400;
+    color: var(--text); text-decoration: none;
+    letter-spacing: 0.15em; text-transform: uppercase;
+  }
+  .logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 40px; align-items: center; }
+  .nav-links a {
+    color: var(--text-secondary); text-decoration: none;
+    font-size: 0.75rem; font-weight: 400;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .btn-nav {
+    background: transparent; color: var(--gold) !important;
+    padding: 10px 24px; font-size: 0.7rem; font-weight: 400;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    border: 1px solid var(--gold); cursor: pointer;
+    transition: all 0.3s; text-decoration: none;
+  }
+  .btn-nav:hover {
+    background: var(--gold); color: var(--bg) !important;
+  }
+
+  /* ===== HERO ===== */
+  .hero { padding: 200px 0 100px; text-align: center; }
+  .hero-eyebrow {
+    font-size: 0.7rem; font-weight: 400;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 32px;
+  }
+  .hero h1 {
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 300; color: var(--text);
+    margin-bottom: 12px; max-width: 900px; margin-left: auto; margin-right: auto;
+  }
+  .hero h1 em {
+    font-style: italic; color: var(--gold-light);
+  }
+  .hero .subhead {
+    font-size: 1rem; color: var(--text-secondary);
+    max-width: 480px; margin: 32px auto 48px;
+    line-height: 1.8; font-weight: 300;
+  }
+  .cta-group { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 96px; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--gold); color: var(--bg);
+    padding: 16px 36px; font-size: 0.75rem; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    text-decoration: none; border: 1px solid var(--gold); cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-primary:hover { background: var(--gold-light); border-color: var(--gold-light); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--text-secondary); padding: 16px 32px;
+    text-decoration: none; font-size: 0.75rem; font-weight: 400;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    border: 1px solid var(--border); transition: all 0.3s;
+  }
+  .btn-secondary:hover { color: var(--gold); border-color: var(--gold); }
+
+  /* Hero mockup */
+  .hero-screenshot {
+    max-width: 860px; margin: 0 auto;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px var(--border);
+  }
+  .mockup-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.05em;
+  }
+  .mockup-topbar .dots { display: flex; gap: 6px; }
+  .mockup-topbar .dot { width: 6px; height: 6px; border: 1px solid var(--text-muted); }
+  .mockup-body { display: grid; grid-template-columns: 180px 1fr 220px; min-height: 320px; }
+  .mock-sidebar { border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+  .mock-sidebar-item { height: 6px; background: var(--bg-subtle); }
+  .mock-sidebar-item.active { background: var(--gold-dim); }
+  .mock-main { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+  .mock-main-line { height: 6px; background: var(--bg-subtle); }
+  .mock-main-line.short { width: 60%; }
+  .mock-main-line.gold { background: var(--gold-dim); }
+  .mock-right { border-left: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+  .mock-avatar { width: 24px; height: 24px; border: 1px solid var(--border); }
+  .mock-msg { height: 5px; background: var(--bg-subtle); }
+
+  /* ===== LOGOS ===== */
+  .logos { padding: 80px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .logos-label {
+    text-align: center; font-size: 0.65rem;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 40px;
+  }
+  .logos-grid {
+    display: flex; justify-content: center; align-items: center;
+    gap: 56px; flex-wrap: wrap;
+  }
+  .logo-item {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem; color: var(--text-muted);
+    letter-spacing: 0.08em; transition: color 0.3s;
+  }
+  .logo-item:hover { color: var(--text-secondary); }
+
+  /* ===== FEATURES ===== */
+  .features-header { text-align: center; margin-bottom: 80px; }
+  .features-header h2 { font-size: clamp(2rem, 4vw, 3.2rem); margin-bottom: 8px; }
+  .features-header p { color: var(--text-secondary); font-size: 0.95rem; }
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .feature-card {
+    padding: 48px 36px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    transition: border-color 0.4s;
+  }
+  .feature-card:hover { border-color: var(--border-hover); }
+  .feature-icon {
+    font-size: 1.6rem; margin-bottom: 24px;
+    display: flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px;
+    border: 1px solid var(--border);
+    color: var(--gold);
+  }
+  .feature-card h3 {
+    font-size: 1.3rem; margin-bottom: 12px; font-weight: 400;
+  }
+  .feature-card p { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.7; }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center; margin-bottom: 120px;
+  }
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-visual { order: -1; }
+  .zigzag-content .section-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.8rem; color: var(--gold);
+    letter-spacing: 0.2em; margin-bottom: 16px;
+  }
+  .zigzag-content h2 { font-size: 2.2rem; margin-bottom: 20px; }
+  .zigzag-content p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.8; }
+  .zigzag-visual {
+    aspect-ratio: 4/3; background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .zigzag-visual::after {
+    content: ''; position: absolute; inset: 0;
+    border: 1px solid var(--border); margin: 12px;
+  }
+  .zigzag-visual-inner {
+    display: flex; flex-direction: column; gap: 8px; padding: 32px; width: 100%;
+  }
+  .zigzag-visual-line { height: 4px; background: var(--bg-subtle); }
+  .zigzag-visual-line.gold { background: var(--gold-dim); }
+  .zigzag-visual-line.wide { width: 100%; }
+  .zigzag-visual-line.med { width: 75%; }
+  .zigzag-visual-line.short { width: 50%; }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial {
+    text-align: center;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .testimonial blockquote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 300; font-style: italic;
+    color: var(--text); max-width: 750px; margin: 0 auto 40px;
+    line-height: 1.5;
+  }
+  .testimonial blockquote::before { content: ''; display: block; width: 48px; height: 1px; background: var(--gold); margin: 0 auto 40px; }
+  .testimonial .author { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); }
+  .testimonial .role { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* ===== PRICING ===== */
+  .pricing-header { text-align: center; margin-bottom: 72px; }
+  .pricing-header h2 { font-size: clamp(2rem, 4vw, 3.2rem); margin-bottom: 8px; }
+  .pricing-header p { color: var(--text-secondary); font-size: 0.95rem; }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .pricing-card {
+    padding: 48px 36px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    text-align: center;
+    transition: border-color 0.4s;
+    position: relative;
+  }
+  .pricing-card:hover { border-color: var(--border-hover); }
+  .pricing-card.featured {
+    border-color: var(--gold);
+    background: var(--gold-glow);
+  }
+  .pricing-card.featured::before {
+    content: ''; position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+    width: 48px; height: 1px; background: var(--gold);
+  }
+  .pricing-tier {
+    font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 24px;
+  }
+  .pricing-card.featured .pricing-tier { color: var(--gold); }
+  .pricing-amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem; font-weight: 300; color: var(--text);
+    margin-bottom: 4px;
+  }
+  .pricing-amount span { font-size: 1rem; color: var(--text-muted); }
+  .pricing-period { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 32px; }
+  .pricing-features { list-style: none; margin-bottom: 40px; text-align: left; }
+  .pricing-features li {
+    font-size: 0.82rem; color: var(--text-secondary);
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .pricing-features li::before { content: '◆'; color: var(--gold); font-size: 0.5rem; margin-right: 10px; vertical-align: middle; }
+  .btn-pricing {
+    display: block; width: 100%;
+    padding: 14px; font-size: 0.7rem; font-weight: 400;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    text-align: center; text-decoration: none; cursor: pointer;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--text-secondary); transition: all 0.3s;
+  }
+  .btn-pricing:hover { border-color: var(--gold); color: var(--gold); }
+  .pricing-card.featured .btn-pricing {
+    background: var(--gold); color: var(--bg); border-color: var(--gold);
+  }
+  .pricing-card.featured .btn-pricing:hover { background: var(--gold-light); }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta { text-align: center; padding: 140px 0; }
+  .final-cta h2 {
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 300; margin-bottom: 24px;
+  }
+  .final-cta h2 em { font-style: italic; color: var(--gold-light); }
+  .final-cta p { color: var(--text-secondary); font-size: 1rem; margin-bottom: 48px; max-width: 480px; margin-left: auto; margin-right: auto; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 60px 0 40px;
+  }
+  .footer-inner {
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .footer-brand .logo { margin-bottom: 16px; display: block; }
+  .footer-brand p { font-size: 0.8rem; color: var(--text-muted); max-width: 240px; line-height: 1.7; }
+  .footer-links { display: flex; gap: 60px; }
+  .footer-col h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem; font-weight: 500;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 20px;
+  }
+  .footer-col a {
+    display: block; font-size: 0.82rem; color: var(--text-secondary);
+    text-decoration: none; margin-bottom: 12px; transition: color 0.3s;
+  }
+  .footer-col a:hover { color: var(--gold); }
+  .footer-bottom {
+    margin-top: 60px; padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-bottom p { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.05em; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .features-grid, .pricing-grid { grid-template-columns: 1fr; }
+    .zigzag-row { grid-template-columns: 1fr; gap: 40px; }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .footer-inner { flex-direction: column; gap: 40px; }
+    .footer-links { gap: 32px; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="container">
+    <a href="#" class="logo">LO<span>OM</span></a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="btn-nav">Begin</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <p class="hero-eyebrow reveal">The art of efficient meetings</p>
+    <h1 class="reveal">Meetings that don't<br>waste your <em>week</em></h1>
+    <p class="subhead reveal">Record, transcribe, and distill every meeting into actionable clarity. Your time is the rarest commodity.</p>
+    <div class="cta-group reveal">
+      <a href="#" class="btn-primary">Start Free →</a>
+      <a href="#" class="btn-secondary">Watch Film</a>
+    </div>
+    <div class="hero-screenshot reveal">
+      <div class="screenshot-mockup">
+        <div class="mockup-topbar">
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <span>meet.app/meetings</span>
+          <span></span>
+        </div>
+        <div class="mockup-body">
+          <div class="mock-sidebar">
+            <div class="mock-sidebar-item active" style="width:60%"></div>
+            <div class="mock-sidebar-item" style="width:80%"></div>
+            <div class="mock-sidebar-item" style="width:45%"></div>
+            <div class="mock-sidebar-item" style="width:70%"></div>
+            <div class="mock-sidebar-item" style="width:55%"></div>
+          </div>
+          <div class="mock-main">
+            <div class="mock-main-line" style="width:40%"></div>
+            <div class="mock-main-line gold" style="width:85%"></div>
+            <div class="mock-main-line" style="width:90%"></div>
+            <div class="mock-main-line" style="width:60%"></div>
+            <div style="height:24px"></div>
+            <div class="mock-main-line" style="width:75%"></div>
+            <div class="mock-main-line short" style="width:50%"></div>
+          </div>
+          <div class="mock-right">
+            <div class="mock-avatar"></div>
+            <div class="mock-msg" style="width:90%"></div>
+            <div class="mock-msg" style="width:65%"></div>
+            <div style="height:8px"></div>
+            <div class="mock-avatar"></div>
+            <div class="mock-msg" style="width:80%"></div>
+            <div class="mock-msg" style="width:45%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Logos -->
+<section class="logos">
+  <div class="container">
+    <p class="logos-label reveal">Trusted by those who value time</p>
+    <div class="logos-grid reveal">
+      <span class="logo-item">McKinsey</span>
+      <span class="logo-item">Rolex</span>
+      <span class="logo-item">Sotheby's</span>
+      <span class="logo-item">Patagonia</span>
+      <span class="logo-item">Stripe</span>
+      <span class="logo-item">Aesop</span>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features">
+  <div class="container">
+    <div class="features-header reveal">
+      <h2>Crafted for precision</h2>
+      <div class="gold-line gold-line--center"></div>
+      <p>Every detail considered. Nothing superfluous.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon">◈</div>
+        <h3>Record &amp; Transcribe</h3>
+        <p>Every word captured with fidelity. Searchable transcripts delivered within minutes, not hours.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">◇</div>
+        <h3>AI Summaries</h3>
+        <p>Distill 60-minute meetings into three paragraphs of actionable intelligence. No noise.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">○</div>
+        <h3>Share Selectively</h3>
+        <p>Send precise clips to precise people. Control who sees what, down to the second.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">□</div>
+        <h3>Integrations</h3>
+        <p>Slack, Notion, Google Calendar. Your tools, connected seamlessly. No friction.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">△</div>
+        <h3>Search Everything</h3>
+        <p>Find any moment from any meeting. Full-text search across your entire history.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">☆</div>
+        <h3>Enterprise Grade</h3>
+        <p>SOC 2 compliant. SSO. Audit logs. Your data remains yours, encrypted always.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Zigzag -->
+<section>
+  <div class="container">
+    <div class="zigzag-row reveal">
+      <div class="zigzag-content">
+        <p class="section-number">I</p>
+        <h2>One click. Complete record.</h2>
+        <div class="gold-line"></div>
+        <p>No configuration. No setup. Press record and Meet captures everything — screen, camera, and voice — in a single elegant stream.</p>
+      </div>
+      <div class="zigzag-visual">
+        <div class="zigzag-visual-inner">
+          <div class="zigzag-visual-line gold wide"></div>
+          <div class="zigzag-visual-line wide"></div>
+          <div class="zigzag-visual-line med"></div>
+          <div class="zigzag-visual-line short"></div>
+          <div style="height:16px"></div>
+          <div class="zigzag-visual-line gold med"></div>
+          <div class="zigzag-visual-line wide"></div>
+          <div class="zigzag-visual-line short"></div>
+        </div>
+      </div>
+    </div>
+    <div class="zigzag-row reverse reveal">
+      <div class="zigzag-content">
+        <p class="section-number">II</p>
+        <h2>Intelligence, not noise.</h2>
+        <div class="gold-line"></div>
+        <p>Our AI doesn't transcribe — it understands. Action items extracted. Decisions highlighted. Dead air removed automatically.</p>
+      </div>
+      <div class="zigzag-visual">
+        <div class="zigzag-visual-inner">
+          <div class="zigzag-visual-line gold short"></div>
+          <div class="zigzag-visual-line wide"></div>
+          <div style="height:12px"></div>
+          <div class="zigzag-visual-line med"></div>
+          <div class="zigzag-visual-line gold wide"></div>
+          <div class="zigzag-visual-line short"></div>
+          <div style="height:12px"></div>
+          <div class="zigzag-visual-line wide"></div>
+          <div class="zigzag-visual-line med"></div>
+        </div>
+      </div>
+    </div>
+    <div class="zigzag-row reveal">
+      <div class="zigzag-content">
+        <p class="section-number">III</p>
+        <h2>Shared with intention.</h2>
+        <div class="gold-line"></div>
+        <p>Send a link. Set permissions. Expire access. Every share is deliberate, every viewer controlled. Privacy as a principle, not an afterthought.</p>
+      </div>
+      <div class="zigzag-visual">
+        <div class="zigzag-visual-inner">
+          <div class="zigzag-visual-line wide"></div>
+          <div class="zigzag-visual-line gold med"></div>
+          <div class="zigzag-visual-line short"></div>
+          <div style="height:16px"></div>
+          <div class="zigzag-visual-line gold wide"></div>
+          <div class="zigzag-visual-line med"></div>
+          <div class="zigzag-visual-line short"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonial -->
+<section class="testimonial">
+  <div class="container container--narrow reveal">
+    <blockquote>"We replaced four tools with Meet. Our meeting overhead dropped by 40%. The clarity it brings to our weekly cadence is extraordinary."</blockquote>
+    <p class="author">Elena Voss</p>
+    <p class="role">Chief of Staff, Meridian Partners</p>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section id="pricing">
+  <div class="container">
+    <div class="pricing-header reveal">
+      <h2>Investment</h2>
+      <div class="gold-line gold-line--center"></div>
+      <p>Simple pricing. No hidden tiers.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <p class="pricing-tier">Essential</p>
+        <p class="pricing-amount"><span>$</span>0</p>
+        <p class="pricing-period">Free forever</p>
+        <ul class="pricing-features">
+          <li>5 hours of recording</li>
+          <li>Basic transcripts</li>
+          <li>240p resolution</li>
+          <li>5 GB storage</li>
+        </ul>
+        <a href="#" class="btn-pricing">Begin</a>
+      </div>
+      <div class="pricing-card featured reveal">
+        <p class="pricing-tier">Professional</p>
+        <p class="pricing-amount"><span>$</span>12</p>
+        <p class="pricing-period">Per month, per person</p>
+        <ul class="pricing-features">
+          <li>Unlimited recording</li>
+          <li>AI summaries</li>
+          <li>1080p resolution</li>
+          <li>100 GB storage</li>
+          <li>Advanced analytics</li>
+        </ul>
+        <a href="#" class="btn-pricing">Begin</a>
+      </div>
+      <div class="pricing-card reveal">
+        <p class="pricing-tier">Enterprise</p>
+        <p class="pricing-amount">Custom</p>
+        <p class="pricing-period">Tailored to your needs</p>
+        <ul class="pricing-features">
+          <li>Everything in Pro</li>
+          <li>SSO &amp; SAML</li>
+          <li>Audit logs</li>
+          <li>Dedicated support</li>
+          <li>Custom contracts</li>
+        </ul>
+        <a href="#" class="btn-pricing">Contact</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<section class="final-cta">
+  <div class="container reveal">
+    <h2>Reclaim your <em>time</em></h2>
+    <div class="gold-line gold-line--center"></div>
+    <p>The most valuable thing you own is not your money. It is your attention. Start using it wisely.</p>
+    <div class="cta-group">
+      <a href="#" class="btn-primary">Start Free →</a>
+      <a href="#" class="btn-secondary">Speak to Sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="#" class="logo">LO<span>OM</span></a>
+        <p>Meetings distilled to their essential truth. Founded in San Francisco, 2016.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="#">Features</a>
+          <a href="#">Pricing</a>
+          <a href="#">Integrations</a>
+          <a href="#">Changelog</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About</a>
+          <a href="#">Careers</a>
+          <a href="#">Press</a>
+          <a href="#">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Security</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Meet, Inc. All rights reserved.</p>
+      <p>Crafted with intention</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

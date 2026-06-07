@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F5F0E8;
+    --paper-dark: #E8E0D0;
+    --ink-red: #E63228;
+    --ink-blue: #0055A4;
+    --ink-green: #008866;
+    --ink-black: #1A1A1A;
+    --ink-faint: rgba(26, 26, 26, 0.08);
+    --halftone-opacity: 0.03;
+    --font-sans: 'Space Grotesk', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--paper);
+    color: var(--ink-black);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ===== HALFTONE GRAIN OVERLAY ===== */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: radial-gradient(circle, var(--ink-black) 1px, transparent 1px);
+    background-size: 4px 4px;
+    opacity: var(--halftone-opacity);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  section { position: relative; z-index: 1; }
+
+  h1, h2, h3 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--ink-black);
+    letter-spacing: -0.02em;
+  }
+
+  h1 { font-size: clamp(2.6rem, 6vw, 5rem); }
+  h2 { font-size: clamp(2rem, 4vw, 3rem); }
+  h3 { font-size: clamp(1.2rem, 2vw, 1.5rem); font-weight: 600; }
+
+  a { color: var(--ink-red); text-decoration: none; }
+  a:hover { text-decoration: underline; text-decoration-thickness: 3px; }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ===== MISREGISTRATION TEXT EFFECT ===== */
+  .riso-text {
+    position: relative;
+    display: inline-block;
+  }
+  .riso-text::before,
+  .riso-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+  .riso-text::before {
+    color: var(--ink-red);
+    transform: translate(-2px, -1px);
+    opacity: 0.7;
+    mix-blend-mode: multiply;
+  }
+  .riso-text::after {
+    color: var(--ink-blue);
+    transform: translate(2px, 1px);
+    opacity: 0.7;
+    mix-blend-mode: multiply;
+  }
+
+  /* ===== BUTTONS ===== */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 14px 32px;
+    border: 3px solid var(--ink-black);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.1s;
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .btn-primary {
+    background: var(--ink-red);
+    color: var(--paper);
+    box-shadow: 4px 4px 0 var(--ink-black);
+  }
+  .btn-primary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--ink-black);
+    text-decoration: none;
+  }
+  .btn-primary:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--ink-black);
+  }
+  .btn-secondary {
+    background: var(--paper);
+    color: var(--ink-black);
+    box-shadow: 4px 4px 0 var(--ink-black);
+  }
+  .btn-secondary:hover {
+    background: var(--paper-dark);
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0 var(--ink-black);
+    text-decoration: none;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    padding: 20px 0;
+    border-bottom: 3px solid var(--ink-black);
+    position: sticky;
+    top: 0;
+    background: var(--paper);
+    z-index: 100;
+  }
+  nav .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 1.6rem;
+    letter-spacing: -0.03em;
+    color: var(--ink-black);
+    text-decoration: none;
+  }
+  .logo span { color: var(--ink-red); }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--ink-black);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 100px 0 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50px; right: -50px;
+    width: 400px; height: 400px;
+    background: var(--ink-red);
+    border-radius: 50%;
+    opacity: 0.06;
+    pointer-events: none;
+  }
+  .hero-content {
+    max-width: 800px;
+    position: relative;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 6px 16px;
+    border: 2px solid var(--ink-black);
+    background: var(--ink-green);
+    color: var(--paper);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 28px;
+    box-shadow: 3px 3px 0 var(--ink-black);
+  }
+  .hero h1 {
+    margin-bottom: 24px;
+  }
+  .hero h1 .accent {
+    color: var(--ink-red);
+    position: relative;
+  }
+  .hero p {
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    max-width: 600px;
+    margin-bottom: 40px;
+    color: #444;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .hero-note {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    margin-top: 20px;
+    color: #777;
+  }
+
+  /* ===== LOGOS ===== */
+  .logos {
+    padding: 60px 0;
+    border-top: 3px solid var(--ink-black);
+    border-bottom: 3px solid var(--ink-black);
+    background: var(--paper-dark);
+  }
+  .logos-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #888;
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .logos-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+  .logo-item {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: #999;
+    letter-spacing: -0.02em;
+    transition: color 0.2s;
+  }
+  .logo-item:hover { color: var(--ink-black); }
+
+  /* ===== FEATURES ===== */
+  .features {
+    padding: 100px 0;
+  }
+  .features-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  .features-header h2 { margin-bottom: 16px; }
+  .features-header p {
+    font-size: 1.15rem;
+    max-width: 600px;
+    margin: 0 auto;
+    color: #555;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+  .feature-card {
+    padding: 40px 32px;
+    border: 3px solid var(--ink-black);
+    margin: -1.5px;
+    position: relative;
+    background: var(--paper);
+    transition: all 0.2s;
+  }
+  .feature-card:hover {
+    background: var(--paper-dark);
+    transform: translate(-3px, -3px);
+    box-shadow: 6px 6px 0 var(--ink-black);
+    z-index: 2;
+  }
+  .feature-icon {
+    width: 56px; height: 56px;
+    border: 3px solid var(--ink-black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    box-shadow: 3px 3px 0 var(--ink-black);
+  }
+  .feature-card:nth-child(1) .feature-icon { background: var(--ink-red); color: var(--paper); }
+  .feature-card:nth-child(2) .feature-icon { background: var(--ink-blue); color: var(--paper); }
+  .feature-card:nth-child(3) .feature-icon { background: var(--ink-green); color: var(--paper); }
+  .feature-card:nth-child(4) .feature-icon { background: var(--ink-blue); color: var(--paper); }
+  .feature-card:nth-child(5) .feature-icon { background: var(--ink-red); color: var(--paper); }
+  .feature-card:nth-child(6) .feature-icon { background: var(--ink-green); color: var(--paper); }
+  .feature-card h3 { margin-bottom: 10px; }
+  .feature-card p {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.6;
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag-section {
+    padding: 100px 0;
+    border-top: 3px solid var(--ink-black);
+    background: var(--paper-dark);
+  }
+  .zigzag {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+    margin-bottom: 80px;
+  }
+  .zigzag:last-child { margin-bottom: 0; }
+  .zigzag.reverse .zigzag-visual { order: 2; }
+  .zigzag-text h2 {
+    margin-bottom: 20px;
+  }
+  .zigzag-text p {
+    font-size: 1.05rem;
+    color: #555;
+    margin-bottom: 24px;
+  }
+  .zigzag-list {
+    list-style: none;
+    padding: 0;
+  }
+  .zigzag-list li {
+    padding: 8px 0;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    border-bottom: 1px dashed var(--ink-faint);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .zigzag-list li::before {
+    content: '>';
+    font-weight: 700;
+    color: var(--ink-red);
+  }
+  .zigzag-visual {
+    border: 3px solid var(--ink-black);
+    background: var(--paper);
+    padding: 40px;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 6px 6px 0 var(--ink-black);
+  }
+  .zigzag-visual .mock-cal {
+    width: 100%;
+    font-family: var(--font-mono);
+  }
+  .mock-cal-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+  .mock-cal-header {
+    text-align: center;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 8px 0;
+    border-bottom: 2px solid var(--ink-black);
+    margin-bottom: 4px;
+  }
+  .mock-cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    border: 1px solid #ddd;
+  }
+  .mock-cal-day.active {
+    background: var(--ink-red);
+    color: var(--paper);
+    border-color: var(--ink-red);
+  }
+  .mock-cal-day.has-event {
+    background: var(--ink-blue);
+    color: var(--paper);
+    border-color: var(--ink-blue);
+  }
+  .mock-cal-day.today {
+    border: 2px solid var(--ink-green);
+    font-weight: 700;
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial {
+    padding: 100px 0;
+    border-top: 3px solid var(--ink-black);
+    text-align: center;
+  }
+  .testimonial-inner {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .testimonial-mark {
+    font-size: 5rem;
+    line-height: 1;
+    color: var(--ink-red);
+    opacity: 0.3;
+    font-family: Georgia, serif;
+  }
+  .testimonial blockquote {
+    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+    font-weight: 500;
+    line-height: 1.5;
+    margin: -20px 0 32px;
+    color: var(--ink-black);
+  }
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  .testimonial-avatar {
+    width: 56px; height: 56px;
+    border: 3px solid var(--ink-black);
+    background: var(--ink-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--paper);
+    font-weight: 700;
+    font-size: 1.2rem;
+    box-shadow: 3px 3px 0 var(--ink-black);
+  }
+  .testimonial-name {
+    font-weight: 700;
+    font-size: 1rem;
+  }
+  .testimonial-role {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: #777;
+  }
+
+  /* ===== PRICING ===== */
+  .pricing {
+    padding: 100px 0;
+    border-top: 3px solid var(--ink-black);
+    background: var(--paper-dark);
+  }
+  .pricing-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  .pricing-header h2 { margin-bottom: 16px; }
+  .pricing-header p {
+    font-size: 1.1rem;
+    color: #555;
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .pricing-card {
+    padding: 40px 32px;
+    border: 3px solid var(--ink-black);
+    margin: -1.5px;
+    background: var(--paper);
+    position: relative;
+  }
+  .pricing-card.featured {
+    background: var(--ink-black);
+    color: var(--paper);
+    transform: scale(1.05);
+    z-index: 2;
+    box-shadow: 8px 8px 0 var(--ink-red);
+  }
+  .pricing-card.featured * { color: var(--paper); }
+  .pricing-card.featured .pricing-price { color: var(--paper); }
+  .pricing-card.featured .pricing-feature::before { color: var(--ink-green); }
+  .pricing-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+    color: #888;
+  }
+  .pricing-card.featured .pricing-label { color: var(--ink-green); }
+  .pricing-price {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    letter-spacing: -0.03em;
+  }
+  .pricing-price span {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+  .pricing-desc {
+    font-size: 0.9rem;
+    color: #777;
+    margin-bottom: 28px;
+    padding-bottom: 28px;
+    border-bottom: 2px solid var(--ink-faint);
+  }
+  .pricing-card.featured .pricing-desc { border-color: rgba(245, 240, 232, 0.15); }
+  .pricing-features {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 32px;
+  }
+  .pricing-feature {
+    padding: 6px 0;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pricing-feature::before {
+    content: '+';
+    font-weight: 700;
+    color: var(--ink-green);
+    font-family: var(--font-mono);
+  }
+  .pricing-card .btn { width: 100%; justify-content: center; }
+  .pricing-card.featured .btn-primary {
+    background: var(--ink-green);
+    border-color: var(--paper);
+    box-shadow: 4px 4px 0 var(--paper);
+  }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    padding: 100px 0;
+    border-top: 3px solid var(--ink-black);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: var(--ink-blue);
+    border-radius: 50%;
+    opacity: 0.04;
+    pointer-events: none;
+  }
+  .final-cta h2 {
+    margin-bottom: 20px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .final-cta p {
+    font-size: 1.15rem;
+    color: #555;
+    margin-bottom: 40px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .final-cta-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 60px 0 40px;
+    border-top: 3px solid var(--ink-black);
+    background: var(--ink-black);
+    color: var(--paper);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+  .footer-brand .logo {
+    color: var(--paper);
+    margin-bottom: 16px;
+    display: inline-block;
+  }
+  .footer-brand p {
+    font-size: 0.9rem;
+    color: rgba(245, 240, 232, 0.5);
+    max-width: 280px;
+  }
+  .footer-col h4 {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+    color: var(--ink-green);
+  }
+  .footer-col a {
+    display: block;
+    color: rgba(245, 240, 232, 0.6);
+    font-size: 0.9rem;
+    padding: 4px 0;
+    transition: color 0.2s;
+  }
+  .footer-col a:hover { color: var(--paper); text-decoration: none; }
+  .footer-bottom {
+    padding-top: 32px;
+    border-top: 1px solid rgba(245, 240, 232, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: rgba(245, 240, 232, 0.35);
+  }
+  .footer-bottom a { color: rgba(245, 240, 232, 0.5); }
+  .footer-bottom a:hover { color: var(--paper); }
+
+  /* ===== RISO PRINT STAMP ===== */
+  .riso-stamp {
+    position: absolute;
+    top: 20px; right: 20px;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 6px 12px;
+    border: 2px solid var(--ink-black);
+    transform: rotate(3deg);
+    opacity: 0.4;
+  }
+
+  /* ===== HALFTONE CIRCLE DECORATIONS ===== */
+  .halftone-circle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .halftone-circle::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    background-image: radial-gradient(circle, var(--ink-black) 1.5px, transparent 1.5px);
+    background-size: 6px 6px;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+    .pricing-card.featured { transform: none; }
+    .zigzag { grid-template-columns: 1fr; gap: 40px; }
+    .zigzag.reverse .zigzag-visual { order: 0; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 600px) {
+    .features-grid { grid-template-columns: 1fr; }
+    .nav-links { gap: 16px; }
+    .hero { padding: 60px 0; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <a href="#" class="logo">meet<span>.</span></a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#cta" class="btn btn-primary" style="padding:10px 20px;font-size:0.8rem;">Get Early Access</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">v0.1 — Now in Beta</div>
+      <h1>
+        <span class="riso-text" data-text="Meetings that">Meetings that</span><br>
+        <span class="accent">don't waste</span> your week
+      </h1>
+      <p>One calendar. Zero double-bookings. Real-time sync across your whole team. Built for people who'd rather ship code than schedule standups.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn btn-primary">Start Free Trial →</a>
+        <a href="#" class="btn btn-secondary">Watch Demo</a>
+      </div>
+      <p class="hero-note">No credit card required · Free for teams under 10</p>
+    </div>
+  </div>
+  <div class="riso-stamp">riso proof — 3-color</div>
+</section>
+
+<!-- LOGOS -->
+<section class="logos">
+  <div class="container">
+    <p class="logos-label">Trusted by teams who value their time</p>
+    <div class="logos-grid">
+      <span class="logo-item">Vercel</span>
+      <span class="logo-item">Linear</span>
+      <span class="logo-item">Notion</span>
+      <span class="logo-item">Figma</span>
+      <span class="logo-item">Raycast</span>
+      <span class="logo-item">Arc</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header">
+      <h2>Everything you need,<br>nothing you don't</h2>
+      <p>Six tools that replace your entire meeting stack. No plugins. No integrations. Just works.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">01</div>
+        <h3>Smart Scheduling</h3>
+        <p>AI finds the perfect slot across time zones. No more "does 3pm work?" email threads.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">02</div>
+        <h3>Auto Agendas</h3>
+        <p>Generates meeting agendas from your project management tools. Everyone arrives prepared.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">03</div>
+        <h3>Live Transcripts</h3>
+        <p>Real-time transcription with action item detection. Missed the meeting? Read the summary.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">04</div>
+        <h3>Focus Guard</h3>
+        <p>Blocks back-to-back meetings. Enforces focus time automatically. Protects deep work.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">05</div>
+        <h3>One-Click Join</h3>
+        <p>No app switching. Meet links embed everywhere. Slack, email, calendar — always one tap.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">06</div>
+        <h3>Usage Analytics</h3>
+        <p>See where meeting time goes. Cut the bloat. Data-driven calendar hygiene.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZIGZAG -->
+<section class="zigzag-section">
+  <div class="container">
+    <div class="zigzag">
+      <div class="zigzag-text">
+        <h2>Your calendar,<br>finally makes sense</h2>
+        <p>Meet scans your team's availability, project deadlines, and energy patterns to suggest the optimal schedule. No more manual herding.</p>
+        <ul class="zigzag-list">
+          <li>Auto-detects time zone overlaps</li>
+          <li>Respects focus blocks &amp; PTO</li>
+          <li>Prioritizes cross-team syncs</li>
+          <li>Learns from your preferences</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <div class="mock-cal">
+          <div class="mock-cal-row mock-cal-header">
+            <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
+          </div>
+          <div class="mock-cal-row">
+            <div class="mock-cal-day">1</div><div class="mock-cal-day">2</div><div class="mock-cal-day has-event">3</div><div class="mock-cal-day">4</div><div class="mock-cal-day">5</div><div class="mock-cal-day">6</div><div class="mock-cal-day">7</div>
+          </div>
+          <div class="mock-cal-row">
+            <div class="mock-cal-day">8</div><div class="mock-cal-day has-event">9</div><div class="mock-cal-day">10</div><div class="mock-cal-day today">11</div><div class="mock-cal-day active">12</div><div class="mock-cal-day">13</div><div class="mock-cal-day">14</div>
+          </div>
+          <div class="mock-cal-row">
+            <div class="mock-cal-day">15</div><div class="mock-cal-day">16</div><div class="mock-cal-day has-event">17</div><div class="mock-cal-day">18</div><div class="mock-cal-day">19</div><div class="mock-cal-day">20</div><div class="mock-cal-day">21</div>
+          </div>
+          <div class="mock-cal-row">
+            <div class="mock-cal-day active">22</div><div class="mock-cal-day">23</div><div class="mock-cal-day">24</div><div class="mock-cal-day has-event">25</div><div class="mock-cal-day">26</div><div class="mock-cal-day">27</div><div class="mock-cal-day">28</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="zigzag reverse">
+      <div class="zigzag-text">
+        <h2>Post-meeting,<br>pre-burnout</h2>
+        <p>Every meeting auto-generates a summary with decisions, action items, and deadlines. Distributed to the right people. No more "what did we decide?"</p>
+        <ul class="zigzag-list">
+          <li>Decision log with timestamps</li>
+          <li>Action items assigned automatically</li>
+          <li>Follow-up reminders at 24h / 7d</li>
+          <li>Integrates with Jira, Linear, Asana</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <div style="width:100%;font-family:var(--font-mono);font-size:0.8rem;">
+          <div style="border:2px solid var(--ink-black);padding:20px;background:var(--paper-dark);margin-bottom:8px;">
+            <div style="color:var(--ink-red);font-weight:700;margin-bottom:8px;">● DECISION LOG</div>
+            <div style="padding:4px 0;border-bottom:1px dashed #ccc;">[14:02] Ship auth v2 on Friday</div>
+            <div style="padding:4px 0;border-bottom:1px dashed #ccc;">[14:15] Migrate to new API gateway</div>
+            <div style="padding:4px 0;">[14:28] Freeze feature branch EOD</div>
+          </div>
+          <div style="border:2px solid var(--ink-black);padding:20px;background:var(--paper-dark);">
+            <div style="color:var(--ink-blue);font-weight:700;margin-bottom:8px;">● ACTION ITEMS</div>
+            <div style="padding:4px 0;border-bottom:1px dashed #ccc;">☐ @sarah — write migration docs</div>
+            <div style="padding:4px 0;border-bottom:1px dashed #ccc;">☐ @james — update load tests</div>
+            <div style="padding:4px 0;">☐ @all — review PR #482</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial">
+  <div class="container">
+    <div class="testimonial-inner">
+      <div class="testimonial-mark">"</div>
+      <blockquote>We cut our weekly meeting time by 40%. The auto-agendas alone saved us 10 hours per week. Meet paid for itself in the first sprint.</blockquote>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">KR</div>
+        <div>
+          <div class="testimonial-name">Kara Rodriguez</div>
+          <div class="testimonial-role">VP of Engineering, Streamline</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="pricing-header">
+      <h2>Simple pricing.<br>Zero surprises.</h2>
+      <p>Start free. Scale when you're ready.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-label">Starter</div>
+        <div class="pricing-price">$0 <span>/mo</span></div>
+        <p class="pricing-desc">For solo devs and tiny teams</p>
+        <ul class="pricing-features">
+          <li class="pricing-feature">Up to 5 team members</li>
+          <li class="pricing-feature">Smart scheduling</li>
+          <li class="pricing-feature">Basic transcripts</li>
+          <li class="pricing-feature">50 meetings / month</li>
+        </ul>
+        <a href="#" class="btn btn-secondary">Get Started</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-label">Pro — Most Popular</div>
+        <div class="pricing-price">$12 <span>/user/mo</span></div>
+        <p class="pricing-desc">For teams that ship fast</p>
+        <ul class="pricing-features">
+          <li class="pricing-feature">Unlimited members</li>
+          <li class="pricing-feature">AI agendas &amp; summaries</li>
+          <li class="pricing-feature">Focus Guard</li>
+          <li class="pricing-feature">Unlimited meetings</li>
+          <li class="pricing-feature">Analytics dashboard</li>
+          <li class="pricing-feature">Priority support</li>
+        </ul>
+        <a href="#" class="btn btn-primary">Start Free Trial</a>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-label">Enterprise</div>
+        <div class="pricing-price">Custom</div>
+        <p class="pricing-desc">For orgs with compliance needs</p>
+        <ul class="pricing-features">
+          <li class="pricing-feature">SSO &amp; SAML</li>
+          <li class="pricing-feature">Audit logs</li>
+          <li class="pricing-feature">Dedicated support</li>
+          <li class="pricing-feature">Custom integrations</li>
+          <li class="pricing-feature">SLA guarantee</li>
+        </ul>
+        <a href="#" class="btn btn-secondary">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" id="cta">
+  <div class="container">
+    <h2>Stop wasting hours<br>on meeting logistics</h2>
+    <p>Join 2,000+ teams who reclaim their week with Meet. Free for 14 days.</p>
+    <div class="final-cta-actions">
+      <a href="#" class="btn btn-primary">Start Your Free Trial →</a>
+      <a href="#" class="btn btn-secondary">Talk to Sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">meet<span>.</span></a>
+        <p>Meetings that don't waste your week. Built by engineers, for engineers.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Changelog</a>
+        <a href="#">Roadmap</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Blog</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Security</a>
+        <a href="#">GDPR</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 Meet Inc. All rights reserved.</span>
+      <span>Made with riso ink &amp; too much coffee</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

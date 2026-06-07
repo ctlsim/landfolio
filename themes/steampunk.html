@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #2C2416;
+    --bg-light: #3D3225;
+    --paper: #F5E6C8;
+    --paper-dark: #E8D5B0;
+    --paper-darker: #D4C098;
+    --bronze: #CD7F32;
+    --bronze-dark: #A0622E;
+    --bronze-light: #E8A860;
+    --copper: #B87333;
+    --copper-glow: #D4956A;
+    --gold: #C9A84C;
+    --gold-light: #E0C068;
+    --text: #2C2416;
+    --text-dim: #6B5D45;
+    --text-light: #9B8B6E;
+    --ink: #1A1410;
+    --rivet: #8B7355;
+    --leather: #5C3A1E;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Special Elite', cursive;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  /* Aged paper texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 28px,
+        rgba(139,115,85,0.03) 28px,
+        rgba(139,115,85,0.03) 29px
+      );
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* Gear decorative elements */
+  @keyframes rotate-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes rotate-reverse {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+  }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+  /* Rivet mixin */
+  .rivet {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, var(--bronze-light), var(--rivet));
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0 1px 1px rgba(0,0,0,0.2);
+    flex-shrink: 0;
+  }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: linear-gradient(180deg, var(--bg) 0%, rgba(44,36,22,0.97) 100%);
+    border-bottom: 2px solid var(--bronze-dark);
+  }
+  nav::after {
+    content: '';
+    position: absolute; bottom: -2px; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--bronze), transparent);
+  }
+  nav .container {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 32px;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-weight: 800; font-size: 1.3rem;
+    color: var(--paper); text-decoration: none;
+    text-shadow: 0 0 20px rgba(201,168,76,0.3);
+  }
+  .logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a {
+    font-family: 'Special Elite', cursive;
+    color: var(--paper-dark); text-decoration: none;
+    font-size: 0.85rem; opacity: 0.7; transition: opacity 0.2s, color 0.2s;
+  }
+  .nav-links a:hover { opacity: 1; color: var(--gold-light); }
+  .btn-nav {
+    font-family: 'Special Elite', cursive;
+    background: linear-gradient(135deg, var(--bronze), var(--bronze-dark));
+    color: var(--paper) !important; opacity: 1 !important;
+    padding: 10px 24px; font-size: 0.82rem !important;
+    border: 1px solid var(--bronze-light);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .btn-nav:hover {
+    background: linear-gradient(135deg, var(--bronze-light), var(--bronze));
+    box-shadow: 0 2px 12px rgba(205,127,50,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+  }
+
+  /* Hero */
+  .hero { padding: 160px 0 80px; position: relative; overflow: hidden; }
+  .hero::before {
+    content: '';
+    position: absolute; top: -100px; right: -100px;
+    width: 400px; height: 400px;
+    border: 2px solid rgba(205,127,50,0.08);
+    border-radius: 50%;
+    animation: rotate-slow 60s linear infinite;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -50px; left: -80px;
+    width: 250px; height: 250px;
+    border: 1px solid rgba(201,168,76,0.06);
+    border-radius: 50%;
+    animation: rotate-reverse 45s linear infinite;
+  }
+  .hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; position: relative; z-index: 1; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'Special Elite', cursive;
+    font-size: 0.75rem; color: var(--gold-light);
+    margin-bottom: 28px; padding: 8px 16px;
+    background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.15);
+    text-transform: uppercase; letter-spacing: 0.15em;
+    width: fit-content;
+  }
+  .hero-tag::before { content: '⚙'; font-size: 0.9rem; }
+  .hero h1 {
+    font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+    margin-bottom: 20px; color: var(--paper);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+  .hero h1 em {
+    font-style: italic; color: var(--gold);
+    text-shadow: 0 0 30px rgba(201,168,76,0.3);
+  }
+  .hero .subhead {
+    font-family: 'Special Elite', cursive;
+    font-size: 1rem; color: var(--paper-dark);
+    max-width: 420px; opacity: 0.7; line-height: 1.8;
+    margin-bottom: 36px;
+  }
+  .btn-group { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, var(--bronze), var(--bronze-dark));
+    color: var(--paper); padding: 16px 32px;
+    text-decoration: none; font-family: 'Special Elite', cursive;
+    font-size: 0.9rem;
+    border: 1px solid var(--bronze-light);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, var(--bronze-light), var(--bronze));
+    box-shadow: 0 4px 24px rgba(205,127,50,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+    transform: translateY(-2px);
+  }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--paper-dark); padding: 16px 20px; text-decoration: none;
+    font-family: 'Special Elite', cursive; font-size: 0.9rem;
+    opacity: 0.6; transition: opacity 0.2s;
+  }
+  .btn-secondary:hover { opacity: 1; }
+  .btn-secondary::after { content: '→'; }
+
+  /* Hero visual */
+  .hero-visual { display: flex; justify-content: center; }
+  .hero-screenshot {
+    width: 100%; max-width: 480px;
+    background: linear-gradient(145deg, var(--paper), var(--paper-dark));
+    border: 2px solid var(--bronze-dark);
+    position: relative;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(205,127,50,0.1);
+    overflow: hidden;
+  }
+  /* Corner rivets */
+  .hero-screenshot::before, .hero-screenshot::after {
+    content: ''; position: absolute; width: 12px; height: 12px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, var(--bronze-light), var(--rivet));
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+    z-index: 2;
+  }
+  .hero-screenshot::before { top: 10px; left: 10px; }
+  .hero-screenshot::after { top: 10px; right: 10px; }
+  .screenshot-mockup { display: flex; flex-direction: column; }
+  .mockup-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--paper-darker);
+    font-family: 'Special Elite', cursive;
+    font-size: 0.65rem; color: var(--text-light);
+    background: rgba(0,0,0,0.03);
+  }
+  .mockup-topbar-dots { display: flex; gap: 5px; }
+  .mockup-topbar-dots span {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--paper-darker);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.15);
+  }
+  .mockup-body { flex: 1; display: grid; grid-template-columns: 140px 1fr 180px; }
+  .mock-sidebar { border-right: 1px solid var(--paper-darker); padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .mock-sidebar-item {
+    height: 7px; border-radius: 2px;
+    background: var(--paper-darker);
+  }
+  .mock-sidebar-item.active { background: var(--bronze); opacity: 0.6; }
+  .mock-main { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .mock-line { height: 7px; border-radius: 2px; background: var(--paper-darker); }
+  .mock-line.title { height: 9px; background: var(--ink); opacity: 0.1; width: 55%; }
+  .mock-right { border-left: 1px solid var(--paper-darker); padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .mock-action {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px; border: 1px solid var(--paper-darker);
+    background: rgba(255,255,255,0.3);
+  }
+  .mock-action-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; background: var(--bronze); }
+  .mock-action-line { height: 5px; background: var(--paper-darker); flex: 1; }
+
+  /* Logos */
+  .logo-bar { padding: 56px 0; }
+  .logo-bar p {
+    font-family: 'Special Elite', cursive;
+    font-size: 0.75rem; color: var(--paper-dark);
+    margin-bottom: 20px; text-align: center; opacity: 0.4;
+    text-transform: uppercase; letter-spacing: 0.15em;
+  }
+  .logos { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; }
+  .logo-item {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600; font-size: 0.9rem;
+    color: var(--paper-dark); opacity: 0.3;
+  }
+
+  /* Features */
+  .features { padding: 80px 0; }
+  .features-header { text-align: center; margin-bottom: 56px; }
+  .features-header h2 { font-size: 2.2rem; margin-bottom: 10px; color: var(--paper); }
+  .features-header p {
+    font-family: 'Special Elite', cursive;
+    color: var(--paper-dark); font-size: 0.95rem; opacity: 0.6;
+  }
+  .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .feature-card {
+    padding: 36px 28px;
+    background: linear-gradient(145deg, rgba(245,230,200,0.06), rgba(245,230,200,0.03));
+    border: 1px solid rgba(205,127,50,0.15);
+    position: relative;
+    transition: all 0.3s;
+  }
+  .feature-card::before {
+    content: ''; position: absolute; top: 8px; left: 8px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, var(--bronze-light), var(--rivet));
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+  }
+  .feature-card::after {
+    content: ''; position: absolute; bottom: 8px; right: 8px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, var(--bronze-light), var(--rivet));
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+  }
+  .feature-card:hover {
+    border-color: rgba(205,127,50,0.3);
+    background: linear-gradient(145deg, rgba(245,230,200,0.08), rgba(245,230,200,0.04));
+    transform: translateY(-2px);
+  }
+  .feature-icon {
+    width: 48px; height: 48px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px; font-size: 1.3rem;
+    border: 1px solid rgba(205,127,50,0.2);
+    color: var(--gold);
+    background: rgba(201,168,76,0.06);
+  }
+  .feature-card h3 { font-size: 1.15rem; margin-bottom: 10px; color: var(--paper); }
+  .feature-card p {
+    font-family: 'Special Elite', cursive;
+    font-size: 0.85rem; color: var(--paper-dark);
+    opacity: 0.55; line-height: 1.8;
+  }
+
+  /* Zigzag */
+  .zigzag { padding: 40px 0; }
+  .zigzag-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 48px; align-items: center; padding: 60px 0;
+  }
+  .zigzag-row + .zigzag-row {
+    border-top: 1px solid rgba(205,127,50,0.1);
+  }
+  .zigzag-row.reverse .zigzag-copy { order: 2; }
+  .zigzag-copy h2 { font-size: 2rem; margin-bottom: 14px; color: var(--paper); }
+  .zigzag-copy p {
+    font-family: 'Special Elite', cursive;
+    font-size: 0.9rem; color: var(--paper-dark);
+    opacity: 0.55; line-height: 1.8; margin-bottom: 24px;
+  }
+  .zigzag-visual {
+    background: linear-gradient(145deg, rgba(245,230,200,0.06), rgba(245,230,200,0.03));
+    border: 1px solid rgba(205,127,50,0.15);
+    padding: 28px; min-height: 240px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .zigzag-visual::before {
+    content: '⚙'; position: absolute; top: -15px; right: -10px;
+    font-size: 2rem; color: rgba(205,127,50,0.15);
+    animation: rotate-slow 20s linear infinite;
+  }
+  .zigzag-visual-inner { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+  .conn-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid rgba(205,127,50,0.1);
+    background: rgba(245,230,200,0.03);
+  }
+  .conn-icon {
+    width: 30px; height: 30px;
+    border: 1px solid rgba(201,168,76,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.75rem; font-weight: 600;
+    color: var(--gold); flex-shrink: 0;
+    background: rgba(201,168,76,0.06);
+  }
+  .conn-line { height: 4px; background: rgba(205,127,50,0.15); flex: 1; }
+  .conn-badge {
+    font-family: 'Special Elite', cursive;
+    font-size: 0.6rem; padding: 3px 10px;
+    background: rgba(201,168,76,0.08);
+    color: var(--gold-light); border: 1px solid rgba(201,168,76,0.15);
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+
+  /* Testimonial */
+  .testimonial {
+    padding: 80px 0;
+    background: linear-gradient(145deg, rgba(245,230,200,0.05), rgba(245,230,200,0.02));
+    border: 1px solid rgba(205,127,50,0.1);
+    margin: 40px 0;
+    position: relative;
+  }
+  .testimonial::before {
+    content: '"';
+    position: absolute; top: 20px; left: 40px;
+    font-family: 'Playfair Display', serif;
+    font-size: 6rem; color: rgba(201,168,76,0.1);
+    line-height: 1;
+  }
+  .testimonial-inner { max-width: 680px; margin: 0 auto; text-align: center; padding: 0 32px; }
+  .testimonial blockquote {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+    font-weight: 400; font-style: italic;
+    line-height: 1.55; margin-bottom: 24px;
+    color: var(--paper);
+  }
+  .testimonial-author { display: flex; align-items: center; justify-content: center; gap: 12px; }
+  .author-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--bronze), var(--leather));
+    border: 1px solid rgba(205,127,50,0.3);
+  }
+  .author-info { text-align: left; }
+  .author-info .name { font-family: 'Playfair Display', serif; font-weight: 600; font-size: 0.88rem; color: var(--paper); }
+  .author-info .role { font-family: 'Special Elite', cursive; font-size: 0.75rem; color: var(--paper-dark); opacity: 0.5; }
+
+  /* Pricing */
+  .pricing { padding: 80px 0; }
+  .pricing-header { text-align: center; margin-bottom: 48px; }
+  .pricing-header h2 { font-size: 2.4rem; margin-bottom: 10px; color: var(--paper); }
+  .pricing-header p {
+    font-family: 'Special Elite', cursive;
+    color: var(--paper-dark); font-size: 0.95rem; opacity: 0.6;
+  }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .pricing-card {
+    padding: 36px 28px;
+    background: linear-gradient(145deg, rgba(245,230,200,0.06), rgba(245,230,200,0.03));
+    border: 1px solid rgba(205,127,50,0.15);
+    text-align: center; transition: all 0.3s;
+    position: relative;
+  }
+  .pricing-card:hover {
+    border-color: rgba(205,127,50,0.3);
+    transform: translateY(-2px);
+  }
+  .pricing-card.featured {
+    border-color: var(--gold);
+    background: linear-gradient(145deg, rgba(201,168,76,0.1), rgba(201,168,76,0.05));
+    box-shadow: 0 0 0 1px var(--gold), 0 4px 24px rgba(201,168,76,0.15);
+  }
+  .pricing-card.featured::before {
+    content: '★ MOST POPULAR ★';
+    position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--gold), var(--bronze));
+    color: var(--ink); font-family: 'Special Elite', cursive;
+    font-size: 0.6rem; padding: 5px 16px;
+    letter-spacing: 0.1em;
+  }
+  .pricing-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem; margin-bottom: 8px;
+    color: var(--paper);
+  }
+  .pricing-card .price {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem; font-weight: 700; margin-bottom: 4px;
+    color: var(--gold);
+  }
+  .pricing-card .price span { font-size: 1rem; font-weight: 400; color: var(--paper-dark); opacity: 0.5; }
+  .pricing-card .period {
+    font-family: 'Special Elite', cursive;
+    font-size: 0.72rem; margin-bottom: 24px;
+    color: var(--paper-dark); opacity: 0.4;
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .pricing-card ul { list-style: none; text-align: left; margin-bottom: 28px; }
+  .pricing-card li {
+    font-family: 'Special Elite', cursive;
+    padding: 7px 0; font-size: 0.82rem;
+    display: flex; align-items: center; gap: 10px;
+    color: var(--paper-dark); opacity: 0.55;
+  }
+  .pricing-card li::before {
+    content: '⚙'; font-size: 0.6rem; color: var(--gold); opacity: 0.6;
+  }
+  .btn-pricing {
+    display: block; width: 100%; padding: 13px; text-decoration: none;
+    font-family: 'Special Elite', cursive;
+    font-size: 0.82rem; text-align: center;
+    border: 1px solid rgba(205,127,50,0.2);
+    color: var(--paper-dark); background: transparent;
+    cursor: pointer; transition: all 0.2s;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .btn-pricing:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-pricing.filled {
+    background: linear-gradient(135deg, var(--bronze), var(--bronze-dark));
+    border-color: var(--bronze-light); color: var(--paper);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .btn-pricing.filled:hover {
+    background: linear-gradient(135deg, var(--bronze-light), var(--bronze));
+  }
+
+  /* Final CTA */
+  .final-cta { padding: 80px 0; text-align: center; position: relative; }
+  .final-cta::before {
+    content: '⚙';
+    position: absolute; top: 40px; left: 50%; transform: translateX(-300px);
+    font-size: 4rem; color: rgba(205,127,50,0.06);
+    animation: rotate-slow 30s linear infinite;
+  }
+  .final-cta h2 {
+    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    margin-bottom: 14px; color: var(--paper);
+  }
+  .final-cta h2 em { font-style: italic; color: var(--gold); }
+  .final-cta p {
+    font-family: 'Special Elite', cursive;
+    color: var(--paper-dark); font-size: 0.95rem;
+    opacity: 0.55; margin-bottom: 32px;
+  }
+
+  /* Footer */
+  footer {
+    padding: 28px 0; text-align: center;
+    border-top: 1px solid rgba(205,127,50,0.1);
+  }
+  footer p {
+    font-family: 'Special Elite', cursive;
+    font-size: 0.75rem; color: var(--paper-dark); opacity: 0.3;
+  }
+
+  @media (max-width: 768px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+    .hero-visual { order: -1; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .zigzag-row { grid-template-columns: 1fr; }
+    .zigzag-row.reverse .zigzag-copy { order: 0; }
+    .mockup-body { grid-template-columns: 1fr; }
+    .mock-sidebar, .mock-right { display: none; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="#" class="logo">Meet<span>.</span></a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="btn-nav">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <div class="hero-tag reveal">AI Meeting Notes</div>
+        <h1 class="reveal">Meetings that don't waste your <em>week</em></h1>
+        <p class="subhead reveal">AI notes that turn transcripts into action items. Syncs to Notion, Linear, Slack.</p>
+        <div class="btn-group reveal">
+          <a href="#" class="btn-primary">Connect calendar — free 14 days</a>
+          <a href="#features" class="btn-secondary">See how it works</a>
+        </div>
+      </div>
+      <div class="hero-visual reveal">
+        <div class="hero-screenshot">
+          <div class="screenshot-mockup">
+            <div class="mockup-topbar">
+              <div class="mockup-topbar-dots"><span></span><span></span><span></span></div>
+              <span>meet://meetings</span>
+            </div>
+            <div class="mockup-body">
+              <div class="mock-sidebar">
+                <div class="mock-sidebar-item active" style="width:75%"></div>
+                <div class="mock-sidebar-item" style="width:60%"></div>
+                <div class="mock-sidebar-item" style="width:85%"></div>
+                <div class="mock-sidebar-item" style="width:50%"></div>
+                <div class="mock-sidebar-item" style="width:70%"></div>
+              </div>
+              <div class="mock-main">
+                <div class="mock-line title"></div>
+                <div class="mock-line" style="width:100%"></div>
+                <div class="mock-line" style="width:80%"></div>
+                <div class="mock-line" style="width:90%"></div>
+                <div class="mock-line" style="width:65%"></div>
+              </div>
+              <div class="mock-right">
+                <div class="mock-action"><div class="mock-action-dot"></div><div class="mock-action-line"></div></div>
+                <div class="mock-action"><div class="mock-action-dot"></div><div class="mock-action-line"></div></div>
+                <div class="mock-action"><div class="mock-action-dot"></div><div class="mock-action-line"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="logo-bar">
+  <div class="container">
+    <p class="reveal">Trusted by teams at</p>
+    <div class="logos reveal">
+      <span class="logo-item">Vercel</span><span class="logo-item">Stripe</span><span class="logo-item">Notion</span><span class="logo-item">Linear</span><span class="logo-item">Figma</span><span class="logo-item">Raycast</span>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header reveal"><h2>Engineered for precision</h2><p>Three mechanisms. Nothing else you need.</p></div>
+    <div class="feature-grid">
+      <div class="feature-card reveal"><div class="feature-icon">◎</div><h3>Transcribe</h3><p>Every word captured. Speaker-labeled. Searchable. Your meetings become a permanent record you can actually find things in.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon">◇</div><h3>Summarize</h3><p>AI distills 60 minutes into 3 bullet points and 5 action items. Skip the replay. Get the signal.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon">○</div><h3>Sync</h3><p>Pushes to your tools. Notion pages, Linear tickets, Slack threads. One click. Every tool updated.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="zigzag">
+  <div class="container">
+    <div class="zigzag-row">
+      <div class="zigzag-copy reveal"><h2>One click.<br>Every tool updated.</h2><p>Connect your workspace tools once. Meet pushes the right content to the right place — meeting notes to Notion, bugs to Linear, decisions to Slack.</p><a href="#" class="btn-secondary">View integrations</a></div>
+      <div class="zigzag-visual reveal"><div class="zigzag-visual-inner">
+        <div class="conn-row"><div class="conn-icon">N</div><div class="conn-line"></div><span class="conn-badge">Connected</span></div>
+        <div class="conn-row"><div class="conn-icon">L</div><div class="conn-line"></div><span class="conn-badge">Connected</span></div>
+        <div class="conn-row"><div class="conn-icon">S</div><div class="conn-line"></div><span class="conn-badge">Connected</span></div>
+      </div></div>
+    </div>
+    <div class="zigzag-row reverse">
+      <div class="zigzag-copy reveal"><h2>Notes that live<br>somewhere useful</h2><p>Every meeting generates a polished Notion page automatically. Headings, tables, timestamps — formatted like a human wrote them.</p></div>
+      <div class="zigzag-visual reveal"><div class="zigzag-visual-inner">
+        <div class="mock-line title" style="width:45%;background:var(--ink);opacity:0.1"></div>
+        <div class="mock-line" style="width:100%"></div>
+        <div class="mock-line" style="width:75%"></div>
+        <div class="mock-line" style="width:85%"></div>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonial">
+  <div class="container">
+    <div class="testimonial-inner reveal">
+      <blockquote>"We went from 4 hours of note-taking per week to zero. Meet just works."</blockquote>
+      <div class="testimonial-author"><div class="author-avatar"></div><div class="author-info"><div class="name">Sarah Chen</div><div class="role">VP of Product · Linear</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="pricing-header reveal"><h2>Simple pricing</h2><p>Start free. Upgrade when you're ready.</p></div>
+  </div>
+  <div class="container">
+    <div class="pricing-grid">
+      <div class="pricing-card reveal"><h3>Free</h3><div class="price">$0<span>/mo</span></div><div class="period">10 meetings / month</div><ul><li>AI transcription</li><li>Basic summaries</li><li>1 integration</li></ul><a href="#" class="btn-pricing">Get started</a></div>
+      <div class="pricing-card featured reveal"><h3>Pro</h3><div class="price">$12<span>/mo</span></div><div class="period">Unlimited meetings</div><ul><li>Everything in Free</li><li>AI summaries & action items</li><li>Unlimited integrations</li><li>Search across all meetings</li></ul><a href="#" class="btn-pricing filled">Start free trial</a></div>
+      <div class="pricing-card reveal"><h3>Team</h3><div class="price">$29<span>/mo</span></div><div class="period">Per seat, min 5</div><ul><li>Everything in Pro</li><li>Shared workspace</li><li>Admin controls</li><li>SSO & audit logs</li></ul><a href="#" class="btn-pricing">Contact sales</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="container">
+    <h2 class="reveal">Stop taking notes.<br>Start getting things <em>done</em>.</h2>
+    <p class="reveal">Your calendar already knows about your meetings. Let Meet handle the rest.</p>
+    <a href="#" class="btn-primary reveal">Start free — no credit card</a>
+  </div>
+</section>
+
+<footer><div class="container"><p>© 2024 Meet. Built for people who value their time.</p></div></footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) { setTimeout(() => entry.target.classList.add('visible'), i * 50); observer.unobserve(entry.target); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

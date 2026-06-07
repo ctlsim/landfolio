@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..14,300;0,9..14,400;0,9..14,500;0,9..14,600;0,9..14,700;1,9..14,400;1,9..14,500&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1A1408;
+    --bg-light: #231C0D;
+    --bg-card: #2A2116;
+    --bg-card-alt: #332A1D;
+    --text: #F5EDE0;
+    --text-dim: #B8A88A;
+    --text-muted: #7A6B52;
+    --amber: #D4922A;
+    --amber-light: #E8A94E;
+    --amber-deep: #A87020;
+    --brown: #5C3D1E;
+    --brown-dark: #3D2810;
+    --cream: #F5EDE0;
+    --cream-soft: #E8DCC8;
+    --hops-green: #6B7F3B;
+    --hops-green-soft: rgba(107, 127, 59, 0.15);
+    --foam: rgba(245, 237, 224, 0.06);
+    --border: rgba(245, 237, 224, 0.08);
+    --border-amber: rgba(212, 146, 42, 0.25);
+    --glow-amber: rgba(212, 146, 42, 0.10);
+    --radius: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 20px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Barlow Condensed', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 400;
+    font-size: 16px;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Fraunces', serif;
+    line-height: 1.15;
+    font-weight: 600;
+  }
+
+  /* ============ BACKGROUND ============ */
+  .bg-shapes {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0;
+    overflow: hidden;
+  }
+
+  /* Hop vine SVG decorations */
+  .hop-vine {
+    position: absolute;
+    opacity: 0.04;
+    pointer-events: none;
+  }
+
+  .hop-vine svg { fill: var(--hops-green); }
+
+  .hop-vine:nth-child(1) { top: 5%; right: -5%; transform: rotate(15deg); }
+  .hop-vine:nth-child(2) { top: 30%; left: -3%; transform: rotate(-10deg); }
+  .hop-vine:nth-child(3) { bottom: 15%; right: 5%; transform: rotate(25deg); }
+  .hop-vine:nth-child(4) { top: 60%; left: 10%; transform: rotate(-20deg); }
+
+  /* Grain texture overlay */
+  .bg-grain {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 200px;
+  }
+
+  /* Warm gradient orbs */
+  .bg-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.04;
+  }
+
+  .bg-orb:nth-child(5) {
+    width: 600px; height: 600px;
+    background: var(--amber);
+    top: -15%; left: -10%;
+    animation: orbFloat 35s ease-in-out infinite;
+  }
+
+  .bg-orb:nth-child(6) {
+    width: 400px; height: 400px;
+    background: var(--brown);
+    top: 40%; right: -10%;
+    animation: orbFloat 30s ease-in-out infinite reverse;
+    animation-delay: -12s;
+  }
+
+  .bg-orb:nth-child(7) {
+    width: 350px; height: 350px;
+    background: var(--amber-deep);
+    bottom: 5%; left: 30%;
+    animation: orbFloat 40s ease-in-out infinite;
+    animation-delay: -20s;
+  }
+
+  @keyframes orbFloat {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -25px) scale(1.05); }
+    66% { transform: translate(-20px, 20px) scale(0.95); }
+    100% { transform: translate(0, 0) scale(1); }
+  }
+
+  /* Decorative wheat/hop icon */
+  .wheat-icon {
+    position: absolute;
+    opacity: 0.03;
+    font-size: 100px;
+    color: var(--amber);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wheat-icon:nth-child(8) { top: 20%; left: 8%; transform: rotate(-15deg); }
+  .wheat-icon:nth-child(9) { top: 50%; right: 6%; transform: rotate(12deg); }
+  .wheat-icon:nth-child(10) { bottom: 25%; left: 15%; transform: rotate(-8deg); }
+
+  /* Hop cone divider */
+  .hop-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 40px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hop-divider::before, .hop-divider::after {
+    content: '';
+    flex: 1;
+    max-width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-amber), transparent);
+  }
+
+  .hop-icon {
+    width: 24px; height: 24px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .hop-icon svg {
+    width: 100%; height: 100%;
+    fill: var(--amber);
+    opacity: 0.5;
+  }
+
+  /* Container */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  section {
+    padding: 100px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 36px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 2px solid var(--border-amber);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: var(--radius);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .btn-primary {
+    background: linear-gradient(180deg, var(--amber), var(--amber-deep));
+    color: var(--bg);
+    border-color: var(--amber);
+    box-shadow: 0 4px 20px rgba(212, 146, 42, 0.25);
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 6px 30px rgba(212, 146, 42, 0.4);
+    transform: translateY(-2px);
+    background: linear-gradient(180deg, var(--amber-light), var(--amber));
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--amber-light);
+    border-color: var(--border-amber);
+  }
+
+  .btn-secondary:hover {
+    background: var(--glow-amber);
+    border-color: var(--amber);
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--amber);
+    border-color: var(--border-amber);
+    font-size: 12px;
+    padding: 10px 24px;
+  }
+
+  .btn-ghost:hover {
+    background: var(--glow-amber);
+    border-color: var(--amber);
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding-top: 60px;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 24px;
+    padding: 8px 28px;
+    border: 1px solid var(--border-amber);
+    border-radius: var(--radius);
+    background: var(--glow-amber);
+  }
+
+  .hero h1 {
+    font-size: clamp(40px, 7vw, 80px);
+    color: var(--text);
+    max-width: 800px;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 .highlight {
+    background: linear-gradient(135deg, var(--amber), var(--amber-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--text-dim);
+    max-width: 500px;
+    margin-bottom: 40px;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 70px;
+  }
+
+  /* Hero mockup */
+  .hero-mockup {
+    width: 100%;
+    max-width: 850px;
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px var(--glow-amber);
+    position: relative;
+  }
+
+  .mockup-bar {
+    height: 36px;
+    background: var(--bg-card-alt);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    gap: 8px;
+  }
+
+  .mockup-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+
+  .mockup-dot:nth-child(1) { background: var(--amber); }
+  .mockup-dot:nth-child(2) { background: var(--amber-deep); }
+  .mockup-dot:nth-child(3) { background: var(--brown); }
+
+  .mockup-body {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 16px;
+    height: 280px;
+  }
+
+  .mockup-sidebar {
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+  }
+
+  .mockup-sidebar-line {
+    height: 8px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    background: var(--border);
+  }
+
+  .mockup-sidebar-line:nth-child(1) { width: 60%; background: var(--glow-amber); border: 1px solid var(--border-amber); }
+  .mockup-sidebar-line:nth-child(2) { width: 80%; }
+  .mockup-sidebar-line:nth-child(3) { width: 45%; }
+  .mockup-sidebar-line:nth-child(4) { width: 70%; }
+  .mockup-sidebar-line:nth-child(5) { width: 55%; }
+
+  .mockup-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .mockup-card {
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+  }
+
+  .mockup-card-title {
+    height: 8px;
+    width: 45%;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, var(--amber), var(--amber-light));
+    opacity: 0.3;
+  }
+
+  .mockup-card-line {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 6px;
+  }
+
+  .mockup-card-line:nth-child(2) { width: 90%; }
+  .mockup-card-line:nth-child(3) { width: 75%; }
+  .mockup-card-line:nth-child(4) { width: 60%; }
+
+  /* ============ LOGOS ============ */
+  .logos-section { padding: 60px 0; }
+
+  .logos-label {
+    text-align: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 36px;
+  }
+
+  .logos-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 44px;
+    flex-wrap: wrap;
+  }
+
+  .logo-item {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    color: var(--text-muted);
+    opacity: 0.35;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+  }
+
+  /* ============ FEATURES ============ */
+  .features-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .section-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-size: clamp(28px, 4vw, 44px);
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .section-subtitle {
+    font-size: 16px;
+    color: var(--text-dim);
+    max-width: 480px;
+    margin: 0 auto;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .feature-card {
+    background: var(--bg-card);
+    padding: 32px 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    position: relative;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--amber-deep), var(--amber), var(--amber-light));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .feature-card:hover {
+    border-color: var(--border-amber);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3), 0 0 30px var(--glow-amber);
+  }
+
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 48px; height: 48px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    border-radius: var(--radius);
+    background: var(--glow-amber);
+    color: var(--amber);
+    border: 1px solid var(--border-amber);
+  }
+
+  .feature-card h3 {
+    font-size: 18px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .feature-card p {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  /* ============ ZIGZAG ============ */
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: center;
+    margin-bottom: 80px;
+  }
+
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-visual { order: 2; }
+  .zigzag-row.reverse .zigzag-content { order: 1; }
+
+  .zigzag-content h3 {
+    font-size: 28px;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+
+  .zigzag-content p {
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 20px;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  .zigzag-visual {
+    aspect-ratio: 4/3;
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .visual-inner {
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .visual-bar {
+    height: 14px;
+    border-radius: var(--radius);
+  }
+
+  .visual-bar.c1 { background: var(--glow-amber); border: 1px solid var(--border-amber); }
+  .visual-bar.c2 { background: var(--foam); border: 1px solid var(--border); }
+  .visual-bar.c3 { background: var(--border); }
+  .visual-bar.c4 { background: var(--hops-green-soft); border: 1px solid rgba(107,127,59,0.2); }
+  .visual-bar.w70 { width: 70%; }
+  .visual-bar.w50 { width: 50%; }
+  .visual-bar.w85 { width: 85%; }
+  .visual-bar.w40 { width: 40%; }
+
+  .visual-block {
+    flex: 1;
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .visual-mini {
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+
+  .visual-mini:nth-child(1) { background: var(--glow-amber); border-color: var(--border-amber); }
+  .visual-mini:nth-child(2) { background: var(--foam); }
+  .visual-mini:nth-child(3) { background: var(--hops-green-soft); }
+  .visual-mini:nth-child(4) { background: var(--border); }
+
+  /* ============ TESTIMONIAL ============ */
+  .testimonial-section {
+    background: var(--bg-light);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .testimonial-card {
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .testimonial-quote {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(18px, 2.5vw, 26px);
+    color: var(--text);
+    line-height: 1.5;
+    margin-bottom: 36px;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .testimonial-quote::before {
+    content: '\2765';
+    display: block;
+    font-size: 36px;
+    color: var(--amber);
+    line-height: 0.7;
+    margin-bottom: 16px;
+    opacity: 0.5;
+    font-style: normal;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .testimonial-avatar {
+    width: 48px; height: 48px;
+    border: 2px solid var(--border-amber);
+    border-radius: var(--radius);
+    background: var(--glow-amber);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--amber);
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .testimonial-name { text-align: left; }
+
+  .testimonial-name strong {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .testimonial-name span {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  /* ============ PRICING ============ */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .pricing-card {
+    background: var(--bg-card);
+    padding: 36px 28px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pricing-card.featured {
+    border-color: var(--amber);
+    background: linear-gradient(180deg, var(--glow-amber), var(--bg-card) 40%);
+    box-shadow: 0 0 40px var(--glow-amber);
+  }
+
+  .pricing-card.featured::before {
+    content: '★';
+    position: absolute;
+    top: 14px; right: 18px;
+    font-size: 16px;
+    color: var(--amber);
+    opacity: 0.7;
+  }
+
+  .pricing-card:hover {
+    border-color: var(--border-amber);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3), 0 0 30px var(--glow-amber);
+  }
+
+  .pricing-tier {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .pricing-card.featured .pricing-tier { color: var(--amber); }
+
+  .pricing-amount {
+    font-family: 'Fraunces', serif;
+    font-size: 42px;
+    color: var(--text);
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+
+  .pricing-amount span {
+    font-size: 14px;
+    color: var(--text-dim);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 300;
+  }
+
+  .pricing-desc {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  .pricing-features {
+    list-style: none;
+    margin-bottom: 28px;
+    text-align: left;
+  }
+
+  .pricing-features li {
+    font-size: 13px;
+    color: var(--text-dim);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+
+  .pricing-features li::before {
+    content: '★';
+    color: var(--amber);
+    margin-right: 8px;
+    font-size: 10px;
+    opacity: 0.6;
+  }
+
+  /* ============ FINAL CTA ============ */
+  .final-cta {
+    text-align: center;
+    padding: 100px 0;
+    position: relative;
+  }
+
+  .final-cta-box {
+    background: var(--bg-card);
+    border: 2px solid var(--border-amber);
+    padding: 60px 40px;
+    border-radius: var(--radius-xl);
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 60px var(--glow-amber);
+  }
+
+  .final-cta-box::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -20%;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: var(--amber);
+    opacity: 0.04;
+    filter: blur(60px);
+  }
+
+  .final-cta-box::after {
+    content: '';
+    position: absolute;
+    bottom: -30%; left: -10%;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: var(--amber-deep);
+    opacity: 0.03;
+    filter: blur(50px);
+  }
+
+  .final-cta h2 {
+    font-size: clamp(28px, 4vw, 46px);
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .final-cta h2 .highlight {
+    background: linear-gradient(135deg, var(--amber), var(--amber-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .final-cta p {
+    font-size: 16px;
+    color: var(--text-dim);
+    max-width: 420px;
+    margin: 0 auto 36px;
+    font-weight: 300;
+    position: relative;
+    z-index: 1;
+    letter-spacing: 0.02em;
+  }
+
+  .final-cta .hero-buttons {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    padding: 50px 0;
+    border-top: 1px solid var(--border);
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 36px;
+  }
+
+  .footer-brand h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    color: var(--text);
+    margin-bottom: 10px;
+    letter-spacing: 0.04em;
+  }
+
+  .footer-brand p {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    max-width: 240px;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  .footer-col h5 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 14px;
+    font-weight: 700;
+  }
+
+  .footer-col a {
+    display: block;
+    font-size: 13px;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 4px 0;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+  }
+
+  .footer-col a:hover { color: var(--amber-light); }
+
+  .footer-bottom {
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-bottom p {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+  }
+
+  .footer-bottom-links {
+    display: flex;
+    gap: 20px;
+  }
+
+  .footer-bottom-links a {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+
+  .footer-bottom-links a:hover { color: var(--amber); }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 900px) {
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .zigzag-row { grid-template-columns: 1fr; gap: 30px; }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .zigzag-row.reverse .zigzag-content { order: 0; }
+  }
+
+  @media (max-width: 600px) {
+    .container { padding: 0 20px; }
+    section { padding: 60px 0; }
+    .features-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+    .hero-buttons { flex-direction: column; align-items: center; }
+    .mockup-body { grid-template-columns: 1fr; height: auto; }
+    .mockup-sidebar { display: none; }
+    .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-shapes">
+  <!-- Hop vine decorations -->
+  <div class="hop-vine">
+    <svg width="120" height="200" viewBox="0 0 120 200"><path d="M60 0 Q40 40 55 80 Q70 120 50 160 Q40 180 60 200" stroke="#6B7F3B" stroke-width="2" fill="none"/><ellipse cx="45" cy="50" rx="12" ry="8" transform="rotate(-30 45 50)"/><ellipse cx="65" cy="75" rx="10" ry="7" transform="rotate(20 65 75)"/><ellipse cx="48" cy="100" rx="11" ry="7" transform="rotate(-15 48 100)"/><ellipse cx="62" cy="130" rx="10" ry="7" transform="rotate(25 62 130)"/><ellipse cx="55" cy="160" rx="9" ry="6" transform="rotate(-10 55 160)"/></svg>
+  </div>
+  <div class="hop-vine">
+    <svg width="100" height="180" viewBox="0 0 100 180"><path d="M50 0 Q70 35 45 70 Q30 105 55 140 Q65 160 50 180" stroke="#6B7F3B" stroke-width="2" fill="none"/><ellipse cx="62" cy="40" rx="10" ry="7" transform="rotate(25 62 40)"/><ellipse cx="42" cy="65" rx="9" ry="6" transform="rotate(-20 42 65)"/><ellipse cx="58" cy="95" rx="10" ry="7" transform="rotate(15 58 95)"/><ellipse cx="40" cy="125" rx="8" ry="6" transform="rotate(-25 40 125)"/></svg>
+  </div>
+  <div class="hop-vine">
+    <svg width="110" height="190" viewBox="0 0 110 190"><path d="M55 0 Q35 45 50 85 Q65 125 45 165 Q35 180 55 190" stroke="#6B7F3B" stroke-width="2" fill="none"/><ellipse cx="42" cy="55" rx="11" ry="7" transform="rotate(-20 42 55)"/><ellipse cx="60" cy="80" rx="9" ry="6" transform="rotate(15 60 80)"/><ellipse cx="44" cy="110" rx="10" ry="7" transform="rotate(-25 44 110)"/><ellipse cx="56" cy="145" rx="9" ry="6" transform="rotate(20 56 145)"/></svg>
+  </div>
+  <div class="hop-vine">
+    <svg width="90" height="160" viewBox="0 0 90 160"><path d="M45 0 Q60 30 40 65 Q25 100 48 130 Q55 145 45 160" stroke="#6B7F3B" stroke-width="2" fill="none"/><ellipse cx="55" cy="35" rx="9" ry="6" transform="rotate(20 55 35)"/><ellipse cx="38" cy="60" rx="8" ry="5" transform="rotate(-15 38 60)"/><ellipse cx="50" cy="90" rx="9" ry="6" transform="rotate(10 50 90)"/><ellipse cx="36" cy="120" rx="7" ry="5" transform="rotate(-20 36 120)"/></svg>
+  </div>
+
+  <!-- Warm orbs -->
+  <div class="bg-orb"></div>
+  <div class="bg-orb"></div>
+  <div class="bg-orb"></div>
+
+  <!-- Wheat decorations -->
+  <div class="wheat-icon">🌾</div>
+  <div class="wheat-icon">🌾</div>
+  <div class="wheat-icon">🌾</div>
+
+  <!-- Grain overlay -->
+  <div class="bg-grain"></div>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">🍺 Crafted for better meetings</div>
+    <h1>Meetings that <span class="highlight">don't waste</span> your week</h1>
+    <p class="hero-sub">Schedule smarter. Meet shorter. Ship faster. The meeting tool that respects your time like a good brewmaster respects ingredients.</p>
+    <div class="hero-buttons">
+      <a href="#" class="btn btn-primary">Start Free Trial</a>
+      <a href="#" class="btn btn-secondary">See How It Works</a>
+    </div>
+    <div class="hero-mockup">
+      <div class="mockup-bar">
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+      </div>
+      <div class="mockup-body">
+        <div class="mockup-sidebar">
+          <div class="mockup-sidebar-line"></div>
+          <div class="mockup-sidebar-line"></div>
+          <div class="mockup-sidebar-line"></div>
+          <div class="mockup-sidebar-line"></div>
+          <div class="mockup-sidebar-line"></div>
+        </div>
+        <div class="mockup-main">
+          <div class="mockup-card">
+            <div class="mockup-card-title"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+          </div>
+          <div class="mockup-card">
+            <div class="mockup-card-title"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+          </div>
+          <div class="mockup-card">
+            <div class="mockup-card-title"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+          </div>
+          <div class="mockup-card">
+            <div class="mockup-card-title"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LOGOS ============ -->
+<section class="logos-section">
+  <div class="container">
+    <p class="logos-label">Trusted by teams at</p>
+    <div class="logos-grid">
+      <span class="logo-item">BrewDog</span>
+      <span class="logo-item">Sierra Nevada</span>
+      <span class="logo-item">Dogfish Head</span>
+      <span class="logo-item">Stone</span>
+      <span class="logo-item">Lagunitas</span>
+      <span class="logo-item">Founders</span>
+    </div>
+  </div>
+</section>
+
+<div class="hop-divider">
+  <div class="hop-icon">
+    <svg viewBox="0 0 24 24"><path d="M12 2 C8 8, 4 12, 8 16 C10 18, 14 18, 16 16 C20 12, 16 8, 12 2Z"/></svg>
+  </div>
+</div>
+
+<!-- ============ FEATURES ============ -->
+<section class="features">
+  <div class="container">
+    <div class="features-header">
+      <p class="section-eyebrow">The recipe</p>
+      <h2 class="section-title">Everything you need, nothing you don't</h2>
+      <p class="section-subtitle">Like a well-crafted IPA — bold on what matters, clean finish, zero filler.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📅</div>
+        <h3>Smart Scheduling</h3>
+        <p>AI finds the perfect time slot. No more email ping-pong. It's like having a bartender who knows your order.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⏱️</div>
+        <h3>Timeboxing</h3>
+        <p>Every meeting gets a hard stop. 15 minutes means 15 minutes. No more meetings that run like a slow pour.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3>Agenda-First</h3>
+        <p>No agenda, no meeting. Every invite demands purpose. Keeps your week focused and your calendar clean.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Meeting Analytics</h3>
+        <p>See where your time actually goes. Spot the meeting hogs. Data-driven calendar optimization.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔗</div>
+        <h3>Integrations</h3>
+        <p>Slack, Google, Outlook, Notion — connects to everything. Like a tap system for your whole stack.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3>Auto Summaries</h3>
+        <p>AI writes meeting notes and action items. Missed a meeting? Read the summary. Like a tasting note.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hop-divider">
+  <div class="hop-icon">
+    <svg viewBox="0 0 24 24"><path d="M12 2 C8 8, 4 12, 8 16 C10 18, 14 18, 16 16 C20 12, 16 8, 12 2Z"/></svg>
+  </div>
+</div>
+
+<!-- ============ ZIGZAG ============ -->
+<section class="zigzag">
+  <div class="container">
+    <div class="zigzag-row">
+      <div class="zigzag-content">
+        <h3>Calendar that thinks for you</h3>
+        <p>Meet learns your patterns. It suggests time blocks for deep work, auto-declines low-value invites, and keeps your best hours protected like rare ingredients.</p>
+        <a href="#" class="btn btn-ghost">Learn more →</a>
+      </div>
+      <div class="zigzag-visual">
+        <div class="visual-inner">
+          <div class="visual-bar c1 w70"></div>
+          <div class="visual-bar c2 w85"></div>
+          <div class="visual-bar c3 w50"></div>
+          <div class="visual-block">
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="zigzag-row reverse">
+      <div class="zigzag-content">
+        <h3>Meetings that end on time</h3>
+        <p>Hard stops. Visual countdowns. Gentle nudges at 5 and 2 minutes. Your team actually leaves meetings when they're supposed to. No more 30-minute meetings that run 45.</p>
+        <a href="#" class="btn btn-ghost">See how →</a>
+      </div>
+      <div class="zigzag-visual">
+        <div class="visual-inner">
+          <div class="visual-bar c4 w85"></div>
+          <div class="visual-bar c1 w50"></div>
+          <div class="visual-bar c2 w70"></div>
+          <div class="visual-bar c3 w40"></div>
+          <div class="visual-block">
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIAL ============ -->
+<section class="testimonial-section">
+  <div class="container">
+    <div class="features-header">
+      <p class="section-eyebrow">From the taproom</p>
+      <h2 class="section-title">What brewers say</h2>
+    </div>
+    <div class="testimonial-card">
+      <blockquote class="testimonial-quote">
+        "We cut our meeting time by 40% in the first month. Meet is like going from cheap lager to craft IPA — same purpose, completely different quality."
+      </blockquote>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">JR</div>
+        <div class="testimonial-name">
+          <strong>Jake Rutherford</strong>
+          <span>Head of Operations, Hop & Grain Co.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="pricing">
+  <div class="container">
+    <div class="features-header">
+      <p class="section-eyebrow">Pricing</p>
+      <h2 class="section-title">Pick your pour</h2>
+      <p class="section-subtitle">Start free. Upgrade when you're ready. No contracts, no keg deposits.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <p class="pricing-tier">Taster</p>
+        <p class="pricing-amount">$0 <span>/mo</span></p>
+        <p class="pricing-desc">Perfect for trying before you buy</p>
+        <ul class="pricing-features">
+          <li>Up to 5 team members</li>
+          <li>Basic scheduling</li>
+          <li>Calendar sync</li>
+          <li>7-day history</li>
+        </ul>
+        <a href="#" class="btn btn-ghost">Get started</a>
+      </div>
+      <div class="pricing-card featured">
+        <p class="pricing-tier">Barrel</p>
+        <p class="pricing-amount">$12 <span>/mo per user</span></p>
+        <p class="pricing-desc">For teams that mean business</p>
+        <ul class="pricing-features">
+          <li>Unlimited members</li>
+          <li>AI scheduling</li>
+          <li>Meeting analytics</li>
+          <li>Auto summaries</li>
+          <li>All integrations</li>
+        </ul>
+        <a href="#" class="btn btn-primary">Start free trial</a>
+      </div>
+      <div class="pricing-card">
+        <p class="pricing-tier">Brewery</p>
+        <p class="pricing-amount">$29 <span>/mo per user</span></p>
+        <p class="pricing-desc">Enterprise-grade meeting ops</p>
+        <ul class="pricing-features">
+          <li>Everything in Barrel</li>
+          <li>SSO & SAML</li>
+          <li>Admin dashboard</li>
+          <li>Custom workflows</li>
+          <li>Dedicated support</li>
+        </ul>
+        <a href="#" class="btn btn-ghost">Contact sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="final-cta">
+  <div class="container">
+    <div class="final-cta-box">
+      <h2>Ready to <span class="highlight">pour better</span> meetings?</h2>
+      <p>Join thousands of teams who stopped wasting time and started shipping. Free for 14 days. No credit card.</p>
+      <div class="hero-buttons">
+        <a href="#" class="btn btn-primary">Start Free Trial</a>
+        <a href="#" class="btn btn-secondary">Talk to Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h4>Meet</h4>
+        <p>Craft meetings that taste like success. Brewed with care, served with purpose.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Product</h5>
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Integrations</a>
+        <a href="#">Changelog</a>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <a href="#">About</a>
+        <a href="#">Blog</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+      </div>
+      <div class="footer-col">
+        <h5>Support</h5>
+        <a href="#">Help Center</a>
+        <a href="#">Documentation</a>
+        <a href="#">Contact</a>
+        <a href="#">Status</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Meet. All rights reserved. Crafted with 🍺</p>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080808;
+    --bg-light: #0F0F0F;
+    --bg-card: #141414;
+    --white: #F0F0F0;
+    --white-dim: #A0A0A0;
+    --white-muted: #555555;
+    --accent: #E63228;
+    --grid-line: rgba(255,255,255,0.04);
+    --grid-line-strong: rgba(255,255,255,0.08);
+    --col: 12;
+    --gap: 24px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--bg);
+    color: var(--white);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3 { font-weight: 300; line-height: 1.0; letter-spacing: -0.04em; }
+  h1 { font-weight: 200; }
+
+  /* Grid overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(90deg, var(--grid-line) 0 1px, transparent 1px, transparent calc(100% / 12)),
+      repeating-linear-gradient(0deg, var(--grid-line) 0 1px, transparent 1px, transparent 120px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+  /* Grid system */
+  .grid-12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--gap); }
+
+  /* Section divider */
+  .section-divider {
+    height: 1px;
+    background: var(--grid-line-strong);
+    margin: 0;
+  }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(8,8,8,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--grid-line-strong);
+  }
+  nav .container {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 32px;
+  }
+  .logo {
+    font-weight: 700; font-size: 1.2rem;
+    color: var(--white); text-decoration: none;
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 40px; align-items: center; }
+  .nav-links a {
+    color: var(--white-dim); text-decoration: none;
+    font-size: 0.7rem; font-weight: 400;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .btn-nav {
+    background: var(--white) !important; color: var(--bg) !important;
+    padding: 10px 24px; font-size: 0.68rem !important; font-weight: 600 !important;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    transition: background 0.15s;
+  }
+  .btn-nav:hover { background: var(--accent) !important; color: var(--white) !important; }
+
+  /* Hero */
+  .hero { padding: 200px 0 120px; }
+  .hero .grid-12 > .hero-copy { grid-column: span 7; }
+  .hero .grid-12 > .hero-visual { grid-column: span 5; }
+  .hero-tag {
+    display: inline-block; font-size: 0.6rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.25em;
+    color: var(--accent); margin-bottom: 32px;
+    padding: 6px 0; border-left: 2px solid var(--accent);
+    padding-left: 12px;
+  }
+  .hero h1 {
+    font-size: clamp(3.5rem, 9vw, 7rem);
+    margin-bottom: 32px;
+    color: var(--white);
+  }
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 200;
+    color: var(--white-dim);
+  }
+  .hero .subhead {
+    font-size: 0.95rem; color: var(--white-dim);
+    max-width: 400px; line-height: 1.8;
+    margin-bottom: 48px; font-weight: 300;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--accent); color: var(--white);
+    padding: 18px 40px; text-decoration: none;
+    font-weight: 500; font-size: 0.75rem;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    border: none; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover { background: var(--white); color: var(--bg); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--white-dim); padding: 18px 28px;
+    text-decoration: none; font-weight: 400;
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.12em; margin-left: 8px;
+    border-bottom: 1px solid var(--white-muted);
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { color: var(--white); border-color: var(--accent); }
+
+  /* Hero visual */
+  .hero-visual { display: flex; align-items: center; justify-content: center; }
+  .hero-screenshot {
+    width: 100%; border: 1px solid var(--grid-line-strong);
+    background: var(--bg-card); overflow: hidden;
+    position: relative;
+  }
+  .hero-screenshot::before {
+    content: ''; position: absolute; inset: 0;
+    border: 1px solid var(--grid-line);
+    pointer-events: none;
+  }
+  .screenshot-topbar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 14px 16px; border-bottom: 1px solid var(--grid-line);
+    background: var(--bg-light);
+  }
+  .screenshot-dot {
+    width: 8px; height: 8px; border: 1px solid var(--white-muted);
+  }
+  .screenshot-body {
+    display: grid; grid-template-columns: 180px 1fr;
+    min-height: 220px;
+  }
+  .screenshot-sidebar {
+    border-right: 1px solid var(--grid-line); padding: 16px;
+  }
+  .screenshot-sidebar-bar {
+    height: 6px; background: var(--grid-line-strong); margin-bottom: 12px;
+  }
+  .screenshot-sidebar-bar.active { background: var(--accent); width: 70%; }
+  .screenshot-main { padding: 20px; }
+  .screenshot-line {
+    height: 6px; background: var(--grid-line-strong); margin-bottom: 10px;
+  }
+  .screenshot-line.title { height: 10px; width: 60%; margin-bottom: 16px; background: var(--white-muted); }
+  .screenshot-actions {
+    display: flex; gap: 12px; padding: 16px 20px;
+    border-top: 1px solid var(--grid-line);
+  }
+  .screenshot-action {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 14px; border: 1px solid var(--grid-line);
+    background: var(--bg-light);
+  }
+  .screenshot-action-dot {
+    width: 6px; height: 6px; background: var(--accent);
+  }
+  .screenshot-action-line {
+    width: 40px; height: 4px; background: var(--grid-line-strong);
+  }
+
+  /* Logos */
+  .logos { padding: 80px 0; }
+  .logos-label {
+    font-size: 0.6rem; text-transform: uppercase;
+    letter-spacing: 0.25em; color: var(--white-muted);
+    margin-bottom: 40px; font-weight: 400;
+  }
+  .logos-grid {
+    display: flex; align-items: center; gap: 60px; flex-wrap: wrap;
+    opacity: 0.3;
+  }
+  .logos-grid svg { height: 20px; width: auto; fill: var(--white); }
+  .logo-placeholder {
+    font-size: 0.75rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--white);
+  }
+
+  /* Features */
+  .features { padding: 120px 0; }
+  .section-label {
+    font-size: 0.6rem; text-transform: uppercase;
+    letter-spacing: 0.3em; color: var(--accent);
+    margin-bottom: 16px; font-weight: 500;
+  }
+  .section-heading {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    margin-bottom: 80px; font-weight: 200;
+    max-width: 600px;
+  }
+  .features-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+    background: var(--grid-line);
+  }
+  .feature-card {
+    background: var(--bg); padding: 48px 36px;
+    transition: background 0.3s;
+  }
+  .feature-card:hover { background: var(--bg-card); }
+  .feature-number {
+    font-size: 0.6rem; font-weight: 500;
+    color: var(--accent); margin-bottom: 24px;
+    letter-spacing: 0.15em;
+  }
+  .feature-card h3 {
+    font-size: 1.1rem; font-weight: 500;
+    margin-bottom: 12px; letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .feature-card p {
+    font-size: 0.82rem; color: var(--white-dim);
+    line-height: 1.7; font-weight: 300;
+  }
+
+  /* Zigzag */
+  .zigzag { padding: 120px 0; }
+  .zigzag-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center;
+    padding: 80px 0;
+    border-top: 1px solid var(--grid-line);
+  }
+  .zigzag-row:first-child { border-top: none; }
+  .zigzag-row.reverse .zigzag-visual { order: 2; }
+  .zigzag-row.reverse .zigzag-copy { order: 1; }
+  .zigzag-copy h3 {
+    font-size: 2.2rem; margin-bottom: 20px;
+    font-weight: 300; letter-spacing: -0.03em;
+  }
+  .zigzag-copy p {
+    font-size: 0.88rem; color: var(--white-dim);
+    line-height: 1.8; margin-bottom: 24px; font-weight: 300;
+  }
+  .zigzag-copy ul {
+    list-style: none; padding: 0;
+  }
+  .zigzag-copy ul li {
+    font-size: 0.82rem; color: var(--white-dim);
+    padding: 8px 0; padding-left: 20px;
+    position: relative; font-weight: 300;
+  }
+  .zigzag-copy ul li::before {
+    content: '';
+    position: absolute; left: 0; top: 14px;
+    width: 8px; height: 1px; background: var(--accent);
+  }
+  .zigzag-visual {
+    aspect-ratio: 4/3;
+    background: var(--bg-card);
+    border: 1px solid var(--grid-line-strong);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .zigzag-visual::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(90deg, var(--grid-line) 0 1px, transparent 1px, transparent 40px),
+      repeating-linear-gradient(0deg, var(--grid-line) 0 1px, transparent 1px, transparent 40px);
+  }
+  .zigzag-visual-inner {
+    position: relative; z-index: 1;
+    width: 60%; height: 60%;
+    border: 1px solid var(--grid-line-strong);
+    background: var(--bg-light);
+  }
+  .zigzag-visual-inner::after {
+    content: '';
+    position: absolute; top: -1px; left: -1px;
+    width: 20px; height: 20px;
+    border-top: 2px solid var(--accent);
+    border-left: 2px solid var(--accent);
+  }
+
+  /* Testimonial */
+  .testimonial { padding: 120px 0; background: var(--bg-light); }
+  .testimonial-inner {
+    max-width: 700px; margin: 0 auto; text-align: center;
+  }
+  .testimonial-quote {
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 200; line-height: 1.5;
+    margin-bottom: 48px; letter-spacing: -0.02em;
+    color: var(--white);
+  }
+  .testimonial-quote::before {
+    content: '';
+    display: block; width: 40px; height: 1px;
+    background: var(--accent); margin: 0 auto 40px;
+  }
+  .testimonial-author {
+    font-size: 0.8rem; font-weight: 500;
+    color: var(--white); margin-bottom: 4px;
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .testimonial-role {
+    font-size: 0.72rem; color: var(--white-muted);
+    font-weight: 300; letter-spacing: 0.05em;
+  }
+
+  /* Pricing */
+  .pricing { padding: 120px 0; }
+  .pricing-header {
+    text-align: center; margin-bottom: 80px;
+  }
+  .pricing-header .section-heading {
+    max-width: 100%; margin: 0 auto;
+  }
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+    background: var(--grid-line);
+  }
+  .pricing-card {
+    background: var(--bg); padding: 48px 36px;
+    position: relative;
+    transition: background 0.3s;
+  }
+  .pricing-card:hover { background: var(--bg-card); }
+  .pricing-card.featured {
+    background: var(--bg-card);
+    border-top: 2px solid var(--accent);
+  }
+  .pricing-tier {
+    font-size: 0.6rem; text-transform: uppercase;
+    letter-spacing: 0.25em; color: var(--white-muted);
+    margin-bottom: 24px; font-weight: 500;
+  }
+  .pricing-card.featured .pricing-tier { color: var(--accent); }
+  .pricing-amount {
+    font-size: 3.5rem; font-weight: 200;
+    margin-bottom: 4px; letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .pricing-amount span {
+    font-size: 1rem; color: var(--white-muted);
+    font-weight: 300;
+  }
+  .pricing-desc {
+    font-size: 0.78rem; color: var(--white-dim);
+    margin-bottom: 36px; font-weight: 300;
+    line-height: 1.6;
+  }
+  .pricing-features {
+    list-style: none; padding: 0; margin-bottom: 40px;
+  }
+  .pricing-features li {
+    font-size: 0.8rem; color: var(--white-dim);
+    padding: 10px 0;
+    border-bottom: 1px solid var(--grid-line);
+    font-weight: 300;
+  }
+  .pricing-features li:last-child { border-bottom: none; }
+  .btn-pricing {
+    display: block; width: 100%;
+    padding: 16px; text-align: center;
+    text-decoration: none; font-size: 0.7rem;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    font-weight: 500; transition: all 0.2s;
+    border: 1px solid var(--grid-line-strong);
+    color: var(--white); background: transparent;
+    cursor: pointer;
+  }
+  .btn-pricing:hover {
+    border-color: var(--white);
+    background: var(--white); color: var(--bg);
+  }
+  .pricing-card.featured .btn-pricing {
+    background: var(--accent); border-color: var(--accent);
+    color: var(--white);
+  }
+  .pricing-card.featured .btn-pricing:hover {
+    background: var(--white); border-color: var(--white);
+    color: var(--bg);
+  }
+
+  /* CTA */
+  .cta {
+    padding: 160px 0; text-align: center;
+    background: var(--bg-light);
+    position: relative;
+  }
+  .cta::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(230,50,40,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta h2 {
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 200; margin-bottom: 24px;
+    letter-spacing: -0.04em; line-height: 1.05;
+  }
+  .cta p {
+    font-size: 0.9rem; color: var(--white-dim);
+    margin-bottom: 48px; font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+  .cta .btn-primary { font-size: 0.75rem; padding: 20px 48px; }
+
+  /* Footer */
+  footer {
+    padding: 60px 0;
+    border-top: 1px solid var(--grid-line-strong);
+  }
+  .footer-inner {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-copy {
+    font-size: 0.68rem; color: var(--white-muted);
+    font-weight: 300; letter-spacing: 0.05em;
+  }
+  .footer-links { display: flex; gap: 32px; }
+  .footer-links a {
+    font-size: 0.68rem; color: var(--white-muted);
+    text-decoration: none; font-weight: 400;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--white); }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .hero .grid-12 > .hero-copy,
+    .hero .grid-12 > .hero-visual { grid-column: span 12; }
+    .hero-visual { margin-top: 60px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .zigzag-row { grid-template-columns: 1fr; gap: 40px; }
+    .zigzag-row.reverse .zigzag-visual,
+    .zigzag-row.reverse .zigzag-copy { order: unset; }
+    .nav-links { display: none; }
+    .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="container">
+    <a href="#" class="logo">Meet<span>.</span></a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="btn-nav">Start Free</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="grid-12">
+      <div class="hero-copy reveal">
+        <div class="hero-tag">System 01</div>
+        <h1>Meetings<br>that don't<br><em>waste your week</em></h1>
+        <p class="subhead">Meet records, transcribes, and distills every meeting into actionable notes. Your team stops re-watching 2-hour recordings.</p>
+        <a href="#" class="btn-primary">Start Free →</a>
+        <a href="#" class="btn-secondary">See Demo ▸</a>
+      </div>
+      <div class="hero-visual reveal">
+        <div class="hero-screenshot">
+          <div class="screenshot-topbar">
+            <div class="screenshot-dot"></div>
+            <div class="screenshot-dot"></div>
+            <div class="screenshot-dot"></div>
+          </div>
+          <div class="screenshot-body">
+            <div class="screenshot-sidebar">
+              <div class="screenshot-sidebar-bar active"></div>
+              <div class="screenshot-sidebar-bar"></div>
+              <div class="screenshot-sidebar-bar"></div>
+              <div class="screenshot-sidebar-bar"></div>
+            </div>
+            <div class="screenshot-main">
+              <div class="screenshot-line title"></div>
+              <div class="screenshot-line" style="width:100%"></div>
+              <div class="screenshot-line" style="width:85%"></div>
+              <div class="screenshot-line" style="width:95%"></div>
+              <div class="screenshot-line" style="width:70%"></div>
+            </div>
+          </div>
+          <div class="screenshot-actions">
+            <div class="screenshot-action">
+              <div class="screenshot-action-dot"></div>
+              <div class="screenshot-action-line"></div>
+            </div>
+            <div class="screenshot-action">
+              <div class="screenshot-action-dot"></div>
+              <div class="screenshot-action-line"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Logos -->
+<section class="logos">
+  <div class="container reveal">
+    <div class="logos-label">Deployed at</div>
+    <div class="logos-grid">
+      <span class="logo-placeholder">Stripe</span>
+      <span class="logo-placeholder">Vercel</span>
+      <span class="logo-placeholder">Linear</span>
+      <span class="logo-placeholder">Notion</span>
+      <span class="logo-placeholder">Figma</span>
+      <span class="logo-placeholder">Raycast</span>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Features -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">02 — Capabilities</div>
+      <h2 class="section-heading">Built on precision,<br>not opinion</h2>
+    </div>
+    <div class="features-grid reveal">
+      <div class="feature-card">
+        <div class="feature-number">01</div>
+        <h3>Instant Transcription</h3>
+        <p>Every word captured in real time. Searchable, timestamped, and structured by speaker.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-number">02</div>
+        <h3>AI Summaries</h3>
+        <p>Two-hour meetings reduced to five bullet points. Action items extracted automatically.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-number">03</div>
+        <h3>Smart Clips</h3>
+        <p>Share the relevant 30 seconds, not the full recording. Auto-detected by context.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-number">04</div>
+        <h3>Integrations</h3>
+        <p>Slack, Notion, Linear, Jira. Where your team works, Meet follows.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-number">05</div>
+        <h3>Search Everything</h3>
+        <p>Find that one decision from three weeks ago. Full-text search across all recordings.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-number">06</div>
+        <h3>Analytics</h3>
+        <p>Know who watched, where they stopped, what they replayed. Data-driven meetings.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Zigzag -->
+<section class="zigzag">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">03 — Structure</div>
+      <h2 class="section-heading" style="margin-bottom:40px">Engineered for<br>clarity</h2>
+    </div>
+    <div class="zigzag-row reveal">
+      <div class="zigzag-copy">
+        <h3>Record once.<br>Reference forever.</h3>
+        <p>Every meeting becomes a searchable asset. No more "what was decided?" threads.</p>
+        <ul>
+          <li>Auto-saved to cloud on end</li>
+          <li>Transcription in 30+ languages</li>
+          <li>Export to any format</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <div class="zigzag-visual-inner"></div>
+      </div>
+    </div>
+    <div class="zigzag-row reverse reveal">
+      <div class="zigzag-copy">
+        <h3>Share context,<br>not recordings.</h3>
+        <p>AI extracts the signal from noise. Your team gets clips, not commitments to watch hours of video.</p>
+        <ul>
+          <li>Smart clip detection</li>
+          <li>One-click share to Slack</li>
+          <li>Timestamped comments</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <div class="zigzag-visual-inner"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Testimonial -->
+<section class="testimonial">
+  <div class="container reveal">
+    <div class="testimonial-inner">
+      <blockquote class="testimonial-quote">
+        "We cut our meeting follow-up time by 80%. Meet doesn't just record — it thinks for you."
+      </blockquote>
+      <div class="testimonial-author">Elena Voss</div>
+      <div class="testimonial-role">VP of Operations, Matter</div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="pricing-header reveal">
+      <div class="section-label">04 — Pricing</div>
+      <h2 class="section-heading">Select your tier</h2>
+    </div>
+    <div class="pricing-grid reveal">
+      <div class="pricing-card">
+        <div class="pricing-tier">Individual</div>
+        <div class="pricing-amount">$0 <span>/ mo</span></div>
+        <p class="pricing-desc">For personal use. Five hours of recording per month.</p>
+        <ul class="pricing-features">
+          <li>5 hours / month</li>
+          <li>Basic transcription</li>
+          <li>24-hour storage</li>
+        </ul>
+        <a href="#" class="btn-pricing">Start Free</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-tier">Team</div>
+        <div class="pricing-amount">$12 <span>/ mo</span></div>
+        <p class="pricing-desc">For teams that need structure. Unlimited recordings and AI summaries.</p>
+        <ul class="pricing-features">
+          <li>Unlimited recordings</li>
+          <li>AI summaries & clips</li>
+          <li>Team search</li>
+          <li>Slack integration</li>
+        </ul>
+        <a href="#" class="btn-pricing">Start Free Trial</a>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-tier">Enterprise</div>
+        <div class="pricing-amount">$39 <span>/ mo</span></div>
+        <p class="pricing-desc">For organizations at scale. SSO, analytics, and priority support.</p>
+        <ul class="pricing-features">
+          <li>Everything in Team</li>
+          <li>SSO & SAML</li>
+          <li>Advanced analytics</li>
+          <li>Dedicated support</li>
+        </ul>
+        <a href="#" class="btn-pricing">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="container reveal">
+    <h2>Start recording.<br>Stop repeating.</h2>
+    <p>Free for individuals. No credit card required.</p>
+    <a href="#" class="btn-primary">Get Started →</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-copy">© 2026 Meet. All rights reserved.</div>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Docs</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

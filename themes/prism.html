@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cormorant:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white: #FFFFFF;
+    --off-white: #FAFBFC;
+    --light: #F1F3F5;
+    --mid: #E9ECEF;
+    --text: #1A1D21;
+    --text-dim: #6C757D;
+    --text-muted: #ADB5BD;
+    --prism-red: #FF6B6B;
+    --prism-orange: #FFA94D;
+    --prism-yellow: #FFE066;
+    --prism-green: #51CF66;
+    --prism-blue: #339AF0;
+    --prism-indigo: #5C7CFA;
+    --prism-violet: #845EF7;
+    --prism-pink: #F06595;
+    --font-display: 'Cormorant', Georgia, serif;
+    --font-body: 'Inter', -apple-system, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--white);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Caustic light overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 600px 400px at 20% 30%, rgba(255,107,107,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 500px 500px at 75% 20%, rgba(93,124,250,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 400px 600px at 60% 70%, rgba(132,94,247,0.03) 0%, transparent 60%),
+      radial-gradient(ellipse 350px 350px at 30% 80%, rgba(81,207,102,0.03) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    line-height: 1.15;
+    font-weight: 600;
+  }
+
+  section { position: relative; z-index: 1; }
+
+  a { color: var(--prism-blue); text-decoration: none; transition: opacity 0.2s; }
+  a:hover { opacity: 0.7; }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ===== PRISM UTILITY ===== */
+  .prism-text {
+    background: linear-gradient(135deg, var(--prism-red), var(--prism-orange), var(--prism-yellow), var(--prism-green), var(--prism-blue), var(--prism-violet));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .prism-border {
+    border: 1px solid transparent;
+    border-image: linear-gradient(135deg, var(--prism-red), var(--prism-blue), var(--prism-violet)) 1;
+  }
+
+  .glass-panel {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 16px;
+  }
+
+  /* ===== FLOATING PRISMS ===== */
+  .floating-prisms {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .prism-shape {
+    position: absolute;
+    width: 0; height: 0;
+    border-left: 40px solid transparent;
+    border-right: 40px solid transparent;
+    border-bottom: 70px solid rgba(132,94,247,0.04);
+    animation: prismFloat 20s ease-in-out infinite;
+  }
+
+  .prism-shape:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; transform: rotate(15deg); }
+  .prism-shape:nth-child(2) { top: 40%; right: 8%; animation-delay: -5s; border-bottom-color: rgba(51,154,240,0.04); transform: rotate(-10deg); }
+  .prism-shape:nth-child(3) { bottom: 20%; left: 15%; animation-delay: -10s; border-bottom-color: rgba(255,107,107,0.04); transform: rotate(25deg); }
+  .prism-shape:nth-child(4) { top: 60%; right: 20%; animation-delay: -15s; border-bottom-color: rgba(81,207,102,0.04); width: 0; height: 0; border-left: 30px solid transparent; border-right: 30px solid transparent; border-bottom: 52px solid rgba(81,207,102,0.04); transform: rotate(-20deg); }
+
+  @keyframes prismFloat {
+    0%, 100% { transform: translateY(0) rotate(var(--r, 15deg)); opacity: 0.6; }
+    50% { transform: translateY(-30px) rotate(calc(var(--r, 15deg) + 5deg)); opacity: 1; }
+  }
+
+  /* ===== RAINBOW LINE ===== */
+  .rainbow-line {
+    height: 2px;
+    background: linear-gradient(90deg, var(--prism-red), var(--prism-orange), var(--prism-yellow), var(--prism-green), var(--prism-blue), var(--prism-violet), var(--prism-pink));
+    border-radius: 1px;
+    opacity: 0.4;
+  }
+
+  /* ===== NAVIGATION ===== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--mid);
+    padding: 16px 0;
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  .logo span {
+    background: linear-gradient(135deg, var(--prism-blue), var(--prism-violet));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-cta {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 9px 22px;
+    background: var(--text);
+    color: var(--white);
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .nav-cta:hover {
+    background: var(--prism-violet);
+    transform: translateY(-1px);
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 120px 0 100px;
+    text-align: center;
+    position: relative;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 7px 18px;
+    border: 1px solid var(--mid);
+    border-radius: 100px;
+    margin-bottom: 36px;
+    color: var(--text-dim);
+    background: var(--off-white);
+  }
+
+  .hero-badge .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--prism-green);
+  }
+
+  .hero h1 {
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    margin-bottom: 24px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  .hero h1 .highlight {
+    position: relative;
+    display: inline-block;
+  }
+
+  .hero h1 .highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 4px; left: -4px; right: -4px;
+    height: 12px;
+    background: linear-gradient(90deg, var(--prism-yellow), var(--prism-orange), var(--prism-red));
+    opacity: 0.2;
+    border-radius: 4px;
+    z-index: -1;
+  }
+
+  .hero-sub {
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    color: var(--text-dim);
+    max-width: 560px;
+    margin: 0 auto 44px;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 72px;
+  }
+
+  .btn-primary {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 14px 36px;
+    background: var(--text);
+    color: var(--white);
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  }
+
+  .btn-secondary {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 14px 36px;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--mid);
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover {
+    border-color: var(--text-muted);
+    background: var(--off-white);
+  }
+
+  /* Hero prism illustration */
+  .hero-visual {
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .prism-demo {
+    background: var(--off-white);
+    border: 1px solid var(--mid);
+    border-radius: 20px;
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .prism-demo::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: conic-gradient(from 0deg, transparent, rgba(255,107,107,0.03), transparent, rgba(51,154,240,0.03), transparent, rgba(132,94,247,0.03), transparent);
+    animation: prismRotate 30s linear infinite;
+  }
+
+  @keyframes prismRotate {
+    to { transform: rotate(360deg); }
+  }
+
+  .prism-triangle {
+    width: 0; height: 0;
+    border-left: 60px solid transparent;
+    border-right: 60px solid transparent;
+    border-bottom: 104px solid rgba(0,0,0,0.04);
+    margin: 0 auto 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .prism-triangle::after {
+    content: '';
+    position: absolute;
+    top: 104px; left: -120px;
+    width: 240px; height: 3px;
+    background: linear-gradient(90deg, var(--prism-red), var(--prism-orange), var(--prism-yellow), var(--prism-green), var(--prism-blue), var(--prism-violet), var(--prism-pink));
+    opacity: 0.5;
+    border-radius: 2px;
+    filter: blur(1px);
+  }
+
+  .demo-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .demo-header {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+    color: var(--text);
+  }
+
+  .demo-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--light);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+
+  .demo-row:last-child { border-bottom: none; }
+
+  .demo-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .demo-dot.red { background: var(--prism-red); }
+  .demo-dot.orange { background: var(--prism-orange); }
+  .demo-dot.yellow { background: var(--prism-yellow); }
+  .demo-dot.green { background: var(--prism-green); }
+  .demo-dot.blue { background: var(--prism-blue); }
+  .demo-dot.violet { background: var(--prism-violet); }
+
+  .demo-time {
+    font-weight: 500;
+    color: var(--text);
+    min-width: 50px;
+  }
+
+  /* ===== LOGOS ===== */
+  .logos {
+    padding: 60px 0;
+  }
+
+  .logos-label {
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .logos-grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    opacity: 0.35;
+  }
+
+  .logo-item {
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  /* ===== FEATURES ===== */
+  .features {
+    padding: 100px 0;
+  }
+
+  .section-label {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, var(--prism-blue), var(--prism-violet));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .section-title {
+    text-align: center;
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 64px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .feature-card {
+    background: var(--off-white);
+    border: 1px solid var(--light);
+    border-radius: 16px;
+    padding: 32px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--prism-red), var(--prism-orange), var(--prism-yellow), var(--prism-green), var(--prism-blue), var(--prism-violet));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--mid);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.06);
+  }
+
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    font-size: 1.6rem;
+    margin-bottom: 16px;
+    display: block;
+    width: 48px; height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid var(--light);
+  }
+
+  .feature-card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .feature-card p {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag {
+    padding: 100px 0;
+  }
+
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    margin-bottom: 100px;
+  }
+
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-visual { order: -1; }
+
+  .zigzag-text h3 {
+    font-size: 2rem;
+    margin-bottom: 16px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .zigzag-text p {
+    font-size: 1rem;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .zigzag-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .zigzag-list li {
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    padding-left: 28px;
+    position: relative;
+    font-weight: 300;
+  }
+
+  .zigzag-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--prism-blue), var(--prism-violet));
+  }
+
+  .zigzag-visual {
+    background: var(--off-white);
+    border: 1px solid var(--light);
+    border-radius: 20px;
+    padding: 36px;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .zigzag-visual::after {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 250px; height: 250px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(132,94,247,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .visual-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+    color: var(--text);
+  }
+
+  .visual-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--light);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+
+  .visual-item:last-child { border-bottom: none; }
+
+  .visual-label {
+    font-weight: 500;
+    color: var(--text);
+    min-width: 50px;
+  }
+
+  .visual-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--light);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .visual-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--prism-blue), var(--prism-violet));
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial {
+    padding: 100px 0;
+  }
+
+  .testimonial-card {
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 56px;
+    position: relative;
+    background: var(--off-white);
+    border: 1px solid var(--light);
+    border-radius: 24px;
+  }
+
+  .testimonial-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--prism-red), var(--prism-orange), var(--prism-yellow), var(--prism-green), var(--prism-blue), var(--prism-violet), var(--prism-pink));
+    border-radius: 24px 24px 0 0;
+    opacity: 0.6;
+  }
+
+  .testimonial-card .quote-mark {
+    font-family: var(--font-display);
+    font-size: 4rem;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--prism-blue), var(--prism-violet));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+
+  .testimonial-text {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    line-height: 1.6;
+    margin-bottom: 28px;
+    color: var(--text);
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .testimonial-author {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .testimonial-role {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-top: 4px;
+    font-weight: 300;
+  }
+
+  .stars {
+    background: linear-gradient(90deg, var(--prism-yellow), var(--prism-orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    letter-spacing: 4px;
+  }
+
+  /* ===== PRICING ===== */
+  .pricing {
+    padding: 100px 0;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .price-card {
+    background: var(--off-white);
+    border: 1px solid var(--light);
+    border-radius: 20px;
+    padding: 36px;
+    text-align: center;
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .price-card.featured {
+    background: var(--white);
+    border: 2px solid var(--prism-violet);
+    box-shadow: 0 16px 48px rgba(132,94,247,0.1);
+  }
+
+  .price-card.featured::before {
+    content: 'MOST POPULAR';
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    background: linear-gradient(135deg, var(--prism-blue), var(--prism-violet));
+    color: var(--white);
+    padding: 4px 16px;
+    border-radius: 100px;
+  }
+
+  .price-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.06);
+  }
+
+  .price-tier {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .price-amount {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    letter-spacing: -0.02em;
+  }
+
+  .price-amount span {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+
+  .price-period {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+    font-weight: 300;
+  }
+
+  .price-features {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 28px;
+  }
+
+  .price-features li {
+    padding: 7px 0;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    padding-left: 24px;
+    position: relative;
+    font-weight: 300;
+  }
+
+  .price-features li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 11px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--prism-green);
+  }
+
+  .price-btn {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 12px 28px;
+    width: 100%;
+    border: 1px solid var(--mid);
+    background: transparent;
+    color: var(--text);
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .price-btn:hover {
+    border-color: var(--text);
+    background: var(--text);
+    color: var(--white);
+  }
+
+  .price-card.featured .price-btn {
+    background: var(--text);
+    color: var(--white);
+    border-color: var(--text);
+  }
+
+  .price-card.featured .price-btn:hover {
+    background: var(--prism-violet);
+    border-color: var(--prism-violet);
+  }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    padding: 120px 0;
+    text-align: center;
+    position: relative;
+  }
+
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(132,94,247,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .final-cta h2 {
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    margin-bottom: 20px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  .final-cta p {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    margin-bottom: 36px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: 300;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 40px 0;
+    border-top: 1px solid var(--light);
+    text-align: center;
+  }
+
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .footer-brand {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-dim);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+  }
+
+  .footer-links a {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  .footer-copy {
+    width: 100%;
+    text-align: center;
+    margin-top: 24px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .zigzag-row {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+
+    .nav-links { display: none; }
+
+    .footer-inner {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .prism-demo { padding: 28px; }
+
+    .pricing-grid {
+      grid-template-columns: 1fr;
+      max-width: 380px;
+    }
+
+    .floating-prisms { display: none; }
+  }
+
+  /* ===== SCROLL REVEAL ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+  <!-- Floating Prism Shapes -->
+  <div class="floating-prisms">
+    <div class="prism-shape"></div>
+    <div class="prism-shape"></div>
+    <div class="prism-shape"></div>
+    <div class="prism-shape"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container nav-inner">
+      <div class="logo">Meet<span>.</span></div>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how">How it Works</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+      </ul>
+      <button class="nav-cta">Get Started</button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge reveal"><span class="dot"></span> Less meeting. More doing.</div>
+      <h1 class="reveal">Meetings that<br><span class="highlight">don't waste</span><br>your week</h1>
+      <p class="hero-sub reveal">Schedule smarter. Meet shorter. Get more done. The calendar tool that actually respects your time.</p>
+      <div class="hero-actions reveal">
+        <button class="btn-primary">Start Free Trial</button>
+        <button class="btn-secondary">Watch Demo &rarr;</button>
+      </div>
+      <div class="hero-visual reveal">
+        <div class="prism-demo">
+          <div class="prism-triangle"></div>
+          <div class="demo-content">
+            <div class="demo-header">Today's Light Schedule</div>
+            <div class="demo-row">
+              <span class="demo-dot red"></span>
+              <span class="demo-time">9:00</span>
+              <span>Standup — 15 min</span>
+            </div>
+            <div class="demo-row">
+              <span class="demo-dot orange"></span>
+              <span class="demo-time">10:30</span>
+              <span>Design Review — 30 min</span>
+            </div>
+            <div class="demo-row">
+              <span class="demo-dot green"></span>
+              <span class="demo-time">14:00</span>
+              <span>Sprint Planning — 45 min</span>
+            </div>
+            <div class="demo-row">
+              <span class="demo-dot blue"></span>
+              <span class="demo-time">16:00</span>
+              <span>1:1 with Sarah — 20 min</span>
+            </div>
+            <div class="demo-row" style="color: var(--prism-green); font-weight: 500;">
+              <span class="demo-dot violet"></span>
+              <span class="demo-time">17:00</span>
+              <span>Free time! &nbsp;✦</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Logos -->
+  <section class="logos">
+    <div class="container">
+      <div class="rainbow-line" style="margin-bottom: 48px;"></div>
+      <p class="logos-label reveal">TRUSTED BY TEAMS AT</p>
+      <div class="logos-grid reveal">
+        <div class="logo-item">Stripe</div>
+        <div class="logo-item">Vercel</div>
+        <div class="logo-item">Linear</div>
+        <div class="logo-item">Notion</div>
+        <div class="logo-item">Figma</div>
+        <div class="logo-item">GitHub</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="container">
+      <p class="section-label reveal">SPECTRUM OF FEATURES</p>
+      <h2 class="section-title reveal">Why teams love Meet</h2>
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon">📋</div>
+          <h3>Auto-Agendas</h3>
+          <p>Every meeting gets a smart agenda pulled from your projects, emails, and last week's notes.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">⏱️</div>
+          <h3>Timeboxing</h3>
+          <p>Meetings auto-end when time's up. No more "let's just wrap this up" that drags 20 minutes.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">🧠</div>
+          <h3>Smart Reschedule</h3>
+          <p>AI detects when a meeting could be an email. Suggests cancel or shorten before you book.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">📝</div>
+          <h3>Live Notes</h3>
+          <p>Transcript + action items captured automatically. Shared with attendees the moment you finish.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">🔔</div>
+          <h3>Focus Guard</h3>
+          <p>Blocks double-booking. Protects deep work slots. Enforces meeting-free Fridays.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">📊</div>
+          <h3>Meeting Analytics</h3>
+          <p>See where your week goes. Average duration, attendance rate, and productivity score.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Zigzag -->
+  <section class="zigzag" id="how">
+    <div class="container">
+      <p class="section-label reveal">HOW IT WORKS</p>
+      <h2 class="section-title reveal">Three steps to better meetings</h2>
+
+      <div class="zigzag-row reveal">
+        <div class="zigzag-text">
+          <h3>1. Connect your calendar</h3>
+          <p>One-click sync with Google Calendar, Outlook, or Apple Calendar. We read your schedule — never write without permission.</p>
+          <ul class="zigzag-list">
+            <li>Google Workspace</li>
+            <li>Microsoft 365</li>
+            <li>Apple Calendar</li>
+            <li>Custom iCal feeds</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <div class="visual-title">Calendar Sync</div>
+          <div class="visual-item">
+            <span class="visual-label">Mon</span>
+            <div class="visual-bar"><div class="visual-bar-fill" style="width: 75%"></div></div>
+            <span style="font-size:0.8rem; color:var(--text-muted);">3 · 2h</span>
+          </div>
+          <div class="visual-item">
+            <span class="visual-label">Tue</span>
+            <div class="visual-bar"><div class="visual-bar-fill" style="width: 30%"></div></div>
+            <span style="font-size:0.8rem; color:var(--text-muted);">1 · 45m</span>
+          </div>
+          <div class="visual-item">
+            <span class="visual-label">Wed</span>
+            <div class="visual-bar"><div class="visual-bar-fill" style="width: 90%"></div></div>
+            <span style="font-size:0.8rem; color:var(--text-muted);">4 · 3h</span>
+          </div>
+          <div class="visual-item">
+            <span class="visual-label">Thu</span>
+            <div class="visual-bar"><div class="visual-bar-fill" style="width: 40%"></div></div>
+            <span style="font-size:0.8rem; color:var(--text-muted);">2 · 1h</span>
+          </div>
+          <div class="visual-item" style="color: var(--prism-green); font-weight: 500;">
+            <span class="visual-label">Fri</span>
+            <div class="visual-bar"><div class="visual-bar-fill" style="width: 0%; background: var(--prism-green);"></div></div>
+            <span style="font-size:0.8rem;">Free!</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="zigzag-row reverse reveal">
+        <div class="zigzag-text">
+          <h3>2. Set your rules</h3>
+          <p>Define meeting policies that protect your team's focus. Auto-enforced, no nagging required.</p>
+          <ul class="zigzag-list">
+            <li>Max 30-min default meetings</li>
+            <li>No meetings after 4pm</li>
+            <li>Require agenda to book</li>
+            <li>Auto-decline if &gt;3 back-to-back</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <div class="visual-title">Team Rules</div>
+          <div class="visual-item">
+            <span style="color: var(--prism-green);">✦</span>
+            <span>Max 30 min meetings</span>
+          </div>
+          <div class="visual-item">
+            <span style="color: var(--prism-green);">✦</span>
+            <span>No meetings after 4pm</span>
+          </div>
+          <div class="visual-item">
+            <span style="color: var(--prism-green);">✦</span>
+            <span>Agenda required</span>
+          </div>
+          <div class="visual-item">
+            <span style="color: var(--prism-green);">✦</span>
+            <span>Friday meeting-free</span>
+          </div>
+          <div class="visual-item">
+            <span style="color: var(--prism-green);">✦</span>
+            <span>Standup max 15 min</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="zigzag-row reveal">
+        <div class="zigzag-text">
+          <h3>3. Watch hours return</h3>
+          <p>Teams save an average of 6.2 hours per person per week. That's 250 hours a year per person.</p>
+          <ul class="zigzag-list">
+            <li>6.2 hrs/week saved on average</li>
+            <li>40% fewer meetings after month 1</li>
+            <li>92% team satisfaction rate</li>
+            <li>Zero setup maintenance</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <div class="visual-title">Your Impact</div>
+          <div style="text-align: center; padding: 24px 0;">
+            <div style="font-family: var(--font-display); font-size: 3.5rem; font-weight: 700; letter-spacing: -0.03em;">
+              <span class="prism-text">6.2h</span>
+            </div>
+            <div style="font-size: 0.9rem; color: var(--text-dim); font-weight: 300;">saved per week</div>
+            <div class="rainbow-line" style="margin: 20px auto; width: 60px;"></div>
+            <div style="font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--prism-green);">-40%</div>
+            <div style="font-size: 0.85rem; color: var(--text-dim); font-weight: 300;">fewer meetings</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonial -->
+  <section class="testimonial">
+    <div class="container">
+      <div class="testimonial-card reveal">
+        <div class="quote-mark">"</div>
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">We went from 34 meetings a week to 18. Our team actually has time to do their jobs now. Meet paid for itself in the first month.</p>
+        <div class="testimonial-author">Jessica Park</div>
+        <div class="testimonial-role">VP of Engineering, TechCorp</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <p class="section-label reveal">PRICING</p>
+      <h2 class="section-title reveal">Pick your plan</h2>
+      <div class="pricing-grid">
+        <div class="price-card reveal">
+          <div class="price-tier">Free</div>
+          <div class="price-amount">$0<span>/mo</span></div>
+          <div class="price-period">Up to 5 people</div>
+          <ul class="price-features">
+            <li>Calendar sync</li>
+            <li>Auto-agendas</li>
+            <li>Basic timeboxing</li>
+            <li>Weekly reports</li>
+          </ul>
+          <button class="price-btn">Get Started</button>
+        </div>
+        <div class="price-card featured reveal">
+          <div class="price-tier">Team</div>
+          <div class="price-amount">$12<span>/mo</span></div>
+          <div class="price-period">Per person, unlimited team</div>
+          <ul class="price-features">
+            <li>Everything in Free</li>
+            <li>Smart reschedule</li>
+            <li>Live notes &amp; transcripts</li>
+            <li>Focus Guard policies</li>
+            <li>Analytics dashboard</li>
+          </ul>
+          <button class="price-btn">Start Free Trial</button>
+        </div>
+        <div class="price-card reveal">
+          <div class="price-tier">Enterprise</div>
+          <div class="price-amount">$29<span>/mo</span></div>
+          <div class="price-period">Per person, annual billing</div>
+          <ul class="price-features">
+            <li>Everything in Team</li>
+            <li>SSO &amp; SCIM</li>
+            <li>Custom policies</li>
+            <li>Admin console</li>
+            <li>Dedicated support</li>
+          </ul>
+          <button class="price-btn">Contact Sales</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta">
+    <div class="container">
+      <h2 class="reveal">Ready to reclaim<br><span class="prism-text">your week?</span></h2>
+      <p class="reveal">Join 12,000+ teams who save 6 hours every week with Meet.</p>
+      <div class="reveal">
+        <button class="btn-primary">Start Free — No Card Needed</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">Meet<span style="background: linear-gradient(135deg, var(--prism-blue), var(--prism-violet)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">.</span></div>
+        <ul class="footer-links">
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Twitter</a></li>
+        </ul>
+        <div class="footer-copy">&copy; 2024 Meet Inc. All rights reserved.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

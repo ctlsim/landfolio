@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #060608;
+    --void-mid: #0C0C10;
+    --void-light: #141418;
+    --fog: rgba(255, 255, 255, 0.03);
+    --fog-mid: rgba(255, 255, 255, 0.06);
+    --beam: rgba(255, 255, 255, 0.04);
+    --beam-strong: rgba(255, 255, 255, 0.08);
+    --gold: #C9A84C;
+    --gold-dim: rgba(201, 168, 76, 0.3);
+    --gold-glow: rgba(201, 168, 76, 0.15);
+    --warm-white: #F0EDE6;
+    --text-primary: #E8E6E0;
+    --text-mid: #9A9890;
+    --text-dim: #5A5850;
+    --accent-blue: #6B8DB8;
+    --accent-blue-dim: rgba(107, 141, 184, 0.2);
+    --font-display: 'Cormorant SC', serif;
+    --font-body: 'Inter', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--void);
+    color: var(--text-primary);
+    line-height: 1.65;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ===== ATMOSPHERIC FOG ===== */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,255,255,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 20% 80%, rgba(201,168,76,0.02) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 80% 90%, rgba(107,141,184,0.02) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== GOD RAYS ===== */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      linear-gradient(175deg, rgba(255,255,255,0.06) 0%, transparent 35%),
+      linear-gradient(185deg, rgba(255,255,255,0.04) 0%, transparent 30%),
+      linear-gradient(170deg, rgba(201,168,76,0.03) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+    animation: raysShift 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes raysShift {
+    0% { opacity: 0.6; transform: translateX(-2%); }
+    50% { opacity: 1; transform: translateX(1%); }
+    100% { opacity: 0.7; transform: translateX(-1%); }
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--text-primary);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  h1 { font-size: clamp(2.8rem, 6vw, 5rem); }
+  h2 { font-size: clamp(1.8rem, 3.5vw, 2.8rem); }
+  h3 { font-size: clamp(1.1rem, 2vw, 1.4rem); }
+
+  section { position: relative; z-index: 1; }
+
+  a { color: var(--gold); text-decoration: none; transition: color 0.3s, text-shadow 0.3s; }
+  a:hover { color: #E0C060; text-shadow: 0 0 20px var(--gold-glow); }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ===== LIGHT BEAM DECORATION ===== */
+  .light-beam {
+    position: absolute;
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.15), transparent);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== DIVIDER ===== */
+  .cinema-divider {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 48px auto;
+    max-width: 400px;
+  }
+  .cinema-divider::before,
+  .cinema-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--text-dim), transparent);
+  }
+  .cinema-divider .diamond {
+    width: 8px; height: 8px;
+    background: var(--gold-dim);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  /* ===== CARD ===== */
+  .void-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 2px;
+    padding: 36px;
+    position: relative;
+    backdrop-filter: blur(1px);
+  }
+
+  /* Subtle light edge */
+  .void-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  }
+
+  /* ===== BUTTONS ===== */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 36px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: all 0.4s;
+    text-decoration: none;
+    position: relative;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold), #B8943F);
+    color: var(--void);
+    box-shadow: 0 0 40px var(--gold-glow), inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 0 60px rgba(201,168,76,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+    transform: translateY(-2px);
+    color: var(--void);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .btn-secondary:hover {
+    border-color: var(--gold-dim);
+    color: var(--gold);
+    box-shadow: 0 0 30px var(--gold-glow);
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 32px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Dramatic light cone from top */
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 800px;
+    background: conic-gradient(from 180deg at 50% 0%,
+      transparent 0deg,
+      rgba(255,255,255,0.03) 10deg,
+      rgba(255,255,255,0.08) 20deg,
+      rgba(255,255,255,0.03) 30deg,
+      transparent 40deg
+    );
+    pointer-events: none;
+    z-index: 0;
+    animation: heroBeam 15s ease-in-out infinite alternate;
+  }
+
+  @keyframes heroBeam {
+    0% { opacity: 0.5; transform: translateX(-50%) rotate(-2deg); }
+    100% { opacity: 1; transform: translateX(-50%) rotate(2deg); }
+  }
+
+  /* Fog layer at bottom of hero */
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 200px;
+    background: linear-gradient(to top, var(--void), transparent);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .hero-content {
+    max-width: 800px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 24px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-mid);
+    margin-bottom: 40px;
+  }
+
+  .hero-badge .beam-dot {
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--gold-glow);
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.6; box-shadow: 0 0 8px var(--gold-glow); }
+    50% { opacity: 1; box-shadow: 0 0 20px var(--gold-glow); }
+  }
+
+  .hero h1 {
+    margin-bottom: 24px;
+    text-shadow: 0 0 80px rgba(255,255,255,0.1);
+  }
+  .hero h1 em {
+    font-family: var(--font-body);
+    font-style: normal;
+    font-weight: 300;
+    color: var(--gold);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .hero p {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--text-mid);
+    max-width: 560px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* Floating dust particles */
+  .dust {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    animation: dustFloat linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes dustFloat {
+    0% { transform: translateY(0) translateX(0); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.6; }
+    100% { transform: translateY(-200px) translateX(30px); opacity: 0; }
+  }
+
+  /* ===== LOGOS ===== */
+  .logos-section {
+    padding: 60px 32px;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .logos-section p {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  .logos-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    opacity: 0.4;
+  }
+
+  .logo-placeholder {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+
+  /* ===== FEATURES ===== */
+  .features-section {
+    padding: 100px 32px;
+    position: relative;
+  }
+
+  /* Side light beams */
+  .features-section .beam-left {
+    position: absolute;
+    top: 0; left: 10%;
+    width: 1px; height: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.04) 30%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 70%, transparent);
+    pointer-events: none;
+  }
+  .features-section .beam-right {
+    position: absolute;
+    top: 0; right: 15%;
+    width: 1px; height: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(201,168,76,0.03) 30%, rgba(201,168,76,0.06) 50%, rgba(201,168,76,0.03) 70%, transparent);
+    pointer-events: none;
+  }
+
+  .features-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 60px;
+  }
+  .features-header h2 { margin-bottom: 16px; }
+  .features-header p {
+    font-size: 1.05rem;
+    color: var(--text-mid);
+    font-weight: 300;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .feature-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 2px;
+    padding: 36px 28px;
+    position: relative;
+    transition: all 0.4s;
+  }
+  .feature-card:hover {
+    border-color: rgba(255,255,255,0.12);
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    box-shadow: 0 0 40px rgba(255,255,255,0.02);
+  }
+
+  /* Top light edge */
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 20%; right: 20%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  }
+
+  .feature-icon {
+    width: 40px; height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: var(--gold);
+    position: relative;
+  }
+  .feature-icon::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border: 1px solid var(--gold-dim);
+    transform: rotate(45deg);
+  }
+
+  .feature-card h3 {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+  }
+  .feature-card p {
+    color: var(--text-mid);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag-section {
+    padding: 80px 32px;
+  }
+
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto 80px;
+  }
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-visual { order: 2; }
+  .zigzag-row.reverse .zigzag-text { order: 1; }
+
+  .zigzag-text h3 {
+    font-size: 1.6rem;
+    margin-bottom: 16px;
+  }
+  .zigzag-text p {
+    color: var(--text-mid);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 20px;
+    font-weight: 300;
+  }
+
+  .zigzag-checklist {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .zigzag-checklist li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 400;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+  }
+  .zigzag-checklist li::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+    box-shadow: 0 0 8px var(--gold-glow);
+  }
+
+  .zigzag-visual {
+    background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 2px;
+    padding: 40px;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Light sweep across visual */
+  .zigzag-visual::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: conic-gradient(from 0deg at 50% 50%,
+      transparent 0deg,
+      rgba(255,255,255,0.02) 40deg,
+      transparent 80deg
+    );
+    animation: visualSweep 12s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes visualSweep {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Mock UI */
+  .mock-ui {
+    width: 100%;
+    max-width: 300px;
+    position: relative;
+    z-index: 1;
+  }
+  .mock-ui-header {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .mock-ui-dot {
+    width: 8px; height: 8px;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .mock-ui-dot:nth-child(1) { background: var(--gold-dim); border-color: var(--gold-dim); }
+  .mock-ui-dot:nth-child(2) { background: rgba(255,255,255,0.05); }
+  .mock-ui-dot:nth-child(3) { background: rgba(255,255,255,0.05); }
+
+  .mock-ui-row {
+    height: 6px;
+    margin-bottom: 8px;
+    background: rgba(255,255,255,0.04);
+  }
+  .mock-ui-row.w100 { width: 100%; }
+  .mock-ui-row.w80 { width: 80%; }
+  .mock-ui-row.w60 { width: 60%; }
+  .mock-ui-row.w90 { width: 90%; }
+  .mock-ui-row.accent { background: linear-gradient(90deg, var(--gold-dim), transparent); }
+
+  .mock-ui-block {
+    height: 50px;
+    margin-bottom: 8px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: linear-gradient(135deg, rgba(201,168,76,0.05), rgba(255,255,255,0.02));
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial-section {
+    padding: 100px 32px;
+    text-align: center;
+    position: relative;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  /* Dramatic spotlight */
+  .testimonial-section::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .testimonial-card {
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .testimonial-quote {
+    font-family: var(--font-body);
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.7;
+    color: var(--text-primary);
+    margin-bottom: 36px;
+    position: relative;
+  }
+  .testimonial-quote::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--gold-dim);
+    margin: 0 auto 24px;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .testimonial-avatar {
+    width: 48px; height: 48px;
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    background: rgba(255,255,255,0.02);
+  }
+
+  .testimonial-info { text-align: left; }
+  .testimonial-name {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+  }
+  .testimonial-role {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+
+  /* ===== PRICING ===== */
+  .pricing-section {
+    padding: 100px 32px;
+    position: relative;
+  }
+
+  /* Ambient light from sides */
+  .pricing-section::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: -100px;
+    width: 200px; height: 400px;
+    background: linear-gradient(to right, rgba(201,168,76,0.03), transparent);
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  .pricing-section::after {
+    content: '';
+    position: absolute;
+    top: 50%; right: -100px;
+    width: 200px; height: 400px;
+    background: linear-gradient(to left, rgba(107,141,184,0.03), transparent);
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  .pricing-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 60px;
+  }
+  .pricing-header h2 { margin-bottom: 16px; }
+  .pricing-header p {
+    font-size: 1.05rem;
+    color: var(--text-mid);
+    font-weight: 300;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .pricing-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 2px;
+    padding: 40px 32px;
+    text-align: center;
+    position: relative;
+    transition: all 0.4s;
+  }
+  .pricing-card:hover {
+    border-color: rgba(255,255,255,0.12);
+    transform: translateY(-4px);
+  }
+
+  .pricing-card.featured {
+    border-color: var(--gold-dim);
+    background: linear-gradient(135deg, rgba(201,168,76,0.06), rgba(255,255,255,0.02));
+    box-shadow: 0 0 60px rgba(201,168,76,0.05);
+  }
+
+  .pricing-card.featured::before {
+    content: 'FEATURED';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold);
+    color: var(--void);
+    padding: 4px 16px;
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+  }
+
+  /* Top light on featured */
+  .pricing-card.featured::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  }
+
+  .pricing-tier {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-mid);
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+
+  .pricing-amount {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .pricing-amount span {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--text-dim);
+  }
+
+  .pricing-desc {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+    font-weight: 300;
+  }
+
+  .pricing-features {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .pricing-features li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--text-mid);
+    font-weight: 300;
+  }
+  .pricing-features li::before {
+    content: '';
+    width: 5px; height: 5px;
+    background: var(--gold-dim);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  .pricing-card .btn { width: 100%; justify-content: center; }
+
+  /* ===== FINAL CTA ===== */
+  .cta-section {
+    padding: 100px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Dramatic overhead light */
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    top: -300px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 500px;
+    height: 600px;
+    background: linear-gradient(to bottom,
+      rgba(255,255,255,0.06) 0%,
+      rgba(255,255,255,0.03) 30%,
+      transparent 70%
+    );
+    clip-path: polygon(45% 0%, 55% 0%, 70% 100%, 30% 100%);
+    pointer-events: none;
+    animation: ctaBeam 10s ease-in-out infinite alternate;
+  }
+
+  @keyframes ctaBeam {
+    0% { opacity: 0.4; }
+    100% { opacity: 0.8; }
+  }
+
+  .cta-content {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .cta-content h2 {
+    margin-bottom: 16px;
+    text-shadow: 0 0 60px rgba(255,255,255,0.05);
+  }
+  .cta-content p {
+    font-size: 1.05rem;
+    color: var(--text-mid);
+    margin-bottom: 36px;
+    font-weight: 300;
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    padding: 60px 32px 40px;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0.15em;
+    margin-bottom: 20px;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .footer-links a {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .footer-links a:hover { color: var(--gold); }
+
+  .footer-copy {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .zigzag-row {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .zigzag-row.reverse .zigzag-text { order: 0; }
+
+    .hero { min-height: auto; padding: 100px 24px 60px; }
+    .hero::before { width: 300px; height: 500px; }
+
+    .logos-grid { gap: 24px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+
+    .container { padding: 0 20px; }
+
+    .features-section .beam-left,
+    .features-section .beam-right { display: none; }
+  }
+
+  /* ===== LETTERBOX BARS ===== */
+  .letterbox-top, .letterbox-bottom {
+    position: fixed;
+    left: 0; right: 0;
+    height: 3vh;
+    background: var(--void);
+    z-index: 100;
+    pointer-events: none;
+  }
+  .letterbox-top { top: 0; }
+  .letterbox-bottom { bottom: 0; }
+
+  @media (max-width: 768px) {
+    .letterbox-top, .letterbox-bottom { display: none; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Cinematic letterboxing -->
+  <div class="letterbox-top"></div>
+  <div class="letterbox-bottom"></div>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <!-- Dust particles -->
+    <div class="dust" style="left:20%;top:60%;animation-duration:8s;animation-delay:0s;"></div>
+    <div class="dust" style="left:35%;top:70%;animation-duration:12s;animation-delay:2s;"></div>
+    <div class="dust" style="left:55%;top:55%;animation-duration:10s;animation-delay:4s;"></div>
+    <div class="dust" style="left:70%;top:65%;animation-duration:9s;animation-delay:1s;"></div>
+    <div class="dust" style="left:85%;top:50%;animation-duration:11s;animation-delay:3s;"></div>
+    <div class="dust" style="left:45%;top:75%;animation-duration:13s;animation-delay:5s;"></div>
+    <div class="dust" style="left:10%;top:55%;animation-duration:7s;animation-delay:6s;"></div>
+    <div class="dust" style="left:60%;top:60%;animation-duration:14s;animation-delay:2s;"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="beam-dot"></span>
+        Illuminating your schedule
+      </div>
+      <h1>Meetings in the <em>light</em></h1>
+      <p>Where darkness obscures waste, light reveals truth. Meet shines a beam on your calendar — exposing every wasted hour.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn btn-primary">Begin</a>
+        <a href="#" class="btn btn-secondary">Watch the Film</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LOGOS ===== -->
+  <section class="logos-section">
+    <div class="container">
+      <p>Trusted by teams who see clearly</p>
+      <div class="logos-grid">
+        <div class="logo-placeholder">Notion</div>
+        <div class="logo-placeholder">Figma</div>
+        <div class="logo-placeholder">Linear</div>
+        <div class="logo-placeholder">Vercel</div>
+        <div class="logo-placeholder">Stripe</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="features-section">
+    <div class="beam-left"></div>
+    <div class="beam-right"></div>
+    <div class="container">
+      <div class="features-header">
+        <h2>What the light reveals</h2>
+        <div class="cinema-divider">
+          <div class="diamond"></div>
+        </div>
+        <p>Features forged in dramatic contrast — no shadows to hide behind.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">◇</div>
+          <h3>Smart Scheduling</h3>
+          <p>AI illuminates the perfect time slot. No guessing, no overlap — just clarity.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">◇</div>
+          <h3>Focus Protection</h3>
+          <p>Deep work blocks that hold firm. Like a spotlight — nothing distracts from the center.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">◇</div>
+          <h3>Team Rhythms</h3>
+          <p>Learn when your team creates best. Schedule thinking for peak illumination.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">◇</div>
+          <h3>Async-First</h3>
+          <p>Most "meetings" become written updates. Only what demands presence gets a slot.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">◇</div>
+          <h3>Meeting Health</h3>
+          <p>Track ROI over time. See which meetings cast light — and which cast only shadow.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">◇</div>
+          <h3>Integration Suite</h3>
+          <p>Slack, Google, Notion, Linear — every tool brought into the same light.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ZIGZAG ===== -->
+  <section class="zigzag-section">
+    <div class="container">
+      <div class="zigzag-row">
+        <div class="zigzag-text">
+          <h3>Pattern recognition, not guesswork</h3>
+          <p>Meet learns your team's rhythm over weeks. It spots which meetings run long, which could be emails, and which are worth the light.</p>
+          <ul class="zigzag-checklist">
+            <li>Calendar pattern analysis</li>
+            <li>Meeting length optimization</li>
+            <li>Automatic agenda generation</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <div class="mock-ui">
+            <div class="mock-ui-header">
+              <div class="mock-ui-dot"></div>
+              <div class="mock-ui-dot"></div>
+              <div class="mock-ui-dot"></div>
+            </div>
+            <div class="mock-ui-row w80 accent"></div>
+            <div class="mock-ui-row w100"></div>
+            <div class="mock-ui-block"></div>
+            <div class="mock-ui-row w60"></div>
+            <div class="mock-ui-row w90"></div>
+            <div class="mock-ui-block"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="zigzag-row reverse">
+        <div class="zigzag-text">
+          <h3>Extinguish the bad meetings</h3>
+          <p>Every week, Meet suggests meetings to cancel, merge, or convert to async. Your calendar gets leaner — shadows eliminated.</p>
+          <ul class="zigzag-checklist">
+            <li>Weekly cleanup suggestions</li>
+            <li>Meeting cost calculator</li>
+            <li>One-click cancellation</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <div class="mock-ui">
+            <div class="mock-ui-header">
+              <div class="mock-ui-dot"></div>
+              <div class="mock-ui-dot"></div>
+              <div class="mock-ui-dot"></div>
+            </div>
+            <div class="mock-ui-row w100"></div>
+            <div class="mock-ui-row w80"></div>
+            <div class="mock-ui-block"></div>
+            <div class="mock-ui-row w60 accent"></div>
+            <div class="mock-ui-row w90"></div>
+            <div class="mock-ui-row w80"></div>
+            <div class="mock-ui-block"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIAL ===== -->
+  <section class="testimonial-section">
+    <div class="container">
+      <div class="testimonial-card">
+        <p class="testimonial-quote">We went from 18 meetings a week to 9. The ones we kept actually had purpose. It's like someone turned on the lights in our workweek.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">SK</div>
+          <div class="testimonial-info">
+            <div class="testimonial-name">Sarah Kim</div>
+            <div class="testimonial-role">Head of Operations, Luminary Studio</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRICING ===== -->
+  <section class="pricing-section">
+    <div class="container">
+      <div class="pricing-header">
+        <h2>Simple, transparent pricing</h2>
+        <div class="cinema-divider">
+          <div class="diamond"></div>
+        </div>
+        <p>Start free. Upgrade when clarity becomes essential.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-tier">Shadow</div>
+          <div class="pricing-amount">$0 <span>/mo</span></div>
+          <div class="pricing-desc">For individuals finding direction</div>
+          <ul class="pricing-features">
+            <li>Smart calendar scheduling</li>
+            <li>Focus time protection</li>
+            <li>Weekly meeting insights</li>
+            <li>5 team member connections</li>
+          </ul>
+          <a href="#" class="btn btn-secondary">Get Started</a>
+        </div>
+        <div class="pricing-card featured">
+          <div class="pricing-tier">Illumination</div>
+          <div class="pricing-amount">$12 <span>/mo</span></div>
+          <div class="pricing-desc">For teams seeking clarity</div>
+          <ul class="pricing-features">
+            <li>Everything in Shadow</li>
+            <li>Team pattern analysis</li>
+            <li>Meeting cost calculator</li>
+            <li>Async conversion engine</li>
+            <li>Unlimited integrations</li>
+          </ul>
+          <a href="#" class="btn btn-primary">Start Free Trial</a>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-tier">Radiance</div>
+          <div class="pricing-amount">$29 <span>/mo</span></div>
+          <div class="pricing-desc">For organizations at scale</div>
+          <ul class="pricing-features">
+            <li>Everything in Illumination</li>
+            <li>Enterprise SSO &amp; SAML</li>
+            <li>Custom AI training</li>
+            <li>Dedicated success manager</li>
+            <li>API access</li>
+          </ul>
+          <a href="#" class="btn btn-secondary">Contact Sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FINAL CTA ===== -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2>Step into the light</h2>
+        <p>Join thousands of teams who stopped guessing and started seeing clearly. Free for individuals, powerful for teams.</p>
+        <div class="hero-actions">
+          <a href="#" class="btn btn-primary">Begin Your Journey</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-logo">◇ MEET</div>
+      <div class="footer-links">
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Blog</a>
+        <a href="#">Docs</a>
+        <a href="#">Contact</a>
+      </div>
+      <p class="footer-copy">© 2024 Meet. Illuminated with precision.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

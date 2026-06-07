@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Bangers&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg-alt: #111111;
+    --bg-panel: #1a1a1a;
+    --vhs-red: #ff2020;
+    --vhs-red-dim: #cc1818;
+    --vhs-cyan: #00e5ff;
+    --vhs-cyan-dim: #00b8cc;
+    --vhs-yellow: #ffe600;
+    --vhs-yellow-dim: #ccba00;
+    --vhs-green: #39ff14;
+    --vhs-green-dim: #2bcc10;
+    --vhs-pink: #ff6ec7;
+    --vhs-purple: #b026ff;
+    --text: #e0e0e0;
+    --text-dim: #888888;
+    --text-muted: #555555;
+    --border: #2a2a2a;
+    --mono: 'VT323', monospace;
+    --display: 'Bangers', cursive;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--mono);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+    font-size: 19px;
+    letter-spacing: 0.02em;
+  }
+
+  /* VHS tracking lines */
+  .vhs-tracking {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 999;
+    overflow: hidden;
+  }
+  .tracking-line {
+    position: absolute; left: 0; width: 100%; height: 3px;
+    background: rgba(255,255,255,0.08);
+    animation: trackingScroll 8s linear infinite;
+  }
+  .tracking-line:nth-child(2) { height: 2px; animation-duration: 12s; animation-delay: -3s; opacity: 0.6; }
+  .tracking-line:nth-child(3) { height: 4px; animation-duration: 15s; animation-delay: -7s; opacity: 0.4; }
+  .tracking-line:nth-child(4) { height: 1px; animation-duration: 20s; animation-delay: -2s; opacity: 0.3; }
+
+  @keyframes trackingScroll {
+    0% { top: -5px; }
+    100% { top: 100vh; }
+  }
+
+  /* VHS noise overlay */
+  .vhs-noise {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 998;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation: noiseShift 0.15s steps(3) infinite;
+  }
+  @keyframes noiseShift {
+    0% { transform: translate(0, 0); }
+    33% { transform: translate(-2px, 1px); }
+    66% { transform: translate(1px, -1px); }
+    100% { transform: translate(0, 0); }
+  }
+
+  /* RGB shift effect on headings */
+  .rgb-shift {
+    position: relative;
+    display: inline-block;
+  }
+  .rgb-shift::before,
+  .rgb-shift::after {
+    content: attr(data-text);
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+  .rgb-shift::before {
+    color: var(--vhs-red);
+    transform: translate(-2px, 0);
+    mix-blend-mode: screen;
+    opacity: 0.6;
+    animation: rgbFlicker 3s infinite;
+  }
+  .rgb-shift::after {
+    color: var(--vhs-cyan);
+    transform: translate(2px, 0);
+    mix-blend-mode: screen;
+    opacity: 0.6;
+    animation: rgbFlicker 3s infinite reverse;
+  }
+  @keyframes rgbFlicker {
+    0%, 90%, 100% { opacity: 0.6; }
+    92% { opacity: 0; }
+    94% { opacity: 0.8; }
+    96% { opacity: 0; }
+  }
+
+  /* Scanline overlay */
+  body::after {
+    content: '';
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.15) 2px,
+      rgba(0,0,0,0.15) 4px
+    );
+    pointer-events: none;
+    z-index: 997;
+  }
+
+  /* Timestamp watermark */
+  .timestamp {
+    position: fixed; bottom: 20px; right: 24px;
+    font-family: var(--mono); font-size: 14px;
+    color: var(--text-muted); z-index: 1000;
+    text-shadow: 0 0 8px rgba(255,255,255,0.1);
+    pointer-events: none;
+    letter-spacing: 0.05em;
+  }
+  .timestamp::before {
+    content: 'REC ● ';
+    color: var(--vhs-red);
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  h1, h2 {
+    font-family: var(--display);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+  }
+
+  h3 {
+    font-family: var(--display);
+    font-size: 1.3rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  h1 { font-size: clamp(2.8rem, 6vw, 5rem); }
+  h2 { font-size: clamp(1.8rem, 3.5vw, 2.8rem); }
+
+  a { color: var(--vhs-cyan); text-decoration: none; transition: color 0.2s, text-shadow 0.2s; }
+  a:hover { color: var(--vhs-yellow); text-shadow: 0 0 12px rgba(255,230,0,0.4); }
+
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  /* Reveal animation */
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* Glitch bar decoration */
+  .glitch-bar {
+    height: 3px; margin: 0 auto; width: 120px;
+    background: linear-gradient(90deg, var(--vhs-red), var(--vhs-cyan), var(--vhs-yellow));
+    animation: glitchBar 4s steps(1) infinite;
+  }
+  @keyframes glitchBar {
+    0%, 85%, 100% { transform: translateX(0); opacity: 1; }
+    86% { transform: translateX(-20px); opacity: 0.5; }
+    88% { transform: translateX(15px); opacity: 0.8; }
+    90% { transform: translateX(-5px); opacity: 0.3; }
+  }
+
+  nav, section, footer { position: relative; z-index: 1; }
+
+  /* ═══════════ NAV ═══════════ */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,10,10,0.9); backdrop-filter: blur(8px);
+    border-bottom: 2px solid var(--border);
+  }
+  nav::after {
+    content: '';
+    position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--vhs-red), transparent 30%, transparent 70%, var(--vhs-cyan));
+    opacity: 0.5;
+  }
+  nav .container { display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; }
+  .logo {
+    font-family: var(--display); font-size: 1.6rem; color: var(--text);
+    text-decoration: none; letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 0 var(--vhs-red-dim), -1px -1px 0 rgba(0,229,255,0.3);
+  }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    color: var(--text-dim); text-decoration: none; font-size: 1rem;
+    font-family: var(--mono); letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s, text-shadow 0.2s;
+  }
+  .nav-links a:hover { color: var(--vhs-cyan); text-shadow: 0 0 8px rgba(0,229,255,0.5); }
+  .btn-nav {
+    background: var(--vhs-red);
+    color: #fff !important; padding: 8px 20px; font-size: 1rem;
+    font-family: var(--display); letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; border: 2px solid var(--vhs-red);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+  }
+  .btn-nav:hover {
+    background: var(--vhs-red-dim);
+    box-shadow: 0 0 20px rgba(255,32,32,0.4), inset 0 0 10px rgba(0,0,0,0.2);
+    transform: translateY(-1px);
+  }
+
+  /* ═══════════ HERO ═══════════ */
+  .hero { padding: 140px 0 80px; text-align: center; }
+  .hero-inner { max-width: 740px; margin: 0 auto; }
+  .hero-tag {
+    font-family: var(--mono); font-size: 0.85rem;
+    color: var(--vhs-green); letter-spacing: 0.1em;
+    margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 12px;
+    text-transform: uppercase;
+  }
+  .hero-tag::before, .hero-tag::after {
+    content: ''; width: 30px; height: 2px;
+    background: var(--vhs-green-dim); opacity: 0.5;
+  }
+  .hero h1 { margin-bottom: 20px; color: var(--text); }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--vhs-cyan);
+    text-shadow: 0 0 20px rgba(0,229,255,0.5), 2px 2px 0 var(--vhs-red-dim);
+  }
+  .hero .subhead {
+    font-size: 1rem; max-width: 520px; margin: 0 auto 12px;
+    color: var(--text-dim); line-height: 1.7;
+  }
+  .cta-group { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 56px; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--vhs-red);
+    color: #fff; padding: 14px 32px; text-decoration: none;
+    font-family: var(--display); font-size: 1.1rem; letter-spacing: 0.06em; text-transform: uppercase;
+    border: 2px solid var(--vhs-red);
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+  }
+  .btn-primary:hover {
+    background: var(--vhs-red-dim);
+    box-shadow: 0 0 24px rgba(255,32,32,0.4), inset 0 0 12px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+  }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--text-dim); padding: 14px 24px; text-decoration: none;
+    font-family: var(--mono); font-size: 1rem;
+    border: 2px solid var(--border);
+    transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+  }
+  .btn-secondary:hover {
+    border-color: var(--vhs-cyan); color: var(--vhs-cyan);
+    box-shadow: 0 0 12px rgba(0,229,255,0.2);
+  }
+
+  /* Hero screenshot */
+  .hero-screenshot { max-width: 780px; margin: 0 auto; }
+  .screenshot-mockup {
+    overflow: hidden;
+    border: 2px solid var(--border);
+    box-shadow: 0 0 30px rgba(0,229,255,0.05), 0 8px 32px rgba(0,0,0,0.5);
+    background: var(--bg-alt);
+    position: relative;
+  }
+  .screenshot-mockup::before {
+    content: '';
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.08) 3px,
+      rgba(0,0,0,0.08) 6px
+    );
+    pointer-events: none; z-index: 2;
+  }
+  .mockup-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px; font-family: var(--mono); font-size: 0.8rem;
+    background: var(--bg-panel);
+    border-bottom: 2px solid var(--border);
+    color: var(--text-muted);
+  }
+  .mockup-topbar-dots { display: flex; gap: 6px; }
+  .mockup-topbar-dots span {
+    width: 10px; height: 10px;
+    border: 1px solid var(--border);
+  }
+  .mockup-topbar-dots span:nth-child(1) { background: var(--vhs-red); border-color: var(--vhs-red-dim); }
+  .mockup-topbar-dots span:nth-child(2) { background: var(--vhs-yellow); border-color: var(--vhs-yellow-dim); }
+  .mockup-topbar-dots span:nth-child(3) { background: var(--vhs-green); border-color: var(--vhs-green-dim); }
+  .mockup-body {
+    display: grid; grid-template-columns: 160px 1fr 200px;
+    background: var(--bg-alt); min-height: 200px;
+  }
+  .mock-sidebar {
+    border-right: 2px solid var(--border);
+    padding: 14px; display: flex; flex-direction: column; gap: 8px;
+  }
+  .mock-sidebar-item {
+    height: 8px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+  }
+  .mock-sidebar-item.active {
+    background: var(--vhs-red-dim);
+    border-color: var(--vhs-red);
+    box-shadow: 0 0 8px rgba(255,32,32,0.3);
+  }
+  .mock-main { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .mock-line { height: 8px; background: var(--bg-panel); border: 1px solid var(--border); }
+  .mock-line.title {
+    height: 10px; width: 40%;
+    background: rgba(0,229,255,0.1);
+    border-color: rgba(0,229,255,0.2);
+  }
+  .mock-right {
+    border-left: 2px solid var(--border);
+    padding: 14px; display: flex; flex-direction: column; gap: 8px;
+  }
+  .mock-action {
+    display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+  }
+  .mock-action-dot {
+    width: 8px; height: 8px; flex-shrink: 0;
+    border: 1px solid var(--border);
+  }
+  .mock-action-line { height: 6px; background: var(--border); flex: 1; }
+
+  /* ═══════════ LOGOS ═══════════ */
+  .logo-bar {
+    padding: 48px 0;
+    border-top: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
+    background: var(--bg-alt);
+  }
+  .logo-bar p {
+    font-family: var(--mono); font-size: 0.8rem;
+    text-align: center; margin-bottom: 24px; color: var(--text-muted);
+    letter-spacing: 0.15em; text-transform: uppercase;
+  }
+  .logos {
+    display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;
+  }
+  .logo-item {
+    font-family: var(--display); font-size: 1.1rem; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    transition: color 0.2s, text-shadow 0.2s;
+  }
+  .logo-item:hover { color: var(--text-dim); text-shadow: 0 0 8px rgba(255,255,255,0.1); }
+
+  /* ═══════════ FEATURES ═══════════ */
+  .features { padding: 80px 0; }
+  .features-header { text-align: center; margin-bottom: 48px; }
+  .features-header h2 { margin-bottom: 8px; }
+  .features-header p { color: var(--text-dim); font-size: 1rem; }
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--border); border: 2px solid var(--border); overflow: hidden; }
+  .feature-card {
+    padding: 36px 28px;
+    background: var(--bg-alt);
+    transition: background 0.2s;
+  }
+  .feature-card:hover { background: var(--bg-panel); }
+  .feature-icon {
+    font-family: var(--display); font-size: 1.2rem; letter-spacing: 0.05em;
+    margin-bottom: 16px;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 48px; height: 48px;
+    background: var(--bg-panel); color: var(--vhs-cyan);
+    border: 2px solid var(--vhs-cyan);
+    box-shadow: 0 0 12px rgba(0,229,255,0.15);
+  }
+  .feature-card h3 { margin-bottom: 10px; color: var(--text); }
+  .feature-card p { font-size: 0.95rem; line-height: 1.6; color: var(--text-dim); }
+
+  /* ═══════════ ZIGZAG ═══════════ */
+  .zigzag { }
+  .zigzag-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    border-top: 2px solid var(--border);
+  }
+  .zigzag-row:first-child { border-top: none; }
+  .zigzag-row + .zigzag-row { border-top: 2px solid var(--border); }
+  .zigzag-row.reverse .zigzag-copy { order: 2; }
+  .zigzag-copy {
+    padding: 60px 48px; display: flex; flex-direction: column;
+    justify-content: center;
+  }
+  .zigzag-copy .section-num {
+    font-family: var(--mono); font-size: 0.85rem; font-weight: 400;
+    color: var(--vhs-yellow); letter-spacing: 0.1em;
+    margin-bottom: 12px; text-transform: uppercase;
+  }
+  .zigzag-copy h2 { margin-bottom: 12px; color: var(--text); }
+  .zigzag-copy p {
+    font-size: 0.95rem; line-height: 1.7; margin-bottom: 24px;
+    color: var(--text-dim);
+  }
+  .zigzag-visual {
+    display: flex; align-items: center; justify-content: center; padding: 32px;
+    background: var(--bg-panel);
+    border-left: 2px solid var(--border);
+  }
+  .zigzag-row.reverse .zigzag-visual { border-left: none; border-right: 2px solid var(--border); }
+  .zigzag-visual-inner { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+  .conn-row {
+    display: flex; align-items: center; gap: 10px; padding: 12px 16px;
+    background: var(--bg-alt);
+    border: 2px solid var(--border);
+  }
+  .conn-icon {
+    width: 36px; height: 36px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--display); font-size: 0.9rem;
+    background: var(--bg-panel); color: var(--vhs-cyan);
+    border: 2px solid var(--vhs-cyan);
+    box-shadow: 0 0 8px rgba(0,229,255,0.2);
+  }
+  .conn-line { height: 6px; background: var(--border); flex: 1; }
+  .conn-badge {
+    font-family: var(--mono); font-size: 0.7rem; padding: 4px 12px;
+    background: rgba(57,255,20,0.1); color: var(--vhs-green);
+    border: 1px solid rgba(57,255,20,0.3);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+
+  /* ═══════════ TESTIMONIAL ═══════════ */
+  .testimonial { padding: 80px 0; }
+  .testimonial-inner { max-width: 640px; margin: 0 auto; text-align: center; }
+  .testimonial-card {
+    padding: 40px 36px;
+    background: var(--bg-panel);
+    border: 2px solid var(--border);
+    margin-bottom: 32px;
+    position: relative;
+  }
+  .testimonial-card::before {
+    content: ''; position: absolute; top: -2px; left: 50%; transform: translateX(-50%);
+    width: 80px; height: 3px;
+    background: linear-gradient(90deg, var(--vhs-red), var(--vhs-cyan));
+  }
+  .testimonial blockquote {
+    font-family: var(--mono); font-size: clamp(1.1rem, 2vw, 1.4rem);
+    line-height: 1.6; color: var(--text);
+    letter-spacing: 0.02em;
+  }
+  .testimonial blockquote::before { content: '"'; color: var(--vhs-red); font-size: 1.4em; }
+  .testimonial blockquote::after { content: '"'; color: var(--vhs-cyan); font-size: 1.4em; }
+  .testimonial-author { display: flex; align-items: center; justify-content: center; gap: 14px; }
+  .author-avatar {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--vhs-red-dim), var(--vhs-purple));
+    border: 2px solid var(--border);
+  }
+  .author-info { text-align: left; }
+  .author-info .name { font-family: var(--display); font-size: 1rem; letter-spacing: 0.06em; color: var(--text); text-transform: uppercase; }
+  .author-info .role { font-family: var(--mono); font-size: 0.8rem; color: var(--text-muted); letter-spacing: 0.05em; }
+
+  /* ═══════════ PRICING ═══════════ */
+  .pricing { }
+  .pricing-header { padding: 80px 0 48px; text-align: center; }
+  .pricing-header h2 { margin-bottom: 8px; }
+  .pricing-header p { color: var(--text-dim); font-size: 1rem; }
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    padding-bottom: 80px; gap: 2px; background: var(--border);
+    border: 2px solid var(--border); overflow: hidden;
+  }
+  .pricing-card {
+    padding: 36px 26px; text-align: center;
+    background: var(--bg-alt);
+    transition: background 0.2s;
+  }
+  .pricing-card:hover { background: var(--bg-panel); }
+  .pricing-card.featured {
+    background: rgba(255,32,32,0.08);
+    border-left: 2px solid var(--vhs-red);
+    border-right: 2px solid var(--vhs-red);
+  }
+  .pricing-card.featured:hover { background: rgba(255,32,32,0.12); }
+  .pricing-card h3 {
+    font-family: var(--display); font-size: 1.2rem; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px; color: var(--text);
+  }
+  .pricing-card .price {
+    font-family: var(--display); font-size: 3rem; letter-spacing: 0.04em;
+    margin-bottom: 2px; color: var(--text);
+  }
+  .pricing-card .price span { font-size: 1.2rem; color: var(--text-muted); }
+  .pricing-card .period {
+    font-family: var(--mono); font-size: 0.75rem; margin-bottom: 24px; color: var(--text-muted);
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .pricing-card ul { list-style: none; text-align: left; margin-bottom: 28px; }
+  .pricing-card li {
+    padding: 8px 0; font-size: 0.9rem; display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--border); color: var(--text-dim);
+  }
+  .pricing-card li::before {
+    content: '>'; font-size: 0.8rem; color: var(--vhs-green);
+  }
+  .btn-pricing {
+    display: block; width: 100%; padding: 12px; text-decoration: none;
+    font-family: var(--display); font-size: 1rem; letter-spacing: 0.06em; text-transform: uppercase;
+    text-align: center;
+    border: 2px solid var(--border); color: var(--text);
+    background: transparent; cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+  }
+  .btn-pricing:hover {
+    border-color: var(--vhs-cyan); color: var(--vhs-cyan);
+    box-shadow: 0 0 12px rgba(0,229,255,0.2);
+  }
+  .btn-pricing.filled {
+    background: var(--vhs-red);
+    color: #fff; border-color: var(--vhs-red);
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+  }
+  .btn-pricing.filled:hover {
+    background: var(--vhs-red-dim); border-color: var(--vhs-red-dim);
+    box-shadow: 0 0 20px rgba(255,32,32,0.4);
+  }
+
+  /* ═══════════ FINAL CTA ═══════════ */
+  .final-cta {
+    padding: 80px 0; text-align: center;
+    border-top: 2px solid var(--border);
+    background: var(--bg-alt);
+    position: relative;
+    overflow: hidden;
+  }
+  .final-cta::before {
+    content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,32,32,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .final-cta > .container { position: relative; z-index: 1; }
+  .final-cta .section-num {
+    font-family: var(--mono); font-size: 0.85rem;
+    color: var(--vhs-yellow); letter-spacing: 0.1em;
+    margin-bottom: 16px; text-transform: uppercase;
+  }
+  .final-cta h2 {
+    font-size: clamp(2rem, 4vw, 3.2rem); margin-bottom: 12px; color: var(--text);
+  }
+  .final-cta h2 em { font-style: normal; color: var(--vhs-cyan); text-shadow: 0 0 16px rgba(0,229,255,0.4); }
+  .final-cta p {
+    font-size: 0.95rem; margin-bottom: 32px; color: var(--text-dim);
+    max-width: 460px; margin-left: auto; margin-right: auto;
+  }
+
+  /* ═══════════ FOOTER ═══════════ */
+  footer {
+    padding: 28px 0; text-align: center;
+    border-top: 2px solid var(--border);
+  }
+  footer p { font-family: var(--mono); font-size: 0.8rem; color: var(--text-muted); letter-spacing: 0.05em; }
+
+  /* ═══════════ RESPONSIVE ═══════════ */
+  @media (max-width: 768px) {
+    .features-grid, .pricing-grid { grid-template-columns: 1fr; }
+    .zigzag-row { grid-template-columns: 1fr; }
+    .zigzag-row.reverse .zigzag-copy { order: 0; }
+    .zigzag-copy { padding: 40px 20px; }
+    .zigzag-visual { padding: 20px; border: none !important; }
+    .mockup-body { grid-template-columns: 1fr; }
+    .mock-sidebar, .mock-right { display: none; }
+    .nav-links { display: none; }
+    .hero h1 { font-size: clamp(2.2rem, 8vw, 3rem); }
+    .timestamp { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- VHS Effects -->
+<div class="vhs-tracking">
+  <div class="tracking-line"></div>
+  <div class="tracking-line"></div>
+  <div class="tracking-line"></div>
+  <div class="tracking-line"></div>
+</div>
+<div class="vhs-noise"></div>
+<div class="timestamp" id="timestamp">1994:06:15 14:32:07</div>
+
+<nav>
+  <div class="container">
+    <a href="#" class="logo">MEET</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="btn-nav">START FREE</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-tag reveal">// now with action items</div>
+      <h1 class="reveal"><span class="rgb-shift" data-text="Meetings that don't">Meetings that don't</span> <em>waste</em> your week</h1>
+      <p class="subhead reveal">AI notes that turn transcripts into action items. Syncs to Notion, Linear, Slack — so nothing falls through the cracks.</p>
+      <div class="cta-group reveal">
+        <a href="#" class="btn-primary">Connect calendar — free 14 days</a>
+        <a href="#features" class="btn-secondary">See how it works ↓</a>
+      </div>
+      <div class="glitch-bar reveal"></div>
+      <div class="hero-screenshot reveal" style="margin-top:40px">
+        <div class="screenshot-mockup">
+          <div class="mockup-topbar">
+            <div class="mockup-topbar-dots"><span></span><span></span><span></span></div>
+            <span>meet://meetings</span>
+            <span>PLAY</span>
+          </div>
+          <div class="mockup-body">
+            <div class="mock-sidebar">
+              <div class="mock-sidebar-item active" style="width:80%"></div>
+              <div class="mock-sidebar-item" style="width:65%"></div>
+              <div class="mock-sidebar-item" style="width:90%"></div>
+              <div class="mock-sidebar-item" style="width:50%"></div>
+            </div>
+            <div class="mock-main">
+              <div class="mock-line title"></div>
+              <div class="mock-line" style="width:100%"></div>
+              <div class="mock-line" style="width:85%"></div>
+              <div class="mock-line" style="width:95%"></div>
+              <div class="mock-line" style="width:70%"></div>
+            </div>
+            <div class="mock-right">
+              <div class="mock-action"><div class="mock-action-dot" style="background:var(--vhs-red)"></div><div class="mock-action-line"></div></div>
+              <div class="mock-action"><div class="mock-action-dot" style="background:var(--vhs-cyan)"></div><div class="mock-action-line"></div></div>
+              <div class="mock-action"><div class="mock-action-dot" style="background:var(--vhs-yellow)"></div><div class="mock-action-line"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="logo-bar">
+  <div class="container">
+    <p class="reveal">[ TRUSTED BY TEAMS AT ]</p>
+    <div class="logos reveal">
+      <span class="logo-item">Vercel</span><span class="logo-item">Stripe</span><span class="logo-item">Notion</span><span class="logo-item">Linear</span><span class="logo-item">Figma</span><span class="logo-item">Raycast</span>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header reveal">
+      <h2>Everything your meetings produce</h2>
+      <div class="glitch-bar" style="margin:12px auto 0"></div>
+      <p style="margin-top:16px">From chaos to clarity in one click</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal"><div class="feature-icon">01</div><h3>Transcribe</h3><p>Every word captured. Speaker-labeled. Searchable. Your meetings become a permanent record you can actually find things in.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon">02</div><h3>Summarize</h3><p>AI distills 60 minutes into 3 bullet points and 5 action items. Skip the replay. Get the signal.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon">03</div><h3>Sync</h3><p>Pushes to your tools. Notion pages, Linear tickets, Slack threads. One click. Every tool updated.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="zigzag">
+  <div class="zigzag-row">
+    <div class="zigzag-copy reveal"><div class="section-num">[ Track 01 ]</div><h2>One click.<br>Every tool updated.</h2><p>Connect your workspace tools once. Meet pushes the right content to the right place — meeting notes to Notion, bugs to Linear, decisions to Slack.</p><a href="#" class="btn-secondary">View integrations →</a></div>
+    <div class="zigzag-visual reveal"><div class="zigzag-visual-inner">
+      <div class="conn-row"><div class="conn-icon">N</div><div class="conn-line"></div><span class="conn-badge">Connected</span></div>
+      <div class="conn-row"><div class="conn-icon">L</div><div class="conn-line"></div><span class="conn-badge">Connected</span></div>
+      <div class="conn-row"><div class="conn-icon">S</div><div class="conn-line"></div><span class="conn-badge">Connected</span></div>
+    </div></div>
+  </div>
+  <div class="zigzag-row reverse">
+    <div class="zigzag-copy reveal"><div class="section-num">[ Track 02 ]</div><h2>Notes that live<br>somewhere useful</h2><p>Every meeting generates a polished Notion page automatically. Headings, tables, timestamps — formatted like a human wrote them.</p></div>
+    <div class="zigzag-visual reveal"><div class="zigzag-visual-inner">
+      <div class="mock-line title" style="width:45%"></div>
+      <div class="mock-line" style="width:100%"></div>
+      <div class="mock-line" style="width:80%"></div>
+      <div class="mock-line" style="width:90%"></div>
+    </div></div>
+  </div>
+</section>
+
+<section class="testimonial">
+  <div class="container">
+    <div class="testimonial-inner reveal">
+      <div class="testimonial-card">
+        <blockquote>We went from 4 hours of note-taking per week to zero. Meet just works.</blockquote>
+      </div>
+      <div class="testimonial-author">
+        <div class="author-avatar"></div>
+        <div class="author-info"><div class="name">Sarah Chen</div><div class="role">VP of Product · Linear</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="pricing-header reveal"><h2>Pricing</h2><div class="glitch-bar" style="margin:12px auto 0"></div><p style="margin-top:16px">Start free. Upgrade when you're ready.</p></div>
+  </div>
+  <div class="pricing-grid">
+    <div class="pricing-card reveal"><h3>Free</h3><div class="price">$0<span>/mo</span></div><div class="period">10 meetings / month</div><ul><li>AI transcription</li><li>Basic summaries</li><li>1 integration</li></ul><a href="#" class="btn-pricing">Get started</a></div>
+    <div class="pricing-card featured reveal"><h3>Pro</h3><div class="price">$12<span>/mo</span></div><div class="period">Unlimited meetings</div><ul><li>Everything in Free</li><li>AI summaries & action items</li><li>Unlimited integrations</li><li>Search across all meetings</li></ul><a href="#" class="btn-pricing filled">Start free trial</a></div>
+    <div class="pricing-card reveal"><h3>Team</h3><div class="price">$29<span>/mo</span></div><div class="period">Per seat, min 5</div><ul><li>Everything in Pro</li><li>Shared workspace</li><li>Admin controls</li><li>SSO & audit logs</li></ul><a href="#" class="btn-pricing">Contact sales</a></div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="container">
+    <div class="section-num reveal">// Chapter 03</div>
+    <h2 class="reveal">Stop taking notes.<br>Start getting things <em>done</em>.</h2>
+    <p class="reveal">Your calendar already knows about your meetings. Let Meet handle the rest.</p>
+    <a href="#" class="btn-primary reveal">Start free — no credit card →</a>
+  </div>
+</section>
+
+<footer><div class="container"><p>&copy; 2024 MEET — BUILT FOR PEOPLE WHO VALUE THEIR TIME</p></div></footer>
+
+<script>
+  // Live VHS timestamp
+  const ts = document.getElementById('timestamp');
+  const baseDate = new Date(1994, 5, 15, 14, 32, 7);
+  setInterval(() => {
+    const now = new Date();
+    const diff = Math.floor((now - new Date(2024, 0, 1)) / 1000);
+    const t = new Date(baseDate.getTime() + diff * 1000);
+    const pad = n => String(n).padStart(2, '0');
+    ts.textContent = `${t.getFullYear()}:${pad(t.getMonth()+1)}:${pad(t.getDate())} ${pad(t.getHours())}:${pad(t.getMinutes())}:${pad(t.getSeconds())}`;
+  }, 1000);
+
+  // Reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFFDE8;
+    --bg-warm: #FFF8E1;
+    --bg-card: #FFFFFF;
+    --bg-card-alt: #F1F7E8;
+    --bg-section: #F0F7E6;
+    --border: #D4E4B0;
+    --border-light: #E8F0D4;
+    --text: #2D3A1E;
+    --text-bright: #1A260F;
+    --text-dim: #5A6B42;
+    --text-muted: #8A9A72;
+    --green-deep: #1B5E20;
+    --green-mid: #2E7D32;
+    --green-bright: #4CAF50;
+    --green-light: #81C784;
+    --green-pale: #C8E6C9;
+    --gold: #F4A623;
+    --gold-bright: #FFD700;
+    --gold-warm: #FFB300;
+    --gold-pale: #FFF3D0;
+    --sunflower: #FF8F00;
+    --sunflower-light: #FFB74D;
+    --leaf: #66BB6A;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 2px 12px rgba(27,94,32,0.08), 0 8px 32px rgba(27,94,32,0.04);
+    --shadow-lg: 0 4px 20px rgba(27,94,32,0.1), 0 16px 48px rgba(27,94,32,0.06);
+    --shadow-glow: 0 0 30px rgba(244,166,35,0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Sunflower pattern overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23F4A623' fill-opacity='0.04'%3E%3Cpath d='M30 10c1.1 0 2 .9 2 2v6c2.2 0 4 1.8 4 4s-1.8 4-4 4v6c0 1.1-.9 2-2 2s-2-.9-2-2v-6c-2.2 0-4-1.8-4-4s1.8-4 4-4v-6c0-1.1.9-2 2-2zm0 4c-.6 0-1 .4-1 1v4h2v-4c0-.6-.4-1-1-1z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-size: 60px 60px;
+  }
+
+  /* Gradient orbs */
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background:
+      radial-gradient(ellipse at 10% 20%, rgba(244,166,35,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(76,175,80,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(102,187,106,0.04) 0%, transparent 60%);
+  }
+
+  h1, h2, h3 {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--text-bright);
+  }
+
+  h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); }
+  h2 { font-size: clamp(1.8rem, 4vw, 3rem); }
+  h3 { font-size: clamp(1.1rem, 2vw, 1.3rem); font-family: 'Outfit', sans-serif; font-weight: 600; }
+
+  a { color: var(--green-mid); text-decoration: none; transition: color 0.3s; }
+  a:hover { color: var(--green-deep); }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* Sunflower SVG divider */
+  .sunflower-divider {
+    display: flex; align-items: center; justify-content: center;
+    gap: 12px; margin: 48px auto; max-width: 300px;
+  }
+  .sunflower-divider::before, .sunflower-divider::after {
+    content: ''; flex: 1; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--green-pale), transparent);
+    border-radius: 1px;
+  }
+  .sunflower-icon {
+    width: 28px; height: 28px;
+  }
+
+  /* ═══════════ NAVIGATION ═══════════ */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,253,232,0.9);
+    border-bottom: 1px solid var(--border-light);
+    backdrop-filter: blur(12px);
+  }
+  nav .container {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 68px;
+  }
+  .nav-logo {
+    font-family: 'Instrument Serif', serif; font-size: 1.5rem;
+    color: var(--green-deep);
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a {
+    font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 500;
+    color: var(--text-dim); transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--green-deep); }
+  .nav-cta {
+    font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 600;
+    padding: 10px 24px;
+    background: var(--green-mid); color: #fff;
+    border: none; border-radius: 50px;
+    cursor: pointer; transition: all 0.3s;
+    box-shadow: 0 2px 8px rgba(46,125,50,0.2);
+  }
+  .nav-cta:hover {
+    background: var(--green-deep); transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(46,125,50,0.3);
+  }
+
+  /* ═══════════ HERO ═══════════ */
+  .hero {
+    padding: 160px 0 100px;
+    text-align: center;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: 40px; left: 50%; transform: translateX(-50%);
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(244,166,35,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Outfit', sans-serif; font-size: 0.8rem; font-weight: 600;
+    padding: 8px 20px; margin-bottom: 32px;
+    background: var(--gold-pale); color: var(--sunflower);
+    border-radius: 50px;
+  }
+  .hero-badge svg { width: 16px; height: 16px; }
+  .hero h1 {
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, var(--green-deep) 0%, var(--text-bright) 50%, var(--gold-warm) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-sub {
+    font-size: 1.15rem; color: var(--text-dim); max-width: 560px;
+    margin: 0 auto 40px; line-height: 1.8;
+  }
+  .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 600;
+    padding: 14px 36px;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-deep));
+    color: #fff;
+    border: none; border-radius: 50px;
+    cursor: pointer; transition: all 0.3s;
+    box-shadow: 0 4px 16px rgba(46,125,50,0.25);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(46,125,50,0.35);
+  }
+  .btn-secondary {
+    font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 600;
+    padding: 14px 36px;
+    background: transparent; color: var(--green-deep);
+    border: 2px solid var(--green-pale); border-radius: 50px;
+    cursor: pointer; transition: all 0.3s;
+  }
+  .btn-secondary:hover {
+    border-color: var(--green-mid); background: var(--bg-card-alt);
+  }
+
+  /* Hero mockup */
+  .hero-mockup {
+    margin-top: 64px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 3px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+  }
+  .hero-mockup::after {
+    content: '';
+    position: absolute; bottom: -8px; left: 10%; right: 10%; height: 8px;
+    background: radial-gradient(ellipse, rgba(244,166,35,0.15), transparent 70%);
+    filter: blur(4px);
+  }
+  .mockup-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 16px; border-bottom: 1px solid var(--border-light);
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+  .mockup-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .mockup-dot:nth-child(1) { background: var(--green-light); }
+  .mockup-dot:nth-child(2) { background: var(--gold); }
+  .mockup-dot:nth-child(3) { background: var(--green-pale); }
+  .mockup-body { padding: 24px; display: flex; gap: 24px; }
+  .mockup-sidebar {
+    width: 180px; flex-shrink: 0;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .mockup-sidebar-item {
+    height: 8px; background: var(--bg-card-alt);
+    border-radius: 4px;
+  }
+  .mockup-sidebar-item.active {
+    background: var(--green-pale);
+  }
+  .mockup-main { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+  .mockup-line { height: 10px; background: var(--bg-card-alt); border-radius: 5px; }
+  .mockup-line.title { height: 14px; background: var(--gold-pale); width: 60%; }
+  .mockup-line.w90 { width: 90%; }
+  .mockup-line.w75 { width: 75%; }
+  .mockup-line.w85 { width: 85%; }
+  .mockup-line.w60 { width: 60%; }
+  .mockup-cards { display: flex; gap: 12px; margin-top: 8px; }
+  .mockup-card {
+    flex: 1; padding: 16px; background: var(--bg-card-alt);
+    border-radius: var(--radius-sm);
+  }
+  .mockup-card-icon {
+    width: 24px; height: 24px; margin-bottom: 8px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, var(--green-light), var(--leaf));
+  }
+  .mockup-card-line { height: 6px; background: var(--border-light); border-radius: 3px; margin-bottom: 6px; }
+  .mockup-card-line:last-child { width: 70%; }
+
+  /* ═══════════ LOGOS ═══════════ */
+  .logos {
+    padding: 60px 0;
+    border-top: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--border-light);
+    background: var(--bg-warm);
+  }
+  .logos-label {
+    text-align: center;
+    font-family: 'Outfit', sans-serif; font-size: 0.75rem; font-weight: 600;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 32px;
+  }
+  .logos-grid {
+    display: flex; align-items: center; justify-content: center;
+    gap: 48px; flex-wrap: wrap; opacity: 0.5;
+  }
+  .logo-item {
+    font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 600;
+    color: var(--text-dim);
+  }
+
+  /* ═══════════ FEATURES ═══════════ */
+  .features {
+    padding: 100px 0;
+    background: var(--bg-section);
+  }
+  .features-header { text-align: center; margin-bottom: 64px; }
+  .features-header h2 { margin-bottom: 16px; }
+  .features-header p { color: var(--text-dim); max-width: 500px; margin: 0 auto; }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+  }
+  .feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 32px;
+    position: relative;
+    transition: all 0.3s;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--green-bright), var(--gold));
+    opacity: 0; transition: opacity 0.3s;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+  .feature-card:hover {
+    border-color: var(--green-pale);
+    box-shadow: var(--shadow);
+    transform: translateY(-2px);
+  }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon {
+    width: 48px; height: 48px; margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg-card-alt);
+    border-radius: 12px;
+    font-size: 1.3rem;
+  }
+  .feature-card h3 {
+    margin-bottom: 12px; color: var(--text-bright);
+  }
+  .feature-card p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.7; }
+
+  /* ═══════════ ZIGZAG ═══════════ */
+  .zigzag { padding: 80px 0; }
+  .zigzag-row {
+    display: flex; align-items: center; gap: 64px;
+    margin-bottom: 80px;
+  }
+  .zigzag-row:nth-child(even) { flex-direction: row-reverse; }
+  .zigzag-text { flex: 1; }
+  .zigzag-text h2 { margin-bottom: 16px; font-size: clamp(1.5rem, 3vw, 2.2rem); }
+  .zigzag-text p { color: var(--text-dim); margin-bottom: 24px; line-height: 1.8; }
+  .zigzag-link {
+    font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 600;
+    color: var(--green-mid);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .zigzag-link::after { content: '→'; transition: transform 0.3s; }
+  .zigzag-link:hover::after { transform: translateX(4px); }
+  .zigzag-visual {
+    flex: 1; aspect-ratio: 4/3;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .zigzag-visual::before {
+    content: '';
+    position: absolute; top: -50%; right: -50%;
+    width: 100%; height: 100%;
+    background: radial-gradient(circle, rgba(244,166,35,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .zigzag-visual-inner {
+    text-align: center; padding: 32px;
+  }
+  .zigzag-visual-icon {
+    font-size: 2.5rem; margin-bottom: 16px;
+  }
+  .zigzag-visual-label {
+    font-family: 'Outfit', sans-serif; font-size: 0.8rem; font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* ═══════════ TESTIMONIAL ═══════════ */
+  .testimonial {
+    padding: 100px 0;
+    text-align: center;
+    background: linear-gradient(180deg, var(--bg-section) 0%, var(--bg) 100%);
+    position: relative;
+  }
+  .testimonial::before {
+    content: '';
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(244,166,35,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .testimonial-quote-mark {
+    font-family: 'Instrument Serif', serif;
+    font-size: 4rem; color: var(--gold); opacity: 0.3;
+    line-height: 1; margin-bottom: -16px;
+  }
+  .testimonial-quote {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    color: var(--text); max-width: 700px; margin: 0 auto 32px;
+    line-height: 1.6;
+  }
+  .testimonial-author {
+    font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 600;
+    color: var(--green-deep);
+  }
+  .testimonial-role {
+    font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;
+  }
+
+  /* ═══════════ PRICING ═══════════ */
+  .pricing { padding: 100px 0; }
+  .pricing-header { text-align: center; margin-bottom: 64px; }
+  .pricing-header h2 { margin-bottom: 16px; }
+  .pricing-header p { color: var(--text-dim); }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px; max-width: 960px; margin: 0 auto;
+  }
+  .pricing-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 36px 32px;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .pricing-card:hover {
+    box-shadow: var(--shadow);
+    transform: translateY(-2px);
+  }
+  .pricing-card.featured {
+    border-color: var(--gold);
+    box-shadow: var(--shadow-glow);
+    background: linear-gradient(180deg, var(--gold-pale) 0%, var(--bg-card) 30%);
+  }
+  .pricing-card.featured::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--green-bright), var(--gold), var(--sunflower));
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+  .pricing-badge {
+    font-family: 'Outfit', sans-serif; font-size: 0.75rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 16px;
+  }
+  .pricing-card.featured .pricing-badge { color: var(--sunflower); }
+  .pricing-amount {
+    font-family: 'Instrument Serif', serif; font-size: 2.5rem;
+    color: var(--text-bright); margin-bottom: 4px;
+  }
+  .pricing-amount span { font-size: 1rem; font-family: 'Outfit', sans-serif; font-weight: 400; color: var(--text-dim); }
+  .pricing-desc {
+    font-size: 0.9rem; color: var(--text-dim); margin-bottom: 28px;
+    padding-bottom: 28px; border-bottom: 1px solid var(--border-light);
+  }
+  .pricing-features { list-style: none; margin-bottom: 32px; }
+  .pricing-features li {
+    padding: 8px 0; font-size: 0.9rem; color: var(--text-dim);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .pricing-features li::before {
+    content: '🌱'; font-size: 0.75rem;
+  }
+  .pricing-btn {
+    width: 100%;
+    font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 600;
+    padding: 12px; border-radius: 50px;
+    border: 2px solid var(--border); background: transparent; color: var(--text);
+    cursor: pointer; transition: all 0.3s;
+  }
+  .pricing-btn:hover {
+    border-color: var(--green-mid); color: var(--green-deep);
+    background: var(--bg-card-alt);
+  }
+  .pricing-card.featured .pricing-btn {
+    background: linear-gradient(135deg, var(--green-mid), var(--green-deep));
+    color: #fff; border: none;
+    box-shadow: 0 4px 16px rgba(46,125,50,0.25);
+  }
+  .pricing-card.featured .pricing-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px rgba(46,125,50,0.35);
+  }
+
+  /* ═══════════ FINAL CTA ═══════════ */
+  .final-cta {
+    padding: 100px 0;
+    text-align: center;
+  }
+  .final-cta-box {
+    background: linear-gradient(135deg, var(--green-deep) 0%, #0D3B0F 100%);
+    border-radius: var(--radius);
+    padding: 64px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .final-cta-box::before {
+    content: '';
+    position: absolute; top: -100px; right: -100px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(244,166,35,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .final-cta-box::after {
+    content: '';
+    position: absolute; bottom: -80px; left: -80px;
+    width: 250px; height: 250px;
+    background: radial-gradient(circle, rgba(76,175,80,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .final-cta h2 {
+    color: #fff; margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+  .final-cta p {
+    color: rgba(255,255,255,0.7); max-width: 480px; margin: 0 auto 32px;
+    line-height: 1.8; position: relative; z-index: 1;
+  }
+  .final-cta .btn-primary {
+    background: linear-gradient(135deg, var(--gold), var(--sunflower));
+    color: var(--text-bright);
+    box-shadow: 0 4px 16px rgba(244,166,35,0.3);
+    position: relative; z-index: 1;
+  }
+  .final-cta .btn-primary:hover {
+    box-shadow: 0 6px 24px rgba(244,166,35,0.45);
+  }
+
+  /* ═══════════ FOOTER ═══════════ */
+  footer {
+    padding: 48px 0;
+    border-top: 1px solid var(--border-light);
+    text-align: center;
+  }
+  .footer-logo {
+    font-family: 'Instrument Serif', serif; font-size: 1.3rem;
+    color: var(--text-dim); margin-bottom: 16px;
+  }
+  .footer-links {
+    display: flex; justify-content: center; gap: 24px;
+    list-style: none; margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .footer-links a {
+    font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 500;
+    color: var(--text-muted);
+  }
+  .footer-links a:hover { color: var(--green-deep); }
+  .footer-copy {
+    font-size: 0.8rem; color: var(--text-muted);
+  }
+
+  /* ═══════════ RESPONSIVE ═══════════ */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .mockup-sidebar { display: none; }
+    .mockup-cards { flex-direction: column; }
+    .zigzag-row, .zigzag-row:nth-child(even) {
+      flex-direction: column; gap: 32px;
+    }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+    .final-cta-box { padding: 48px 24px; }
+    .logos-grid { gap: 24px; }
+  }
+
+  /* ═══════════ ANIMATIONS ═══════════ */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes sunPulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
+  .fade-in {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards;
+  }
+  .fade-in:nth-child(2) { animation-delay: 0.1s; }
+  .fade-in:nth-child(3) { animation-delay: 0.2s; }
+  .fade-in:nth-child(4) { animation-delay: 0.3s; }
+  .fade-in:nth-child(5) { animation-delay: 0.4s; }
+  .fade-in:nth-child(6) { animation-delay: 0.5s; }
+</style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <div class="nav-logo">Meet<span>☀</span></div>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#testimonials">Testimonials</a></li>
+      </ul>
+      <button class="nav-cta">Start Free</button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge fade-in">
+        <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="3"/><g stroke="currentColor" stroke-width="1.5"><line x1="8" y1="1" x2="8" y2="3.5"/><line x1="8" y1="12.5" x2="8" y2="15"/><line x1="1" y1="8" x2="3.5" y2="8"/><line x1="12.5" y1="8" x2="15" y2="8"/><line x1="3" y1="3" x2="4.7" y2="4.7"/><line x1="11.3" y1="11.3" x2="13" y2="13"/><line x1="13" y1="3" x2="11.3" y2="4.7"/><line x1="4.7" y1="11.3" x2="3" y2="13"/></g></svg>
+        Powered by better meetings
+      </div>
+      <h1 class="fade-in">Meetings That<br>Grow With You</h1>
+      <p class="hero-sub fade-in">
+        Schedule, run, and follow up on meetings in a tool designed for teams who build a better future. Clean energy for your calendar.
+      </p>
+      <div class="hero-actions fade-in">
+        <button class="btn-primary">Start Growing Free</button>
+        <button class="btn-secondary">See How It Works</button>
+      </div>
+
+      <div class="hero-mockup fade-in">
+        <div class="mockup-header">
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-sidebar">
+            <div class="mockup-sidebar-item active" style="width:85%"></div>
+            <div class="mockup-sidebar-item" style="width:70%"></div>
+            <div class="mockup-sidebar-item" style="width:90%"></div>
+            <div class="mockup-sidebar-item" style="width:60%"></div>
+            <div class="mockup-sidebar-item" style="width:75%"></div>
+          </div>
+          <div class="mockup-main">
+            <div class="mockup-line title"></div>
+            <div class="mockup-line w90"></div>
+            <div class="mockup-line w75"></div>
+            <div class="mockup-line w85"></div>
+            <div class="mockup-cards">
+              <div class="mockup-card">
+                <div class="mockup-card-icon"></div>
+                <div class="mockup-card-line"></div>
+                <div class="mockup-card-line"></div>
+              </div>
+              <div class="mockup-card">
+                <div class="mockup-card-icon"></div>
+                <div class="mockup-card-line"></div>
+                <div class="mockup-card-line"></div>
+              </div>
+              <div class="mockup-card">
+                <div class="mockup-card-icon"></div>
+                <div class="mockup-card-line"></div>
+                <div class="mockup-card-line"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Logos -->
+  <section class="logos">
+    <div class="container">
+      <p class="logos-label">Growing alongside forward-thinking teams</p>
+      <div class="logos-grid">
+        <span class="logo-item">SolarGrid</span>
+        <span class="logo-item">GreenLab</span>
+        <span class="logo-item">EcoSync</span>
+        <span class="logo-item">BrightPath</span>
+        <span class="logo-item">NewLeaf</span>
+        <span class="logo-item">SunRise AI</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="sunflower-divider">
+      <svg class="sunflower-icon" viewBox="0 0 28 28" fill="none">
+        <circle cx="14" cy="14" r="5" fill="#F4A623"/>
+        <ellipse cx="14" cy="4" rx="3" ry="5" fill="#FFD700" opacity="0.7"/>
+        <ellipse cx="14" cy="24" rx="3" ry="5" fill="#FFD700" opacity="0.7"/>
+        <ellipse cx="4" cy="14" rx="5" ry="3" fill="#FFD700" opacity="0.7"/>
+        <ellipse cx="24" cy="14" rx="5" ry="3" fill="#FFD700" opacity="0.7"/>
+        <ellipse cx="7" cy="7" rx="3" ry="5" fill="#FFD700" opacity="0.5" transform="rotate(45 7 7)"/>
+        <ellipse cx="21" cy="21" rx="3" ry="5" fill="#FFD700" opacity="0.5" transform="rotate(45 21 21)"/>
+        <ellipse cx="21" cy="7" rx="3" ry="5" fill="#FFD700" opacity="0.5" transform="rotate(-45 21 7)"/>
+        <ellipse cx="7" cy="21" rx="3" ry="5" fill="#FFD700" opacity="0.5" transform="rotate(-45 7 21)"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="features-header">
+        <h2 class="fade-in">Built for a Brighter Tomorrow</h2>
+        <p class="fade-in">Every feature designed to help your team thrive sustainably</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🌿</div>
+          <h3>Smart Scheduling</h3>
+          <p>Find the perfect hour across time zones. One link that works for everyone — no email ping-pong, no wasted cycles.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">☀️</div>
+          <h3>Living Agendas</h3>
+          <p>Every meeting starts with purpose. Structured agendas that adapt in real-time, keeping discussions focused and productive.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🌻</div>
+          <h3>AI Recording</h3>
+          <p>Capture every word. AI-powered transcripts mean nothing is lost. Searchable archives that grow with your team's knowledge.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🌱</div>
+          <h3>Action Sprouts</h3>
+          <p>Decisions become tasks automatically. Assign, track, and close — watch your action items grow from seeds to completion.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🌍</div>
+          <h3>Impact Analytics</h3>
+          <p>See where time flows. Meeting heatmaps, attendance rates, and decision velocity — all at a glance, zero waste.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🔗</div>
+          <h3>Ecosystem Integrations</h3>
+          <p>Connects with Slack, Notion, Jira, and 50 more tools. Your meeting data flows naturally where it belongs.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Zigzag -->
+  <section class="zigzag">
+    <div class="container">
+      <div class="zigzag-row">
+        <div class="zigzag-text">
+          <h2>One Link. Every Time Zone.</h2>
+          <p>Share your availability once. Colleagues pick a slot that works for them — no back-and-forth, no confusion across meridians. Like sunlight reaching every corner.</p>
+          <a href="#" class="zigzag-link">Explore scheduling</a>
+        </div>
+        <div class="zigzag-visual">
+          <div class="zigzag-visual-inner">
+            <div class="zigzag-visual-icon">🌅</div>
+            <div class="zigzag-visual-label">Calendar View</div>
+          </div>
+        </div>
+      </div>
+      <div class="zigzag-row">
+        <div class="zigzag-text">
+          <h2>Decisions That Take Root</h2>
+          <p>Every action item tracked, every decision logged. Your meeting history becomes institutional memory — searchable, permanent, growing stronger with each meeting.</p>
+          <a href="#" class="zigzag-link">View the garden</a>
+        </div>
+        <div class="zigzag-visual">
+          <div class="zigzag-visual-inner">
+            <div class="zigzag-visual-icon">🌳</div>
+            <div class="zigzag-visual-label">Action Tracker</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonial -->
+  <section class="testimonial" id="testimonials">
+    <div class="container">
+      <div class="testimonial-quote-mark fade-in">"</div>
+      <blockquote class="testimonial-quote fade-in">
+        Since adopting Meet, our team meetings are shorter, more focused, and actually produce results. It's like we finally found the sunlight for our workflow.
+      </blockquote>
+      <p class="testimonial-author fade-in">Amara Chen</p>
+      <p class="testimonial-role fade-in">Head of Operations, SolarGrid Inc.</p>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <div class="pricing-header">
+        <h2 class="fade-in">Choose Your Growth Plan</h2>
+        <p class="fade-in">From solo seedling to thriving forest</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card fade-in">
+          <div class="pricing-badge">Seedling</div>
+          <div class="pricing-amount">$0 <span>/mo</span></div>
+          <p class="pricing-desc">For the solo grower. Five meetings per month, basic agendas, and room to start.</p>
+          <ul class="pricing-features">
+            <li>5 meetings/month</li>
+            <li>Basic agendas</li>
+            <li>30-day history</li>
+            <li>Email support</li>
+          </ul>
+          <button class="pricing-btn">Start Free</button>
+        </div>
+        <div class="pricing-card featured fade-in">
+          <div class="pricing-badge">✦ Canopy ✦</div>
+          <div class="pricing-amount">$12 <span>/mo</span></div>
+          <p class="pricing-desc">For the growing team. Unlimited meetings, recordings, analytics, and AI-powered insights.</p>
+          <ul class="pricing-features">
+            <li>Unlimited meetings</li>
+            <li>AI recordings &amp; transcripts</li>
+            <li>Action tracking</li>
+            <li>Analytics dashboard</li>
+            <li>Priority support</li>
+          </ul>
+          <button class="pricing-btn">Choose Canopy</button>
+        </div>
+        <div class="pricing-card fade-in">
+          <div class="pricing-badge">Forest</div>
+          <div class="pricing-amount">$39 <span>/mo</span></div>
+          <p class="pricing-desc">For the whole ecosystem. SSO, audit logs, custom integrations, dedicated success advisor.</p>
+          <ul class="pricing-features">
+            <li>Everything in Canopy</li>
+            <li>SSO &amp; SAML</li>
+            <li>Audit logs</li>
+            <li>Custom integrations</li>
+            <li>Dedicated advisor</li>
+          </ul>
+          <button class="pricing-btn">Contact Us</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta">
+    <div class="container">
+      <div class="final-cta-box">
+        <h2 class="fade-in">Ready to Grow Your Team's Potential?</h2>
+        <p class="fade-in">Join thousands of teams who have reclaimed their time and built a more sustainable way to meet. Start free — no roots required.</p>
+        <div class="fade-in">
+          <button class="btn-primary">Plant Your Seed — Start Free</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-logo">Meet ☀</div>
+      <ul class="footer-links">
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+      <p class="footer-copy">© 2024 Meet. Built for a brighter tomorrow.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Intersection Observer for fade-in animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = 'running';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => {
+      el.style.animationPlayState = 'paused';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

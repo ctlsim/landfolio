@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --film-warm-white: #F5F0E8;
+    --film-cream: #EDE7DF;
+    --film-sand: #D8CFC4;
+    --film-warm-grey: #8B8580;
+    --film-cool-grey: #6B6560;
+    --film-dark: #2C2420;
+    --film-deep: #1A1614;
+    --film-sepia: #C4A882;
+    --film-amber: #D4A574;
+    --film-teal: #5A7A7A;
+    --film-red: #A0524D;
+    --film-olive: #7A8B5E;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--film-warm-white);
+    color: var(--film-dark);
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Lora', serif;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  /* FILM GRAIN OVERLAY */
+  .film-grain {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 9999;
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+  }
+
+  .film-grain svg { width: 100%; height: 100%; }
+
+  /* VIGNETTE */
+  .vignette {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 9998;
+    background: radial-gradient(ellipse at center, transparent 50%, rgba(26,22,20,0.25) 100%);
+  }
+
+  /* LETTERBOX BARS */
+  .letterbox-top, .letterbox-bottom {
+    position: fixed; left: 0; right: 0;
+    height: 48px;
+    background: var(--film-deep);
+    z-index: 10000;
+    pointer-events: none;
+  }
+  .letterbox-top { top: 0; }
+  .letterbox-bottom { bottom: 0; }
+
+  /* WARM TONE OVERLAY */
+  .warm-overlay {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 9997;
+    background: rgba(212,165,116,0.04);
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 2;
+  }
+
+  section { padding: 100px 0; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 48px; left: 0; right: 0;
+    z-index: 100;
+    padding: 14px 0;
+    background: rgba(245,240,232,0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(44,36,32,0.08);
+    transition: all 0.3s ease;
+  }
+
+  nav .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-family: 'Lora', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--film-dark);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a {
+    color: var(--film-cool-grey);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .nav-links a:hover { color: var(--film-dark); }
+
+  .nav-cta {
+    background: var(--film-dark) !important;
+    color: var(--film-warm-white) !important;
+    padding: 10px 28px !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    font-size: 0.8rem !important;
+  }
+  .nav-cta:hover {
+    background: var(--film-sepia) !important;
+    color: var(--film-deep) !important;
+  }
+
+  /* HERO */
+  .hero {
+    padding-top: 180px;
+    padding-bottom: 80px;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 24px;
+    border: 1px solid rgba(44,36,32,0.15);
+    font-size: 0.75rem;
+    color: var(--film-cool-grey);
+    margin-bottom: 36px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+    animation: fade-in 0.8s ease-out;
+  }
+
+  .hero-badge .dot {
+    width: 6px; height: 6px;
+    background: var(--film-sepia);
+    border-radius: 50%;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    color: var(--film-dark);
+    margin-bottom: 28px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    animation: fade-in 0.8s ease-out 0.1s both;
+    font-style: italic;
+  }
+
+  .hero h1 .highlight {
+    font-style: normal;
+    color: var(--film-red);
+  }
+
+  .hero p {
+    font-size: 1.05rem;
+    color: var(--film-cool-grey);
+    max-width: 500px;
+    margin: 0 auto 44px;
+    line-height: 1.8;
+    animation: fade-in 0.8s ease-out 0.2s both;
+    font-weight: 300;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fade-in 0.8s ease-out 0.3s both;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 36px;
+    background: var(--film-dark);
+    color: var(--film-warm-white);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.85rem;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+  }
+  .btn-primary:hover {
+    background: var(--film-sepia);
+    color: var(--film-deep);
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 36px;
+    background: transparent;
+    color: var(--film-dark);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.85rem;
+    border: 1px solid rgba(44,36,32,0.2);
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+  }
+  .btn-secondary:hover {
+    border-color: var(--film-dark);
+    background: rgba(44,36,32,0.03);
+  }
+
+  .hero-screenshot {
+    margin-top: 70px;
+    animation: fade-in 1s ease-out 0.4s both;
+    position: relative;
+  }
+
+  .hero-screenshot::before {
+    content: '';
+    position: absolute; inset: -4px;
+    border: 1px solid rgba(44,36,32,0.1);
+    pointer-events: none;
+  }
+
+  .hero-screenshot .mockup {
+    background: var(--film-cream);
+    padding: 0;
+    aspect-ratio: 16/9;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(44,36,32,0.08);
+  }
+
+  .mockup-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: var(--film-sand);
+    border-bottom: 1px solid rgba(44,36,32,0.06);
+  }
+
+  .mockup-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--film-warm-grey);
+    opacity: 0.4;
+  }
+
+  .mockup-body {
+    flex: 1;
+    padding: 24px;
+    display: flex;
+    gap: 20px;
+  }
+
+  .mockup-sidebar {
+    width: 180px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mockup-sidebar-item {
+    height: 8px;
+    background: var(--film-sand);
+  }
+  .mockup-sidebar-item.active {
+    background: var(--film-dark);
+    opacity: 0.15;
+  }
+
+  .mockup-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .mockup-line {
+    height: 8px;
+    background: var(--film-sand);
+  }
+  .mockup-line.title {
+    height: 12px;
+    width: 40%;
+    background: var(--film-dark);
+    opacity: 0.1;
+  }
+
+  .mockup-cards {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .mockup-card {
+    flex: 1;
+    height: 60px;
+    background: var(--film-sand);
+    border: 1px solid rgba(44,36,32,0.05);
+  }
+
+  /* FILM STRIP DIVIDER */
+  .film-strip {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding: 20px 0;
+    opacity: 0.15;
+  }
+
+  .film-strip-frame {
+    width: 32px; height: 24px;
+    background: var(--film-dark);
+    position: relative;
+  }
+
+  .film-strip-frame::before,
+  .film-strip-frame::after {
+    content: '';
+    position: absolute;
+    width: 6px; height: 6px;
+    background: var(--film-warm-white);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .film-strip-frame::before { left: -10px; }
+  .film-strip-frame::after { right: -10px; }
+
+  /* LOGOS */
+  .logos {
+    text-align: center;
+    padding: 60px 0;
+    border-top: 1px solid rgba(44,36,32,0.06);
+    border-bottom: 1px solid rgba(44,36,32,0.06);
+  }
+
+  .logos p {
+    font-size: 0.7rem;
+    color: var(--film-warm-grey);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    font-weight: 500;
+  }
+
+  .logo-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    opacity: 0.35;
+  }
+
+  .logo-item {
+    font-family: 'Lora', serif;
+    font-size: 1.1rem;
+    color: var(--film-cool-grey);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  /* FEATURES */
+  .features { text-align: center; }
+
+  .section-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    color: var(--film-warm-grey);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: inline-block;
+    font-weight: 500;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    color: var(--film-dark);
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  .section-desc {
+    font-size: 0.95rem;
+    color: var(--film-cool-grey);
+    max-width: 500px;
+    margin: 0 auto 60px;
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+
+  .feature-card {
+    background: var(--film-cream);
+    border: 1px solid rgba(44,36,32,0.06);
+    padding: 36px 28px;
+    text-align: left;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: var(--film-sepia);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+
+  .feature-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .feature-card:hover {
+    border-color: rgba(44,36,32,0.12);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(44,36,32,0.06);
+  }
+
+  .feature-icon {
+    width: 44px; height: 44px;
+    background: rgba(44,36,32,0.04);
+    border: 1px solid rgba(44,36,32,0.08);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+
+  .feature-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: var(--film-dark);
+    font-weight: 600;
+  }
+
+  .feature-card p {
+    font-size: 0.88rem;
+    color: var(--film-cool-grey);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* ZIGZAG */
+  .zigzag-section { padding: 80px 0; }
+
+  .zigzag {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    margin-bottom: 80px;
+  }
+  .zigzag:nth-child(even) { flex-direction: row-reverse; }
+
+  .zigzag-visual {
+    flex: 1;
+    min-height: 300px;
+    background: var(--film-cream);
+    border: 1px solid rgba(44,36,32,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .zigzag-visual::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(44,36,32,0.04) 100%);
+    pointer-events: none;
+  }
+
+  .zigzag-visual .icon-large {
+    font-size: 4rem;
+    position: relative;
+    z-index: 1;
+    opacity: 0.6;
+  }
+
+  .zigzag-content { flex: 1; }
+
+  .zigzag-content h2 {
+    font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+    margin-bottom: 16px;
+    color: var(--film-dark);
+    font-style: italic;
+  }
+
+  .zigzag-content p {
+    color: var(--film-cool-grey);
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+  .feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .feature-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--film-cool-grey);
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+
+  .feature-list .check {
+    width: 20px; height: 20px;
+    background: rgba(44,36,32,0.06);
+    border: 1px solid rgba(44,36,32,0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    color: var(--film-dark);
+    flex-shrink: 0;
+  }
+
+  /* TESTIMONIAL */
+  .testimonial {
+    text-align: center;
+    padding: 80px 0;
+  }
+
+  .testimonial-card {
+    max-width: 680px;
+    margin: 0 auto;
+    background: var(--film-cream);
+    border: 1px solid rgba(44,36,32,0.06);
+    padding: 56px 48px;
+    position: relative;
+  }
+
+  .testimonial-card::before {
+    content: '\201C';
+    position: absolute;
+    top: 20px; left: 36px;
+    font-size: 5rem;
+    font-family: 'Lora', serif;
+    color: var(--film-sepia);
+    line-height: 1;
+    opacity: 0.3;
+  }
+
+  .testimonial-card blockquote {
+    font-family: 'Lora', serif;
+    font-size: 1.1rem;
+    color: var(--film-dark);
+    line-height: 1.8;
+    margin-bottom: 28px;
+    font-style: italic;
+    position: relative;
+    z-index: 1;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .testimonial-avatar {
+    width: 44px; height: 44px;
+    background: var(--film-sand);
+    border: 1px solid rgba(44,36,32,0.08);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--film-cool-grey);
+    font-weight: 600;
+    font-size: 0.8rem;
+  }
+
+  .testimonial-info { text-align: left; }
+  .testimonial-name { font-weight: 600; color: var(--film-dark); font-size: 0.9rem; }
+  .testimonial-role { color: var(--film-warm-grey); font-size: 0.8rem; font-weight: 300; }
+
+  /* PRICING */
+  .pricing { text-align: center; }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    max-width: 950px;
+    margin: 0 auto;
+  }
+
+  .pricing-card {
+    background: var(--film-cream);
+    border: 1px solid rgba(44,36,32,0.06);
+    padding: 40px 32px;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .pricing-card:hover {
+    border-color: rgba(44,36,32,0.12);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(44,36,32,0.06);
+  }
+
+  .pricing-card.featured {
+    border: 1px solid rgba(44,36,32,0.15);
+    background: var(--film-warm-white);
+    box-shadow: 0 4px 20px rgba(44,36,32,0.06);
+  }
+
+  .pricing-badge {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 18px;
+    background: var(--film-dark);
+    color: var(--film-warm-white);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .pricing-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    color: var(--film-dark);
+    font-weight: 600;
+  }
+
+  .pricing-card .price {
+    font-family: 'Lora', serif;
+    font-size: 2.8rem;
+    color: var(--film-dark);
+    margin: 16px 0;
+    line-height: 1;
+    font-weight: 700;
+  }
+
+  .pricing-card .price span {
+    font-size: 0.9rem;
+    color: var(--film-warm-grey);
+    font-weight: 400;
+  }
+
+  .pricing-card .price-desc {
+    font-size: 0.85rem;
+    color: var(--film-cool-grey);
+    margin-bottom: 28px;
+    font-weight: 300;
+  }
+
+  .pricing-features {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pricing-features li {
+    font-size: 0.85rem;
+    color: var(--film-cool-grey);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 400;
+  }
+
+  .pricing-features .check {
+    color: var(--film-dark);
+    font-weight: 600;
+    font-size: 0.75rem;
+  }
+
+  .pricing-card .btn-primary,
+  .pricing-card .btn-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 24px;
+    font-size: 0.8rem;
+  }
+
+  /* FINAL CTA */
+  .final-cta {
+    text-align: center;
+    padding: 100px 0;
+  }
+
+  .cta-box {
+    background: var(--film-dark);
+    padding: 80px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-box::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 50%, rgba(196,168,130,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .cta-box h2 {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    color: var(--film-warm-white);
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+    font-style: italic;
+  }
+
+  .cta-box p {
+    font-size: 0.95rem;
+    color: var(--film-sand);
+    margin-bottom: 36px;
+    max-width: 460px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 1;
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+  .cta-box .btn-primary {
+    background: var(--film-sepia);
+    color: var(--film-deep);
+    position: relative;
+    z-index: 1;
+  }
+  .cta-box .btn-primary:hover {
+    background: var(--film-warm-white);
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 60px 0 80px;
+    border-top: 1px solid rgba(44,36,32,0.06);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+
+  .footer-brand .logo { display: block; margin-bottom: 12px; }
+  .footer-brand p { color: var(--film-warm-grey); font-size: 0.82rem; max-width: 280px; line-height: 1.7; font-weight: 300; }
+
+  .footer-col h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--film-warm-grey);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 10px; }
+  .footer-col a {
+    color: var(--film-cool-grey);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.3s;
+    font-weight: 400;
+  }
+  .footer-col a:hover { color: var(--film-dark); }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 32px;
+    border-top: 1px solid rgba(44,36,32,0.06);
+  }
+
+  .footer-bottom p {
+    color: var(--film-warm-grey);
+    font-size: 0.75rem;
+    font-weight: 300;
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 16px;
+  }
+
+  .footer-social a {
+    width: 32px; height: 32px;
+    border: 1px solid rgba(44,36,32,0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--film-cool-grey);
+    text-decoration: none;
+    font-size: 0.75rem;
+    transition: all 0.3s;
+  }
+  .footer-social a:hover {
+    border-color: var(--film-dark);
+    color: var(--film-dark);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .container { padding: 0 24px; }
+    section { padding: 60px 0; }
+    .nav-links { display: none; }
+    .hero { padding-top: 140px; }
+    .hero h1 { font-size: 2.2rem; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .zigzag { flex-direction: column !important; gap: 32px; }
+    .zigzag-visual { min-height: 200px; width: 100%; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+    .cta-box { padding: 48px 32px; }
+    .mockup-sidebar { display: none; }
+    .letterbox-top, .letterbox-bottom { height: 24px; }
+    nav { top: 24px; }
+    .hero { padding-top: 100px; }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- Film Grain SVG Filter -->
+<div class="film-grain">
+  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" result="noise"/>
+      <feColorMatrix type="saturate" values="0" in="noise"/>
+    </filter>
+    <rect width="100%" height="100%" filter="url(#grain)"/>
+  </svg>
+</div>
+<div class="vignette"></div>
+<div class="warm-overlay"></div>
+<div class="letterbox-top"></div>
+<div class="letterbox-bottom"></div>
+
+<nav>
+  <div class="container">
+    <a href="#" class="logo">Meet</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="nav-cta">Get Started</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      now in public beta
+    </div>
+    <h1>Meetings with <span class="highlight">warmth</span></h1>
+    <p>Schedule, host, and follow up — all in one focused tool. Cut through the noise. Find clarity.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Start Free →</a>
+      <a href="#" class="btn-secondary">Watch Demo</a>
+    </div>
+    <div class="hero-screenshot">
+      <div class="mockup">
+        <div class="mockup-bar">
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-sidebar">
+            <div class="mockup-sidebar-item active"></div>
+            <div class="mockup-sidebar-item"></div>
+            <div class="mockup-sidebar-item"></div>
+            <div class="mockup-sidebar-item"></div>
+          </div>
+          <div class="mockup-main">
+            <div class="mockup-line title"></div>
+            <div class="mockup-line" style="width:100%"></div>
+            <div class="mockup-line" style="width:85%"></div>
+            <div class="mockup-line" style="width:90%"></div>
+            <div class="mockup-cards">
+              <div class="mockup-card"></div>
+              <div class="mockup-card"></div>
+              <div class="mockup-card"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Film Strip Divider -->
+<div class="film-strip">
+  <div class="film-strip-frame"></div>
+  <div class="film-strip-frame"></div>
+  <div class="film-strip-frame"></div>
+  <div class="film-strip-frame"></div>
+  <div class="film-strip-frame"></div>
+  <div class="film-strip-frame"></div>
+  <div class="film-strip-frame"></div>
+</div>
+
+<section class="logos">
+  <div class="container">
+    <p>Trusted by teams at</p>
+    <div class="logo-grid">
+      <span class="logo-item">Stripe</span>
+      <span class="logo-item">Notion</span>
+      <span class="logo-item">Vercel</span>
+      <span class="logo-item">Linear</span>
+      <span class="logo-item">Figma</span>
+      <span class="logo-item">Raycast</span>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="container">
+    <p class="section-label">features</p>
+    <h2 class="section-title">Everything you need, nothing you don't</h2>
+    <p class="section-desc">A tool designed around how teams actually work — precise, sharp, and effortlessly clear.</p>
+    <div class="feature-grid">
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🎯</div>
+        <h3>Smart Scheduling</h3>
+        <p>AI finds the perfect time across time zones. No more back-and-forth emails.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">⚡</div>
+        <h3>Auto Agendas</h3>
+        <p>Every meeting gets a generated agenda from your project context. Start focused.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">📋</div>
+        <h3>Live Notes</h3>
+        <p>Real-time collaborative notes with action items that sync to your tools.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🔥</div>
+        <h3>One-Click Join</h3>
+        <p>No downloads. No logins. Just a link that works everywhere.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🔄</div>
+        <h3>Follow-Up Flow</h3>
+        <p>Decisions, tasks, and summaries sent automatically after every meeting.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🔒</div>
+        <h3>Private by Default</h3>
+        <p>End-to-end encryption. Your conversations stay yours. Always.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="zigzag-section">
+  <div class="container">
+    <div class="zigzag fade-in">
+      <div class="zigzag-visual">
+        <span class="icon-large">📅</span>
+      </div>
+      <div class="zigzag-content">
+        <h2>Scheduling that actually works</h2>
+        <p>Connect your calendars and let Meet find the open slots. Time zones handled automatically.</p>
+        <ul class="feature-list">
+          <li><span class="check">✓</span> Google, Outlook, Apple Calendar</li>
+          <li><span class="check">✓</span> Buffer time between meetings</li>
+          <li><span class="check">✓</span> Smart rescheduling on conflicts</li>
+        </ul>
+      </div>
+    </div>
+    <div class="zigzag fade-in">
+      <div class="zigzag-visual">
+        <span class="icon-large">💬</span>
+      </div>
+      <div class="zigzag-content">
+        <h2>Meetings with purpose</h2>
+        <p>Every meeting starts with context and ends with clarity. No more "what were we talking about?"</p>
+        <ul class="feature-list">
+          <li><span class="check">✓</span> AI-generated agendas</li>
+          <li><span class="check">✓</span> Real-time transcription</li>
+          <li><span class="check">✓</span> Action items auto-assigned</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonial">
+  <div class="container">
+    <div class="testimonial-card fade-in">
+      <blockquote>
+        Meet cut our meeting overhead by 60%. We used to spend 30 minutes scheduling. Now it's one click. The auto-agendas alone saved us hours every week.
+      </blockquote>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">SK</div>
+        <div class="testimonial-info">
+          <div class="testimonial-name">Sarah Kim</div>
+          <div class="testimonial-role">VP of Operations, CloudScale</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="container">
+    <p class="section-label">pricing</p>
+    <h2 class="section-title">Simple, transparent pricing</h2>
+    <p class="section-desc">Start free. Upgrade when you need more. No surprises.</p>
+    <div class="pricing-grid">
+      <div class="pricing-card fade-in">
+        <h3>Free</h3>
+        <div class="price">$0 <span>/mo</span></div>
+        <p class="price-desc">For individuals and small teams</p>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> 10 meetings/month</li>
+          <li><span class="check">✓</span> Basic scheduling</li>
+          <li><span class="check">✓</span> Live notes</li>
+          <li><span class="check">✓</span> 1 calendar connection</li>
+        </ul>
+        <a href="#" class="btn-secondary">Get Started</a>
+      </div>
+      <div class="pricing-card featured fade-in">
+        <div class="pricing-badge">Popular</div>
+        <h3>Pro</h3>
+        <div class="price">$12 <span>/mo</span></div>
+        <p class="price-desc">For growing teams that need more</p>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Unlimited meetings</li>
+          <li><span class="check">✓</span> AI agendas &amp; summaries</li>
+          <li><span class="check">✓</span> Team analytics</li>
+          <li><span class="check">✓</span> Unlimited calendars</li>
+          <li><span class="check">✓</span> Priority support</li>
+        </ul>
+        <a href="#" class="btn-primary">Get Started →</a>
+      </div>
+      <div class="pricing-card fade-in">
+        <h3>Enterprise</h3>
+        <div class="price">Custom</div>
+        <p class="price-desc">For organizations with specific needs</p>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Everything in Pro</li>
+          <li><span class="check">✓</span> SSO &amp; SAML</li>
+          <li><span class="check">✓</span> Custom integrations</li>
+          <li><span class="check">✓</span> Dedicated support</li>
+          <li><span class="check">✓</span> SLA guarantee</li>
+        </ul>
+        <a href="#" class="btn-secondary">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="container">
+    <div class="cta-box">
+      <h2>Ready to find clarity?</h2>
+      <p>Join thousands of teams who replaced meeting chaos with precision. Free to start, no credit card needed.</p>
+      <a href="#" class="btn-primary">Start Free →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">Meet</a>
+        <p>Meetings that don't waste your week. Simple scheduling, smart agendas, clear outcomes.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#">Features</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">Integrations</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">Security</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Meet. All rights reserved.</p>
+      <div class="footer-social">
+        <a href="#">𝕏</a>
+        <a href="#">in</a>
+        <a href="#">gh</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      nav.style.background = 'rgba(245,240,232,0.97)';
+    } else {
+      nav.style.background = 'rgba(245,240,232,0.9)';
+    }
+  });
+</script>
+</body>
+</html>

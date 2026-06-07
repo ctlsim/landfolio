@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --wood-light: #F5F0E8;
+    --wood-mid: #E8DFD0;
+    --wood-dark: #D4C5B0;
+    --wood-grain: #C9B89E;
+    --sage: #A8B5A0;
+    --sage-light: #D4DDD0;
+    --sage-dark: #7D8C74;
+    --dusty-blue: #9BAFBF;
+    --dusty-blue-light: #C5D3DD;
+    --warm-cream: #FAF7F2;
+    --terracotta: #C4956A;
+    --terracotta-light: #E0C4A8;
+    --text-primary: #3A3530;
+    --text-mid: #6B6359;
+    --text-dim: #9A9188;
+    --accent: #7D8C74;
+    --font-display: 'Instrument Serif', serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--warm-cream);
+    color: var(--text-primary);
+    line-height: 1.65;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ===== WOOD GRAIN TEXTURE ===== */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 3px,
+        rgba(201, 184, 158, 0.03) 3px,
+        rgba(201, 184, 158, 0.03) 4px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 8px,
+        rgba(201, 184, 158, 0.02) 8px,
+        rgba(201, 184, 158, 0.02) 9px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  h1, h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--text-primary);
+  }
+
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+    line-height: 1.3;
+    color: var(--text-primary);
+  }
+
+  h1 { font-size: clamp(2.6rem, 5.5vw, 4.5rem); }
+  h2 { font-size: clamp(1.8rem, 3.5vw, 2.8rem); }
+
+  section { position: relative; z-index: 1; }
+
+  a { color: var(--accent); text-decoration: none; transition: color 0.3s; }
+  a:hover { color: var(--sage-dark); }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ===== DIVIDER ===== */
+  .wood-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 40px auto;
+    max-width: 300px;
+  }
+  .wood-divider::before,
+  .wood-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--wood-dark);
+  }
+  .wood-divider .dot {
+    width: 6px; height: 6px;
+    background: var(--terracotta-light);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ===== BUTTONS ===== */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 32px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    border-radius: 8px;
+  }
+
+  .btn-primary {
+    background: var(--sage);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(125, 140, 116, 0.25);
+  }
+  .btn-primary:hover {
+    background: var(--sage-dark);
+    box-shadow: 0 4px 16px rgba(125, 140, 116, 0.35);
+    transform: translateY(-2px);
+    color: #fff;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text-mid);
+    border: 1.5px solid var(--wood-dark);
+    border-radius: 8px;
+  }
+  .btn-secondary:hover {
+    border-color: var(--sage);
+    color: var(--sage-dark);
+    background: var(--sage-light);
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 32px 80px;
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 30%, var(--wood-light) 0%, transparent 70%),
+      var(--warm-cream);
+  }
+
+  /* Decorative wood circles */
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 10%; right: 8%;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    border: 1px solid var(--wood-dark);
+    opacity: 0.3;
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 15%; left: 5%;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: var(--sage-light);
+    opacity: 0.2;
+    pointer-events: none;
+  }
+
+  .hero-content {
+    max-width: 750px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    background: var(--wood-light);
+    border: 1px solid var(--wood-dark);
+    border-radius: 100px;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-mid);
+    margin-bottom: 36px;
+    letter-spacing: 0.03em;
+  }
+
+  .hero-badge .leaf {
+    font-size: 1rem;
+    color: var(--sage);
+  }
+
+  .hero h1 {
+    margin-bottom: 24px;
+    font-style: italic;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--terracotta);
+  }
+
+  .hero p {
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    color: var(--text-mid);
+    max-width: 520px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+    font-weight: 400;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* ===== LOGOS ===== */
+  .logos-section {
+    padding: 60px 32px;
+    text-align: center;
+    background: var(--wood-light);
+    border-top: 1px solid var(--wood-mid);
+    border-bottom: 1px solid var(--wood-mid);
+  }
+
+  .logos-section p {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  .logos-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    opacity: 0.5;
+  }
+
+  .logo-placeholder {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-dim);
+  }
+
+  /* ===== FEATURES ===== */
+  .features-section {
+    padding: 100px 32px;
+    background: var(--warm-cream);
+  }
+
+  .features-header {
+    text-align: center;
+    max-width: 580px;
+    margin: 0 auto 60px;
+  }
+  .features-header h2 { margin-bottom: 16px; font-style: italic; }
+  .features-header p {
+    font-size: 1.05rem;
+    color: var(--text-mid);
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .feature-card {
+    background: var(--wood-light);
+    border: 1px solid var(--wood-mid);
+    border-radius: 12px;
+    padding: 32px 28px;
+    transition: all 0.3s;
+    position: relative;
+  }
+  .feature-card:hover {
+    border-color: var(--sage-light);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.04);
+    transform: translateY(-3px);
+  }
+
+  .feature-icon {
+    width: 44px; height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    background: var(--sage-light);
+    border-radius: 10px;
+    color: var(--sage-dark);
+  }
+
+  .feature-card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 10px;
+    font-style: italic;
+  }
+  .feature-card p {
+    color: var(--text-mid);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag-section {
+    padding: 80px 32px;
+    background: var(--wood-light);
+    border-top: 1px solid var(--wood-mid);
+    border-bottom: 1px solid var(--wood-mid);
+  }
+
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto 80px;
+  }
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-visual { order: 2; }
+  .zigzag-row.reverse .zigzag-text { order: 1; }
+
+  .zigzag-text h3 {
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+  .zigzag-text p {
+    color: var(--text-mid);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .zigzag-checklist {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .zigzag-checklist li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+  }
+  .zigzag-checklist li::before {
+    content: '';
+    width: 8px; height: 8px;
+    background: var(--sage);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .zigzag-visual {
+    background: var(--warm-cream);
+    border: 1px solid var(--wood-mid);
+    border-radius: 16px;
+    padding: 40px;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.03);
+  }
+
+  /* Mock UI */
+  .mock-ui {
+    width: 100%;
+    max-width: 280px;
+  }
+  .mock-ui-header {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .mock-ui-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--wood-mid);
+  }
+  .mock-ui-dot:nth-child(1) { background: var(--sage-light); }
+
+  .mock-ui-row {
+    height: 6px;
+    margin-bottom: 8px;
+    border-radius: 3px;
+    background: var(--wood-mid);
+  }
+  .mock-ui-row.w100 { width: 100%; }
+  .mock-ui-row.w80 { width: 80%; }
+  .mock-ui-row.w60 { width: 60%; }
+  .mock-ui-row.w90 { width: 90%; }
+  .mock-ui-row.accent { background: var(--sage-light); }
+
+  .mock-ui-block {
+    height: 48px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--wood-mid);
+    background: var(--warm-cream);
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial-section {
+    padding: 100px 32px;
+    text-align: center;
+    background: var(--warm-cream);
+  }
+
+  .testimonial-card {
+    max-width: 680px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .testimonial-quote {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+    font-style: italic;
+    line-height: 1.7;
+    color: var(--text-primary);
+    margin-bottom: 36px;
+    position: relative;
+  }
+  .testimonial-quote::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 3px;
+    background: var(--terracotta-light);
+    border-radius: 2px;
+    margin: 0 auto 24px;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .testimonial-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--sage-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--sage-dark);
+    font-style: italic;
+  }
+
+  .testimonial-info { text-align: left; }
+  .testimonial-name {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+  }
+  .testimonial-role {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+
+  /* ===== PRICING ===== */
+  .pricing-section {
+    padding: 100px 32px;
+    background: var(--wood-light);
+    border-top: 1px solid var(--wood-mid);
+  }
+
+  .pricing-header {
+    text-align: center;
+    max-width: 580px;
+    margin: 0 auto 60px;
+  }
+  .pricing-header h2 { margin-bottom: 16px; font-style: italic; }
+  .pricing-header p {
+    font-size: 1.05rem;
+    color: var(--text-mid);
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .pricing-card {
+    background: var(--warm-cream);
+    border: 1px solid var(--wood-mid);
+    border-radius: 16px;
+    padding: 40px 32px;
+    text-align: center;
+    transition: all 0.3s;
+    position: relative;
+  }
+  .pricing-card:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+    transform: translateY(-4px);
+  }
+
+  .pricing-card.featured {
+    border-color: var(--sage);
+    background: var(--warm-cream);
+    box-shadow: 0 8px 40px rgba(168, 181, 160, 0.15);
+  }
+
+  .pricing-card.featured::before {
+    content: 'POPULAR';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--sage);
+    color: #fff;
+    padding: 4px 16px;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    border-radius: 100px;
+  }
+
+  .pricing-tier {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--text-mid);
+    margin-bottom: 8px;
+  }
+
+  .pricing-amount {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    font-style: italic;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .pricing-amount span {
+    font-size: 0.9rem;
+    font-style: normal;
+    color: var(--text-dim);
+  }
+
+  .pricing-desc {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+  }
+
+  .pricing-features {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .pricing-features li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--text-mid);
+  }
+  .pricing-features li::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--sage);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .pricing-card .btn { width: 100%; justify-content: center; }
+
+  /* ===== FINAL CTA ===== */
+  .cta-section {
+    padding: 100px 32px;
+    text-align: center;
+    background: var(--warm-cream);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Decorative circles */
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    top: -50px; right: 10%;
+    width: 250px; height: 250px;
+    border-radius: 50%;
+    border: 1px solid var(--wood-dark);
+    opacity: 0.2;
+    pointer-events: none;
+  }
+  .cta-section::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; left: 8%;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: var(--dusty-blue-light);
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  .cta-content {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .cta-content h2 {
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+  .cta-content p {
+    font-size: 1.05rem;
+    color: var(--text-mid);
+    margin-bottom: 36px;
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    padding: 60px 32px 40px;
+    text-align: center;
+    background: var(--wood-light);
+    border-top: 1px solid var(--wood-mid);
+  }
+
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-style: italic;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .footer-links a {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    font-weight: 500;
+    letter-spacing: 0.03em;
+  }
+  .footer-links a:hover { color: var(--sage-dark); }
+
+  .footer-copy {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .zigzag-row {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .zigzag-row.reverse .zigzag-text { order: 0; }
+
+    .hero { min-height: auto; padding: 100px 24px 60px; }
+    .hero::before { width: 150px; height: 150px; }
+
+    .logos-grid { gap: 24px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+
+    .container { padding: 0 20px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="leaf">🌿</span>
+        Crafted for calm teams
+      </div>
+      <h1>Meetings, <em>carved</em> with care</h1>
+      <p>Like well-made furniture, every meeting should serve a purpose. Meet shapes your calendar with Scandinavian restraint — nothing wasted, everything intentional.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn btn-primary">Get Started</a>
+        <a href="#" class="btn btn-secondary">See How It Works</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LOGOS ===== -->
+  <section class="logos-section">
+    <div class="container">
+      <p>Trusted by thoughtful teams</p>
+      <div class="logos-grid">
+        <div class="logo-placeholder">Notion</div>
+        <div class="logo-placeholder">Figma</div>
+        <div class="logo-placeholder">Linear</div>
+        <div class="logo-placeholder">Vercel</div>
+        <div class="logo-placeholder">Stripe</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="features-section">
+    <div class="container">
+      <div class="features-header">
+        <h2>Built with intention</h2>
+        <div class="wood-divider">
+          <div class="dot"></div>
+        </div>
+        <p>Every feature shaped by craft. No excess. No waste. Just what works.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">◐</div>
+          <h3>Smart Scheduling</h3>
+          <p>AI finds the natural grain of your week. Meetings fit where they belong — no forced joints.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">◑</div>
+          <h3>Focus Protection</h3>
+          <p>Deep work blocks, smooth and solid. Like a well-planed surface — nothing catches your attention.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">◒</div>
+          <h3>Team Rhythms</h3>
+          <p>Learn when your team creates best. Schedule thinking for the natural flow of the day.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">◓</div>
+          <h3>Async-First</h3>
+          <p>Most "meetings" become written updates. Only what demands presence earns a seat at the table.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">◇</div>
+          <h3>Meeting Health</h3>
+          <p>Track ROI over time. See which meetings hold weight — and which are just decorative.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">○</div>
+          <h3>Integration Suite</h3>
+          <p>Slack, Google, Notion, Linear — every tool joined together like fine joinery.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ZIGZAG ===== -->
+  <section class="zigzag-section">
+    <div class="container">
+      <div class="zigzag-row">
+        <div class="zigzag-text">
+          <h3>Read the grain, not the guesswork</h3>
+          <p>Meet learns your team's rhythm over weeks. It spots which meetings run long, which could be emails, and which are worth the timber.</p>
+          <ul class="zigzag-checklist">
+            <li>Calendar pattern analysis</li>
+            <li>Meeting length optimization</li>
+            <li>Automatic agenda generation</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <div class="mock-ui">
+            <div class="mock-ui-header">
+              <div class="mock-ui-dot"></div>
+              <div class="mock-ui-dot"></div>
+              <div class="mock-ui-dot"></div>
+            </div>
+            <div class="mock-ui-row w80 accent"></div>
+            <div class="mock-ui-row w100"></div>
+            <div class="mock-ui-block"></div>
+            <div class="mock-ui-row w60"></div>
+            <div class="mock-ui-row w90"></div>
+            <div class="mock-ui-block"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="zigzag-row reverse">
+        <div class="zigzag-text">
+          <h3>Sand away the rough edges</h3>
+          <p>Every week, Meet suggests meetings to cancel, merge, or convert to async. Your calendar gets smoother — like wood sanded to silk.</p>
+          <ul class="zigzag-checklist">
+            <li>Weekly cleanup suggestions</li>
+            <li>Meeting cost calculator</li>
+            <li>One-click cancellation</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <div class="mock-ui">
+            <div class="mock-ui-header">
+              <div class="mock-ui-dot"></div>
+              <div class="mock-ui-dot"></div>
+              <div class="mock-ui-dot"></div>
+            </div>
+            <div class="mock-ui-row w100"></div>
+            <div class="mock-ui-row w80"></div>
+            <div class="mock-ui-block"></div>
+            <div class="mock-ui-row w60 accent"></div>
+            <div class="mock-ui-row w90"></div>
+            <div class="mock-ui-row w80"></div>
+            <div class="mock-ui-block"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIAL ===== -->
+  <section class="testimonial-section">
+    <div class="container">
+      <div class="testimonial-card">
+        <p class="testimonial-quote">We went from 18 meetings a week to 9. The ones we kept actually had purpose. It's like someone sanded down our workweek — smooth, intentional, beautiful.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">EK</div>
+          <div class="testimonial-info">
+            <div class="testimonial-name">Erik Karlsson</div>
+            <div class="testimonial-role">Design Lead, Nordcraft Studio</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRICING ===== -->
+  <section class="pricing-section">
+    <div class="container">
+      <div class="pricing-header">
+        <h2>Honest pricing</h2>
+        <div class="wood-divider">
+          <div class="dot"></div>
+        </div>
+        <p>Start free. Upgrade when craft becomes essential.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-tier">Timber</div>
+          <div class="pricing-amount">$0 <span>/mo</span></div>
+          <div class="pricing-desc">For individuals finding shape</div>
+          <ul class="pricing-features">
+            <li>Smart calendar scheduling</li>
+            <li>Focus time protection</li>
+            <li>Weekly meeting insights</li>
+            <li>5 team member connections</li>
+          </ul>
+          <a href="#" class="btn btn-secondary">Get Started</a>
+        </div>
+        <div class="pricing-card featured">
+          <div class="pricing-tier">Crafted</div>
+          <div class="pricing-amount">$12 <span>/mo</span></div>
+          <div class="pricing-desc">For teams building together</div>
+          <ul class="pricing-features">
+            <li>Everything in Timber</li>
+            <li>Team pattern analysis</li>
+            <li>Meeting cost calculator</li>
+            <li>Async conversion engine</li>
+            <li>Unlimited integrations</li>
+          </ul>
+          <a href="#" class="btn btn-primary">Start Free Trial</a>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-tier">Heritage</div>
+          <div class="pricing-amount">$29 <span>/mo</span></div>
+          <div class="pricing-desc">For organizations at scale</div>
+          <ul class="pricing-features">
+            <li>Everything in Crafted</li>
+            <li>Enterprise SSO &amp; SAML</li>
+            <li>Custom AI training</li>
+            <li>Dedicated success manager</li>
+            <li>API access</li>
+          </ul>
+          <a href="#" class="btn btn-secondary">Contact Sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FINAL CTA ===== -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2>Shape your week</h2>
+        <p>Join thousands of teams who stopped forcing meetings and started crafting them. Free for individuals, beautiful for teams.</p>
+        <div class="hero-actions">
+          <a href="#" class="btn btn-primary">Begin Crafting</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-logo">Meet</div>
+      <div class="footer-links">
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Blog</a>
+        <a href="#">Docs</a>
+        <a href="#">Contact</a>
+      </div>
+      <p class="footer-copy">© 2024 Meet. Crafted with intention.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

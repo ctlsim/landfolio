@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFF8E7;
+    --black: #1A1A1A;
+    --yellow: #FFE156;
+    --blue: #4361EE;
+    --pink: #FF6B9D;
+    --green: #06D6A0;
+    --coral: #FF6F61;
+    --purple: #B33ECC;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--black);
+    line-height: 1.6;
+  }
+  h1,h2,h3 { font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; }
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  /* Neo-brutalist card */
+  .neo {
+    border: 3px solid var(--black);
+    box-shadow: 6px 6px 0 var(--black);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .neo:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--black); }
+
+  /* Nav */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--bg); border-bottom: 3px solid var(--black); }
+  nav .container { display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; }
+  .logo { font-weight: 700; font-size: 1.4rem; color: var(--black); text-decoration: none; }
+  .logo span { color: var(--pink); }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a { color: var(--black); text-decoration: none; font-size: 0.85rem; font-weight: 600; }
+  .btn-nav {
+    background: var(--yellow); color: var(--black) !important; padding: 10px 20px;
+    font-size: 0.8rem; font-weight: 700; border: 3px solid var(--black);
+    box-shadow: 3px 3px 0 var(--black); cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-nav:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--black); }
+
+  /* Hero */
+  .hero { padding: 160px 0 80px; }
+  .hero h1 { font-size: clamp(3rem, 7vw, 5rem); margin-bottom: 20px; max-width: 700px; }
+  .hero h1 .highlight {
+    display: inline-block; background: var(--blue); color: white;
+    padding: 0 12px; border: 3px solid var(--black);
+    box-shadow: 4px 4px 0 var(--black);
+  }
+  .hero .subhead { font-size: 1.1rem; max-width: 500px; margin-bottom: 36px; line-height: 1.7; }
+  .cta-group { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 64px; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--pink); color: var(--black); padding: 16px 32px;
+    text-decoration: none; font-weight: 700; font-size: 0.95rem;
+    border: 3px solid var(--black); box-shadow: 5px 5px 0 var(--black);
+    cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-primary:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--black); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--black); padding: 16px 24px; text-decoration: none;
+    font-weight: 600; font-size: 0.9rem; border: 3px solid var(--black);
+    background: var(--yellow); box-shadow: 4px 4px 0 var(--black);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-secondary:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--black); }
+
+  .hero-screenshot { max-width: 860px; margin: 0 auto; }
+  .screenshot-mockup { padding: 0; display: flex; flex-direction: column; }
+  .mockup-topbar { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 3px solid var(--black); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; background: var(--yellow); }
+  .mockup-body { flex: 1; display: grid; grid-template-columns: 170px 1fr 220px; background: white; }
+  .mock-sidebar { border-right: 3px solid var(--black); padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .mock-sidebar-item { height: 8px; background: #F0EDE4; border: 2px solid var(--black); }
+  .mock-sidebar-item.active { background: var(--blue); }
+  .mock-main { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .mock-line { height: 8px; background: #F0EDE4; border: 2px solid var(--black); }
+  .mock-line.title { height: 10px; background: var(--black); width: 50%; }
+  .mock-right { border-left: 3px solid var(--black); padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .mock-action { display: flex; align-items: center; gap: 8px; padding: 8px; border: 2px solid var(--black); }
+  .mock-action-dot { width: 6px; height: 6px; flex-shrink: 0; }
+  .mock-action-line { height: 6px; background: #F0EDE4; border: 2px solid var(--black); flex: 1; }
+
+  /* Logos */
+  .logo-bar { padding: 50px 0; border-top: 3px solid var(--black); border-bottom: 3px solid var(--black); background: var(--green); }
+  .logo-bar p { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; text-align: center; margin-bottom: 24px; }
+  .logos { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+  .logo-item { font-weight: 700; font-size: 1rem; }
+
+  /* Features */
+  .features { padding: 80px 0; }
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .feature-card { padding: 36px 28px; background: white; }
+  .feature-card:nth-child(1) { background: var(--yellow); }
+  .feature-card:nth-child(2) { background: var(--green); }
+  .feature-card:nth-child(3) { background: var(--pink); }
+  .feature-icon { font-size: 2rem; margin-bottom: 16px; }
+  .feature-card h3 { font-size: 1.3rem; margin-bottom: 10px; }
+  .feature-card p { font-size: 0.9rem; line-height: 1.7; }
+
+  /* Zigzag */
+  .zigzag { border-top: 3px solid var(--black); }
+  .zigzag-row { display: grid; grid-template-columns: 1fr 1fr; }
+  .zigzag-copy { padding: 80px 60px; display: flex; flex-direction: column; justify-content: center; }
+  .zigzag-row.reverse .zigzag-copy { order: 2; }
+  .zigzag-copy h2 { font-size: 2rem; margin-bottom: 14px; }
+  .zigzag-copy p { font-size: 0.9rem; line-height: 1.8; margin-bottom: 24px; }
+  .zigzag-visual { border: 3px solid var(--black); display: flex; align-items: center; justify-content: center; background: var(--yellow); padding: 32px; box-shadow: 6px 6px 0 var(--black); }
+  .zigzag-row.reverse .zigzag-visual { border-left: none; }
+  .zigzag-row:not(.reverse) .zigzag-visual { border-left: none; }
+  .zigzag-visual-inner { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+  .conn-row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 3px solid var(--black); background: white; box-shadow: 3px 3px 0 var(--black); }
+  .conn-icon { width: 28px; height: 28px; border: 3px solid var(--black); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 700; background: var(--green); }
+  .conn-line { height: 6px; background: #F0EDE4; border: 2px solid var(--black); flex: 1; }
+  .conn-badge { font-size: 0.6rem; padding: 2px 8px; background: var(--green); font-weight: 700; text-transform: uppercase; border: 2px solid var(--black); }
+
+  /* Testimonial */
+  .testimonial { padding: 80px 0; border-top: 3px solid var(--black); background: var(--blue); color: white; }
+  .testimonial-inner { max-width: 700px; margin: 0 auto; text-align: center; }
+  .testimonial blockquote { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 700; line-height: 1.4; margin-bottom: 28px; }
+  .testimonial-author { display: flex; align-items: center; justify-content: center; gap: 12px; }
+  .author-avatar { width: 40px; height: 40px; border: 3px solid white; background: var(--yellow); }
+  .author-info { text-align: left; }
+  .author-info .name { font-weight: 700; font-size: 0.9rem; }
+  .author-info .role { font-size: 0.8rem; opacity: 0.8; }
+
+  /* Pricing */
+  .pricing { border-top: 3px solid var(--black); }
+  .pricing-header { padding: 80px 0 48px; text-align: center; }
+  .pricing-header h2 { font-size: 2.8rem; margin-bottom: 10px; }
+  .pricing-header p { font-size: 0.95rem; }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); padding-bottom: 80px; gap: 24px; }
+  .pricing-card { padding: 36px 24px; text-align: center; background: white; border: 3px solid var(--black); box-shadow: 6px 6px 0 var(--black); }
+  .pricing-card.featured { background: var(--purple); color: white; }
+  .pricing-card h3 { font-size: 1rem; margin-bottom: 10px; text-transform: uppercase; }
+  .pricing-card .price { font-size: 3rem; font-weight: 700; margin-bottom: 4px; }
+  .pricing-card .price span { font-size: 1rem; font-weight: 400; }
+  .pricing-card .period { font-size: 0.7rem; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 0.1em; }
+  .pricing-card ul { list-style: none; text-align: left; margin-bottom: 28px; }
+  .pricing-card li { padding: 6px 0; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; border-bottom: 2px solid rgba(0,0,0,0.1); }
+  .pricing-card.featured li { border-bottom-color: rgba(255,255,255,0.2); }
+  .pricing-card li::before { content: '✓'; font-weight: 700; }
+  .btn-pricing {
+    display: block; width: 100%; padding: 13px; text-decoration: none;
+    font-weight: 700; font-size: 0.8rem; text-align: center; text-transform: uppercase;
+    border: 3px solid var(--black); color: var(--black); background: var(--yellow);
+    box-shadow: 3px 3px 0 var(--black); cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-pricing:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--black); }
+  .btn-pricing.filled { background: var(--yellow); color: var(--black); }
+
+  /* Final CTA */
+  .final-cta { padding: 100px 0; text-align: center; border-top: 3px solid var(--black); }
+  .final-cta h2 { font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 16px; }
+  .final-cta p { font-size: 0.95rem; margin-bottom: 36px; }
+
+  /* Footer */
+  footer { padding: 24px 0; text-align: center; border-top: 3px solid var(--black); }
+  footer p { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+
+  @media (max-width: 768px) {
+    .features-grid, .pricing-grid { grid-template-columns: 1fr; }
+    .zigzag-row { grid-template-columns: 1fr; }
+    .zigzag-row.reverse .zigzag-copy { order: 0; }
+    .zigzag-visual { border: 3px solid var(--black) !important; border-bottom: none !important; }
+    .mockup-body { grid-template-columns: 1fr; }
+    .mock-sidebar, .mock-right { display: none; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="#" class="logo">meet<span>.</span></a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="btn-nav">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <h1 class="reveal">Meetings that don't <span class="highlight">waste</span> your week</h1>
+    <p class="subhead reveal">AI notes that turn transcripts into action items. Syncs to Notion, Linear, Slack — so nothing falls through the cracks.</p>
+    <div class="cta-group reveal">
+      <a href="#" class="btn-primary">Connect calendar — free 14 days</a>
+      <a href="#features" class="btn-secondary">See how it works ↓</a>
+    </div>
+    <div class="hero-screenshot neo reveal">
+      <div class="screenshot-mockup">
+        <div class="mockup-topbar"><span>meet://meetings</span><span>Today</span></div>
+        <div class="mockup-body">
+          <div class="mock-sidebar">
+            <div class="mock-sidebar-item active" style="width:80%"></div>
+            <div class="mock-sidebar-item" style="width:65%"></div>
+            <div class="mock-sidebar-item" style="width:90%"></div>
+            <div class="mock-sidebar-item" style="width:50%"></div>
+          </div>
+          <div class="mock-main">
+            <div class="mock-line title"></div>
+            <div class="mock-line" style="width:100%"></div>
+            <div class="mock-line" style="width:85%"></div>
+            <div class="mock-line" style="width:95%"></div>
+            <div class="mock-line" style="width:70%"></div>
+          </div>
+          <div class="mock-right">
+            <div class="mock-action"><div class="mock-action-dot" style="background:var(--pink)"></div><div class="mock-action-line"></div></div>
+            <div class="mock-action"><div class="mock-action-dot" style="background:var(--blue)"></div><div class="mock-action-line"></div></div>
+            <div class="mock-action"><div class="mock-action-dot" style="background:var(--green)"></div><div class="mock-action-line"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="logo-bar">
+  <div class="container">
+    <p class="reveal">Trusted by teams at</p>
+    <div class="logos reveal">
+      <span class="logo-item">Vercel</span><span class="logo-item">Stripe</span><span class="logo-item">Notion</span><span class="logo-item">Linear</span><span class="logo-item">Figma</span><span class="logo-item">Raycast</span>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-grid">
+      <div class="feature-card neo reveal"><div class="feature-icon">🎙</div><h3>Transcribe</h3><p>Every word captured. Speaker-labeled. Searchable. Your meetings become a permanent record you can actually find things in.</p></div>
+      <div class="feature-card neo reveal"><div class="feature-icon">✦</div><h3>Summarize</h3><p>AI distills 60 minutes into 3 bullet points and 5 action items. Skip the replay. Get the signal.</p></div>
+      <div class="feature-card neo reveal"><div class="feature-icon">↗</div><h3>Sync</h3><p>Pushes to your tools. Notion pages, Linear tickets, Slack threads. One click. Every tool updated.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="zigzag">
+  <div class="zigzag-row">
+    <div class="zigzag-copy reveal"><h2>One click.<br>Every tool updated.</h2><p>Connect your workspace tools once. Meet pushes the right content to the right place — meeting notes to Notion, bugs to Linear, decisions to Slack.</p><a href="#" class="btn-secondary">View integrations →</a></div>
+    <div class="zigzag-visual reveal"><div class="zigzag-visual-inner">
+      <div class="conn-row"><div class="conn-icon">N</div><div class="conn-line"></div><span class="conn-badge">Connected</span></div>
+      <div class="conn-row"><div class="conn-icon">L</div><div class="conn-line"></div><span class="conn-badge">Connected</span></div>
+      <div class="conn-row"><div class="conn-icon">S</div><div class="conn-line"></div><span class="conn-badge">Connected</span></div>
+    </div></div>
+  </div>
+  <div class="zigzag-row reverse">
+    <div class="zigzag-copy reveal"><h2>Notes that live<br>somewhere useful</h2><p>Every meeting generates a polished Notion page automatically. Headings, tables, timestamps — formatted like a human wrote them.</p></div>
+    <div class="zigzag-visual reveal"><div class="zigzag-visual-inner">
+      <div class="mock-line title" style="width:45%"></div>
+      <div class="mock-line" style="width:100%"></div>
+      <div class="mock-line" style="width:80%"></div>
+      <div class="mock-line" style="width:90%"></div>
+    </div></div>
+  </div>
+</section>
+
+<section class="testimonial">
+  <div class="container">
+    <div class="testimonial-inner reveal">
+      <blockquote>"We went from 4 hours of note-taking per week to zero. Meet just works."</blockquote>
+      <div class="testimonial-author"><div class="author-avatar"></div><div class="author-info"><div class="name">Sarah Chen</div><div class="role">VP of Product · Linear</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="pricing-header reveal"><h2>Pricing</h2><p>Start free. Upgrade when you're ready.</p></div>
+  </div>
+  <div class="pricing-grid">
+    <div class="pricing-card reveal"><h3>Free</h3><div class="price">$0<span>/mo</span></div><div class="period">10 meetings / month</div><ul><li>AI transcription</li><li>Basic summaries</li><li>1 integration</li></ul><a href="#" class="btn-pricing">Get started</a></div>
+    <div class="pricing-card featured reveal"><h3>Pro</h3><div class="price">$12<span>/mo</span></div><div class="period">Unlimited meetings</div><ul><li>Everything in Free</li><li>AI summaries & action items</li><li>Unlimited integrations</li><li>Search across all meetings</li></ul><a href="#" class="btn-pricing filled">Start free trial</a></div>
+    <div class="pricing-card reveal"><h3>Team</h3><div class="price">$29<span>/mo</span></div><div class="period">Per seat, min 5</div><ul><li>Everything in Pro</li><li>Shared workspace</li><li>Admin controls</li><li>SSO & audit logs</li></ul><a href="#" class="btn-pricing">Contact sales</a></div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="container">
+    <h2 class="reveal">Stop taking notes.<br>Start getting things done.</h2>
+    <p class="reveal">Your calendar already knows about your meetings. Let Meet handle the rest.</p>
+    <a href="#" class="btn-primary reveal">Start free — no credit card →</a>
+  </div>
+</section>
+
+<footer><div class="container"><p>© 2024 Meet. Built for people who value their time.</p></div></footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) { setTimeout(() => entry.target.classList.add('visible'), i * 50); observer.unobserve(entry.target); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

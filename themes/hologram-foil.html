@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08080A;
+    --bg-card: rgba(255,255,255,0.025);
+    --border: rgba(255,255,255,0.05);
+    --text: #E8E8EC;
+    --text-dim: rgba(232,232,236,0.4);
+    --foil-1: #C9A84C;
+    --foil-2: #E8C872;
+    --foil-3: #A8843A;
+    --foil-4: #F0D890;
+    --prism-r: #FF6B6B;
+    --prism-o: #FFA94D;
+    --prism-y: #FFE066;
+    --prism-g: #69DB7C;
+    --prism-b: #74C0FC;
+    --prism-v: #B197FC;
+    --chrome-1: #FFFFFF;
+    --chrome-2: #D0D0D5;
+    --chrome-3: #A0A0A8;
+    --chrome-4: #E0E0E5;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Instrument Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  /* Metallic mesh background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 30% 20%, rgba(201,168,76,0.04) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 80% at 70% 70%, rgba(177,151,252,0.03) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 50% at 50% 50%, rgba(116,192,252,0.02) 0%, transparent 40%);
+    animation: foilShift 20s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes foilShift {
+    0% { opacity: 0.5; transform: scale(1) rotate(0deg); }
+    33% { opacity: 0.8; transform: scale(1.05) rotate(1deg); }
+    66% { opacity: 0.6; transform: scale(1.02) rotate(-1deg); }
+    100% { opacity: 0.9; transform: scale(1.08) rotate(2deg); }
+  }
+
+  /* Prismatic reflection overlay */
+  .prism-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .prism-band {
+    position: absolute;
+    width: 300%;
+    height: 2px;
+    opacity: 0.04;
+    animation: prismDrift 30s linear infinite;
+  }
+  .prism-band:nth-child(1) {
+    top: 15%;
+    left: -100%;
+    background: linear-gradient(90deg, transparent, var(--prism-r), var(--prism-o), var(--prism-y), var(--prism-g), var(--prism-b), var(--prism-v), transparent);
+    transform: rotate(-8deg);
+    height: 3px;
+  }
+  .prism-band:nth-child(2) {
+    top: 45%;
+    left: -100%;
+    background: linear-gradient(90deg, transparent, var(--prism-v), var(--prism-b), var(--prism-g), var(--prism-y), var(--prism-o), var(--prism-r), transparent);
+    transform: rotate(5deg);
+    animation-delay: -10s;
+    animation-duration: 35s;
+  }
+  .prism-band:nth-child(3) {
+    top: 75%;
+    left: -100%;
+    background: linear-gradient(90deg, transparent, var(--prism-g), var(--prism-b), var(--prism-v), var(--prism-r), var(--prism-o), var(--prism-y), transparent);
+    transform: rotate(-3deg);
+    animation-delay: -20s;
+    animation-duration: 28s;
+  }
+  .prism-band:nth-child(4) {
+    top: 30%;
+    left: -100%;
+    background: linear-gradient(90deg, transparent, var(--foil-1), var(--prism-b), var(--foil-2), var(--prism-v), var(--foil-3), transparent);
+    transform: rotate(12deg);
+    animation-delay: -5s;
+    animation-duration: 40s;
+    opacity: 0.03;
+  }
+  @keyframes prismDrift {
+    0% { transform: translateX(-100%) rotate(var(--r, -8deg)); }
+    100% { transform: translateX(100%) rotate(var(--r, -8deg)); }
+  }
+
+  /* Metallic foil shimmer on cards */
+  .foil-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .foil-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 30%,
+      rgba(201,168,76,0.03) 45%,
+      rgba(255,255,255,0.06) 50%,
+      rgba(201,168,76,0.03) 55%,
+      transparent 70%
+    );
+    background-size: 200% 100%;
+    animation: foilShimmer 8s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes foilShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Chrome text effect */
+  .chrome-text {
+    background: linear-gradient(
+      180deg,
+      var(--chrome-1) 0%,
+      var(--chrome-4) 15%,
+      var(--chrome-2) 30%,
+      var(--chrome-1) 50%,
+      var(--chrome-3) 70%,
+      var(--chrome-2) 85%,
+      var(--chrome-1) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Metallic gradient text */
+  .metallic-text {
+    background: linear-gradient(
+      135deg,
+      var(--foil-1) 0%,
+      var(--foil-4) 20%,
+      var(--chrome-1) 35%,
+      var(--foil-2) 50%,
+      var(--chrome-4) 65%,
+      var(--foil-3) 80%,
+      var(--foil-1) 100%
+    );
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: metallicShift 6s ease-in-out infinite;
+  }
+  @keyframes metallicShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* Prismatic gradient text */
+  .prism-text {
+    background: linear-gradient(
+      135deg,
+      var(--prism-r), var(--prism-o), var(--prism-y),
+      var(--prism-g), var(--prism-b), var(--prism-v)
+    );
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: metallicShift 8s ease-in-out infinite;
+  }
+
+  /* Metallic border */
+  .metallic-border {
+    position: relative;
+  }
+  .metallic-border::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(
+      135deg,
+      var(--foil-3), var(--chrome-2), var(--foil-1),
+      var(--chrome-4), var(--foil-2), var(--chrome-3), var(--foil-3)
+    );
+    background-size: 300% 300%;
+    animation: metallicShift 5s ease-in-out infinite;
+    z-index: -1;
+    border-radius: inherit;
+    opacity: 0.3;
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Container */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(8,8,10,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  .logo {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-decoration: none;
+    letter-spacing: -0.03em;
+  }
+  .logo span {
+    background: linear-gradient(135deg, var(--foil-1), var(--chrome-1), var(--foil-2));
+    background-size: 200% 200%;
+    animation: metallicShift 4s ease-in-out infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 400;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .btn-nav {
+    background: linear-gradient(135deg, var(--foil-3), var(--foil-1), var(--foil-2));
+    background-size: 200% 200%;
+    animation: metallicShift 4s ease-in-out infinite;
+    color: #08080A !important;
+    padding: 10px 24px;
+    font-size: 0.78rem !important;
+    font-weight: 600;
+    border-radius: 100px;
+    transition: box-shadow 0.3s, transform 0.2s;
+  }
+  .btn-nav:hover {
+    box-shadow: 0 0 30px rgba(201,168,76,0.3);
+    transform: translateY(-1px);
+  }
+
+  /* Hero */
+  .hero {
+    padding: 160px 0 80px;
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 32px;
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    width: fit-content;
+    background: var(--bg-card);
+  }
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--foil-1), var(--chrome-1));
+    box-shadow: 0 0 10px rgba(201,168,76,0.4);
+  }
+  .hero h1 {
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    line-height: 0.92;
+    margin-bottom: 32px;
+    max-width: 900px;
+    letter-spacing: -0.04em;
+  }
+  .hero .subhead {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 1rem;
+    max-width: 480px;
+    margin-bottom: 44px;
+    line-height: 1.7;
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+  .cta-group {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 80px;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--foil-3), var(--foil-1), var(--foil-2), var(--chrome-1));
+    background-size: 300% 300%;
+    animation: metallicShift 5s ease-in-out infinite;
+    color: #08080A;
+    padding: 18px 36px;
+    text-decoration: none;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-radius: 100px;
+    box-shadow: 0 0 30px rgba(201,168,76,0.15);
+    transition: box-shadow 0.3s, transform 0.2s;
+  }
+  .btn-primary:hover {
+    box-shadow: 0 0 50px rgba(201,168,76,0.35);
+    transform: translateY(-2px);
+  }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-dim);
+    padding: 18px 28px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 400;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    background: var(--bg-card);
+    cursor: pointer;
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .btn-secondary:hover {
+    border-color: rgba(201,168,76,0.2);
+    color: var(--text);
+  }
+
+  /* Hero Screenshot */
+  .hero-screenshot {
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+  .hero-screenshot::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,0.02), rgba(255,255,255,0.01), rgba(177,151,252,0.02));
+    pointer-events: none;
+    z-index: 1;
+  }
+  .screenshot-mockup {
+    display: flex;
+    flex-direction: column;
+    min-height: 380px;
+  }
+  .mockup-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+  }
+  .mockup-topbar-left { display: flex; gap: 8px; }
+  .mockup-topbar-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .mockup-body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 180px 1fr 220px;
+  }
+  .mock-sidebar {
+    border-right: 1px solid var(--border);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .mock-sidebar-item {
+    height: 8px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px;
+  }
+  .mock-sidebar-item.active {
+    background: linear-gradient(90deg, rgba(201,168,76,0.15), rgba(201,168,76,0.08));
+  }
+  .mock-main {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .mock-line {
+    height: 8px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px;
+  }
+  .mock-line.title {
+    height: 12px;
+    background: rgba(255,255,255,0.06);
+    width: 50%;
+  }
+  .mock-line.highlight {
+    border-left: 2px solid rgba(201,168,76,0.3);
+    padding-left: 10px;
+    background: rgba(201,168,76,0.04);
+  }
+  .mock-right {
+    border-left: 1px solid var(--border);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .mock-action {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: rgba(255,255,255,0.015);
+  }
+  .mock-action-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--foil-1);
+    box-shadow: 0 0 6px rgba(201,168,76,0.3);
+    flex-shrink: 0;
+  }
+  .mock-action-line {
+    height: 6px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 3px;
+    flex: 1;
+  }
+
+  /* Marquee */
+  .marquee-section {
+    overflow: hidden;
+    padding: 24px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .marquee-track {
+    display: flex;
+    gap: 48px;
+    animation: marquee 25s linear infinite;
+    white-space: nowrap;
+  }
+  .marquee-item {
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: var(--text-dim);
+    flex-shrink: 0;
+    letter-spacing: 0.04em;
+  }
+  .marquee-item.divider {
+    background: linear-gradient(90deg, var(--foil-1), var(--chrome-1), var(--foil-2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 600;
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* Features */
+  .features { }
+  .features-header {
+    padding: 80px 0 48px;
+    border-bottom: 1px solid var(--border);
+  }
+  .features-header h2 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .feature-card {
+    padding: 56px 36px;
+    border-right: 1px solid var(--border);
+    position: relative;
+    transition: background 0.3s;
+  }
+  .feature-card:last-child { border-right: none; }
+  .feature-card:hover { background: rgba(255,255,255,0.015); }
+  .feature-number {
+    font-family: 'Outfit', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 28px;
+    background: linear-gradient(135deg, var(--foil-3), var(--chrome-2), var(--foil-1), var(--chrome-4));
+    background-size: 200% 200%;
+    animation: metallicShift 6s ease-in-out infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0.35;
+  }
+  .feature-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .feature-card p {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+
+  /* Zigzag */
+  .zigzag { }
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .zigzag-copy {
+    padding: 80px 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 1px solid var(--border);
+  }
+  .zigzag-row.reverse .zigzag-copy {
+    order: 2;
+    border-right: none;
+    border-left: 1px solid var(--border);
+  }
+  .zigzag-copy h2 {
+    font-size: 2rem;
+    margin-bottom: 24px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .zigzag-copy p {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.88rem;
+    line-height: 1.8;
+    color: var(--text-dim);
+    margin-bottom: 32px;
+    font-weight: 400;
+  }
+  .zigzag-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-card);
+    min-height: 360px;
+    padding: 40px;
+  }
+  .zigzag-visual-inner {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .conn-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.015);
+    border-radius: 8px;
+  }
+  .conn-icon {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    background: var(--bg-card);
+  }
+  .conn-line {
+    height: 2px;
+    background: linear-gradient(90deg, rgba(201,168,76,0.3), transparent);
+    flex: 1;
+    opacity: 0.3;
+    border-radius: 1px;
+  }
+  .conn-badge {
+    font-size: 0.6rem;
+    font-weight: 500;
+    padding: 3px 10px;
+    border: 1px solid rgba(201,168,76,0.15);
+    color: var(--foil-1);
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* Testimonial */
+  .testimonial {
+    padding: 100px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .testimonial-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .testimonial blockquote {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(1.5rem, 3.5vw, 2.8rem);
+    line-height: 1.25;
+    margin-bottom: 40px;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+  }
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  .author-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: linear-gradient(135deg, var(--foil-1), var(--chrome-2), var(--foil-2));
+    opacity: 0.6;
+  }
+  .author-info { text-align: left; }
+  .author-info .name {
+    font-weight: 500;
+    font-size: 0.85rem;
+  }
+  .author-info .role {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-top: 2px;
+    font-weight: 400;
+  }
+
+  /* Pricing */
+  .pricing { }
+  .pricing-header {
+    padding: 80px 0 48px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .pricing-header h2 {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    letter-spacing: -0.03em;
+  }
+  .pricing-header p {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding-bottom: 80px;
+  }
+  .pricing-card {
+    padding: 48px 32px;
+    border-right: 1px solid var(--border);
+    text-align: center;
+    position: relative;
+    transition: background 0.3s;
+  }
+  .pricing-card:last-child { border-right: none; }
+  .pricing-card:hover { background: rgba(255,255,255,0.015); }
+  .pricing-card.featured {
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(201,168,76,0.12);
+    border-radius: 12px;
+    margin: 0 -1px;
+    z-index: 1;
+  }
+  .pricing-card.featured::before {
+    content: 'MOST POPULAR';
+    position: absolute;
+    top: -12px; left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--foil-3), var(--foil-1), var(--foil-2));
+    color: #08080A;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 5px 16px;
+    border-radius: 100px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    box-shadow: 0 0 20px rgba(201,168,76,0.2);
+  }
+  .pricing-card h3 {
+    font-size: 1rem;
+    margin-bottom: 16px;
+    margin-top: 8px;
+    font-weight: 600;
+  }
+  .pricing-card .price {
+    font-family: 'Outfit', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+    letter-spacing: -0.03em;
+  }
+  .pricing-card .price span {
+    font-size: 1rem;
+    font-weight: 300;
+  }
+  .pricing-card .period {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.72rem;
+    margin-bottom: 32px;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  .pricing-card ul {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 36px;
+  }
+  .pricing-card li {
+    padding: 10px 0;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.82rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+  .pricing-card li::before {
+    content: '';
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--foil-1), var(--chrome-1));
+    flex-shrink: 0;
+  }
+  .btn-pricing {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.78rem;
+    text-align: center;
+    letter-spacing: 0.03em;
+    border: 1px solid var(--border);
+    color: var(--text);
+    background: transparent;
+    cursor: pointer;
+    border-radius: 100px;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .btn-pricing:hover {
+    border-color: rgba(201,168,76,0.2);
+    background: rgba(201,168,76,0.03);
+  }
+  .btn-pricing.filled {
+    background: linear-gradient(135deg, var(--foil-3), var(--foil-1), var(--foil-2));
+    border-color: transparent;
+    color: #08080A;
+    font-weight: 600;
+    box-shadow: 0 0 20px rgba(201,168,76,0.15);
+  }
+  .btn-pricing.filled:hover {
+    box-shadow: 0 0 35px rgba(201,168,76,0.3);
+  }
+
+  /* Final CTA */
+  .final-cta {
+    padding: 120px 0;
+    text-align: center;
+  }
+  .final-cta h2 {
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    line-height: 0.95;
+    margin-bottom: 24px;
+    letter-spacing: -0.04em;
+  }
+  .final-cta p {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    margin-bottom: 48px;
+    font-weight: 400;
+  }
+
+  /* Footer */
+  footer {
+    padding: 28px 0;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    font-weight: 400;
+    letter-spacing: 0.03em;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .features-grid,
+    .pricing-grid { grid-template-columns: 1fr; }
+    .feature-card { border-right: none; border-bottom: 1px solid var(--border); }
+    .feature-card:last-child { border-bottom: none; }
+    .pricing-card { border-right: none; border-bottom: 1px solid var(--border); }
+    .pricing-card:last-child { border-bottom: none; }
+    .zigzag-row { grid-template-columns: 1fr; }
+    .zigzag-row.reverse .zigzag-copy { order: 0; border-left: none; }
+    .zigzag-copy { border-right: none !important; border-bottom: 1px solid var(--border); }
+    .mockup-body { grid-template-columns: 1fr; }
+    .mock-sidebar, .mock-right { display: none; }
+    .nav-links { display: none; }
+    .hero { padding-top: 120px; min-height: auto; }
+    .zigzag-visual { min-height: 260px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Prism overlay -->
+<div class="prism-overlay">
+  <div class="prism-band"></div>
+  <div class="prism-band"></div>
+  <div class="prism-band"></div>
+  <div class="prism-band"></div>
+</div>
+
+<!-- Nav -->
+<nav>
+  <div class="container">
+    <a href="#" class="logo">Meet<span>.</span></a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="btn-nav">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-tag reveal">AI Meeting Notes</div>
+    <h1 class="reveal">Meetings That Don't<br><span class="metallic-text">Waste Your Week</span></h1>
+    <p class="subhead reveal">AI notes that turn transcripts into action items. Syncs to Notion, Linear, Slack — so nothing falls through the cracks.</p>
+    <div class="cta-group reveal">
+      <a href="#" class="btn-primary">Connect calendar — free 14 days</a>
+      <a href="#features" class="btn-secondary">See how it works ↓</a>
+    </div>
+    <div class="hero-screenshot foil-shimmer reveal">
+      <div class="screenshot-mockup">
+        <div class="mockup-topbar">
+          <div class="mockup-topbar-left">
+            <div class="mockup-topbar-dot"></div>
+            <div class="mockup-topbar-dot"></div>
+            <div class="mockup-topbar-dot"></div>
+          </div>
+          <span>meet://meetings/today</span>
+        </div>
+        <div class="mockup-body">
+          <div class="mock-sidebar">
+            <div class="mock-sidebar-item active" style="width:80%"></div>
+            <div class="mock-sidebar-item" style="width:65%"></div>
+            <div class="mock-sidebar-item" style="width:90%"></div>
+            <div class="mock-sidebar-item" style="width:50%"></div>
+            <div class="mock-sidebar-item" style="width:75%"></div>
+          </div>
+          <div class="mock-main">
+            <div class="mock-line title"></div>
+            <div class="mock-line" style="width:100%"></div>
+            <div class="mock-line" style="width:85%"></div>
+            <div class="mock-line" style="width:95%"></div>
+            <div class="mock-line" style="width:70%"></div>
+            <div class="mock-line highlight" style="width:100%"></div>
+            <div class="mock-line highlight" style="width:80%"></div>
+          </div>
+          <div class="mock-right">
+            <div class="mock-action">
+              <div class="mock-action-dot"></div>
+              <div class="mock-action-line"></div>
+            </div>
+            <div class="mock-action">
+              <div class="mock-action-dot"></div>
+              <div class="mock-action-line"></div>
+            </div>
+            <div class="mock-action">
+              <div class="mock-action-dot"></div>
+              <div class="mock-action-line"></div>
+            </div>
+            <div class="mock-action">
+              <div class="mock-action-dot"></div>
+              <div class="mock-action-line"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Marquee -->
+<section class="marquee-section">
+  <div class="marquee-track">
+    <span class="marquee-item">Vercel</span>
+    <span class="marquee-item divider">◆</span>
+    <span class="marquee-item">Stripe</span>
+    <span class="marquee-item divider">◆</span>
+    <span class="marquee-item">Notion</span>
+    <span class="marquee-item divider">◆</span>
+    <span class="marquee-item">Linear</span>
+    <span class="marquee-item divider">◆</span>
+    <span class="marquee-item">Figma</span>
+    <span class="marquee-item divider">◆</span>
+    <span class="marquee-item">Raycast</span>
+    <span class="marquee-item divider">◆</span>
+    <span class="marquee-item">Vercel</span>
+    <span class="marquee-item divider">◆</span>
+    <span class="marquee-item">Stripe</span>
+    <span class="marquee-item divider">◆</span>
+    <span class="marquee-item">Notion</span>
+    <span class="marquee-item divider">◆</span>
+    <span class="marquee-item">Linear</span>
+    <span class="marquee-item divider">◆</span>
+    <span class="marquee-item">Figma</span>
+    <span class="marquee-item divider">◆</span>
+    <span class="marquee-item">Raycast</span>
+    <span class="marquee-item divider">◆</span>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features" id="features">
+  <div class="features-header">
+    <div class="container">
+      <h2 class="reveal">What it does</h2>
+    </div>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card foil-shimmer reveal">
+      <div class="feature-number">01</div>
+      <h3>Transcribe</h3>
+      <p>Every word captured. Speaker-labeled. Searchable. Your meetings become a permanent record you can actually find things in.</p>
+    </div>
+    <div class="feature-card foil-shimmer reveal">
+      <div class="feature-number">02</div>
+      <h3>Summarize</h3>
+      <p>AI distills 60 minutes into 3 bullet points and 5 action items. Skip the replay. Get the signal.</p>
+    </div>
+    <div class="feature-card foil-shimmer reveal">
+      <div class="feature-number">03</div>
+      <h3>Sync</h3>
+      <p>Pushes to your tools. Notion pages, Linear tickets, Slack threads. One click. Every tool updated.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Zigzag -->
+<section class="zigzag">
+  <div class="zigzag-row">
+    <div class="zigzag-copy reveal">
+      <h2>One click.<br><span class="metallic-text">Every tool updated.</span></h2>
+      <p>Connect your workspace tools once. Meet pushes the right content to the right place — meeting notes to Notion, bugs to Linear, decisions to Slack. No copy-paste. No "I'll get back to you."</p>
+      <a href="#" class="btn-secondary">View integrations →</a>
+    </div>
+    <div class="zigzag-visual reveal">
+      <div class="zigzag-visual-inner">
+        <div class="conn-row">
+          <div class="conn-icon">N</div>
+          <div class="conn-line"></div>
+          <span class="conn-badge">Connected</span>
+        </div>
+        <div class="conn-row">
+          <div class="conn-icon">L</div>
+          <div class="conn-line"></div>
+          <span class="conn-badge">Connected</span>
+        </div>
+        <div class="conn-row">
+          <div class="conn-icon">S</div>
+          <div class="conn-line"></div>
+          <span class="conn-badge">Connected</span>
+        </div>
+        <div class="conn-row">
+          <div class="conn-icon">G</div>
+          <div class="conn-line"></div>
+          <span class="conn-badge">Connected</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="zigzag-row reverse">
+    <div class="zigzag-copy reveal">
+      <h2>Notes that<br><span class="metallic-text">actually live somewhere useful</span></h2>
+      <p>Every meeting generates a polished Notion page automatically. Headings, tables, timestamps — formatted like a human wrote them. Your team finds the context they need without asking.</p>
+    </div>
+    <div class="zigzag-visual reveal">
+      <div class="zigzag-visual-inner">
+        <div class="mock-line title" style="width:45%;"></div>
+        <div class="mock-line" style="width:100%;"></div>
+        <div class="mock-line" style="width:80%;"></div>
+        <div class="mock-line" style="width:90%;"></div>
+        <div class="mock-line highlight" style="width:70%;"></div>
+        <div class="mock-line highlight" style="width:85%;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonial -->
+<section class="testimonial">
+  <div class="container">
+    <div class="testimonial-inner reveal">
+      <blockquote>"We went from 4 hours of note-taking per week to zero. Meet just works."</blockquote>
+      <div class="testimonial-author">
+        <div class="author-avatar"></div>
+        <div class="author-info">
+          <div class="name">Sarah Chen</div>
+          <div class="role">VP of Product · Linear</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="pricing" id="pricing">
+  <div class="pricing-header">
+    <div class="container">
+      <h2 class="reveal">Pricing</h2>
+      <p class="reveal">Start free. Upgrade when you're ready.</p>
+    </div>
+  </div>
+  <div class="pricing-grid">
+    <div class="pricing-card reveal">
+      <h3>Free</h3>
+      <div class="price">$0<span>/mo</span></div>
+      <div class="period">10 meetings / month</div>
+      <ul>
+        <li>AI transcription</li>
+        <li>Basic summaries</li>
+        <li>1 integration</li>
+      </ul>
+      <a href="#" class="btn-pricing">Get started</a>
+    </div>
+    <div class="pricing-card featured foil-shimmer reveal">
+      <h3>Pro</h3>
+      <div class="price">$12<span>/mo</span></div>
+      <div class="period">Unlimited meetings</div>
+      <ul>
+        <li>Everything in Free</li>
+        <li>AI summaries & action items</li>
+        <li>Unlimited integrations</li>
+        <li>Search across all meetings</li>
+      </ul>
+      <a href="#" class="btn-pricing filled">Start free trial</a>
+    </div>
+    <div class="pricing-card reveal">
+      <h3>Team</h3>
+      <div class="price">$29<span>/mo</span></div>
+      <div class="period">Per seat, min 5</div>
+      <ul>
+        <li>Everything in Pro</li>
+        <li>Shared workspace</li>
+        <li>Admin controls</li>
+        <li>SSO & audit logs</li>
+      </ul>
+      <a href="#" class="btn-pricing">Contact sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<section class="final-cta">
+  <div class="container">
+    <h2 class="reveal">Stop taking notes.<br><span class="metallic-text">Start getting things done.</span></h2>
+    <p class="reveal">Your calendar already knows about your meetings. Let Meet handle the rest.</p>
+    <a href="#" class="btn-primary reveal">Start free — no credit card →</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <p>© 2024 Meet. Built for people who value their time.</p>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

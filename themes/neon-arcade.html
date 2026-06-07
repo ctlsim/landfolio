@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a12;
+    --bg-cabinet: #111122;
+    --neon-pink: #FF2D7B;
+    --neon-cyan: #00F0FF;
+    --neon-yellow: #FFE600;
+    --neon-green: #39FF14;
+    --neon-orange: #FF6B35;
+    --neon-purple: #B24BF3;
+    --neon-red: #FF1744;
+    --text: #E8E8F0;
+    --text-dim: rgba(232,232,240,0.45);
+    --cabinet-border: #1a1a30;
+    --coin-slot: #2a2a3a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Fredoka One', cursive;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Press Start 2P', monospace;
+    letter-spacing: 0.02em;
+  }
+
+  /* Scanlines */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* Cabinet glow bg */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 30% at 30% 20%, rgba(255,45,123,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 30% at 70% 20%, rgba(0,240,255,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 50% 80%, rgba(178,75,243,0.04) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Container */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Neon glow utilities */
+  .glow-pink { text-shadow: 0 0 10px var(--neon-pink), 0 0 30px rgba(255,45,123,0.4); }
+  .glow-cyan { text-shadow: 0 0 10px var(--neon-cyan), 0 0 30px rgba(0,240,255,0.4); }
+  .glow-yellow { text-shadow: 0 0 10px var(--neon-yellow), 0 0 30px rgba(255,230,0,0.4); }
+  .glow-green { text-shadow: 0 0 10px var(--neon-green), 0 0 30px rgba(57,255,20,0.4); }
+
+  /* Pixel border utility */
+  .pixel-border {
+    border: 3px solid var(--neon-cyan);
+    box-shadow:
+      0 0 8px rgba(0,240,255,0.3),
+      inset 0 0 8px rgba(0,240,255,0.1);
+  }
+
+  /* Cabinet frame */
+  .cabinet-frame {
+    border: 4px solid var(--cabinet-border);
+    box-shadow:
+      0 0 0 2px var(--bg),
+      0 0 0 6px var(--cabinet-border),
+      0 0 40px rgba(255,45,123,0.15),
+      0 0 80px rgba(0,240,255,0.1);
+    position: relative;
+  }
+  .cabinet-frame::before {
+    content: '';
+    position: absolute;
+    top: -2px; left: 20%; right: 20%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--neon-pink), var(--neon-cyan), transparent);
+    box-shadow: 0 0 12px var(--neon-pink), 0 0 24px rgba(0,240,255,0.3);
+  }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,10,18,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 3px solid var(--cabinet-border);
+    box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+  }
+  nav .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+  .logo {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 1.1rem;
+    text-decoration: none;
+    color: var(--neon-yellow);
+    text-shadow: 0 0 10px var(--neon-yellow), 0 0 30px rgba(255,230,0,0.3);
+    letter-spacing: 0.08em;
+  }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.06em;
+    transition: color 0.2s, text-shadow 0.2s;
+  }
+  .nav-links a:hover {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 8px rgba(0,240,255,0.5);
+  }
+  .btn-nav {
+    color: #000 !important;
+    background: var(--neon-pink);
+    padding: 10px 20px;
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 0.5rem !important;
+    box-shadow: 0 0 15px rgba(255,45,123,0.4);
+    transition: box-shadow 0.3s, transform 0.2s;
+  }
+  .btn-nav:hover {
+    box-shadow: 0 0 25px rgba(255,45,123,0.6);
+    transform: translateY(-1px);
+  }
+
+  /* Hero */
+  .hero {
+    padding: 140px 0 60px;
+    position: relative;
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.5rem;
+    color: var(--neon-green);
+    letter-spacing: 0.12em;
+    margin-bottom: 32px;
+    padding: 8px 16px;
+    border: 2px solid var(--neon-green);
+    text-shadow: 0 0 8px rgba(57,255,20,0.5);
+    box-shadow: 0 0 12px rgba(57,255,20,0.15);
+    width: fit-content;
+    animation: tagPulse 2s ease-in-out infinite alternate;
+  }
+  @keyframes tagPulse {
+    0% { box-shadow: 0 0 12px rgba(57,255,20,0.15); }
+    100% { box-shadow: 0 0 20px rgba(57,255,20,0.3); }
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 6vw, 4.5rem);
+    line-height: 1.15;
+    margin-bottom: 32px;
+    max-width: 800px;
+  }
+  .hero h1 .line-1 {
+    display: block;
+    color: var(--text);
+  }
+  .hero h1 .line-2 {
+    display: block;
+    color: var(--neon-pink);
+    text-shadow: 0 0 15px var(--neon-pink), 0 0 40px rgba(255,45,123,0.4), 0 0 80px rgba(255,45,123,0.2);
+  }
+  .hero .subhead {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.05rem;
+    max-width: 500px;
+    margin-bottom: 40px;
+    line-height: 1.7;
+    color: var(--text-dim);
+  }
+  .cta-group {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 60px;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--neon-yellow);
+    color: #000;
+    padding: 16px 32px;
+    text-decoration: none;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.04em;
+    box-shadow: 0 0 20px rgba(255,230,0,0.4), 0 4px 0 #B8A000;
+    transition: box-shadow 0.3s, transform 0.15s;
+    position: relative;
+  }
+  .btn-primary:hover {
+    box-shadow: 0 0 35px rgba(255,230,0,0.6), 0 4px 0 #B8A000;
+    transform: translateY(-2px);
+  }
+  .btn-primary:active {
+    transform: translateY(2px);
+    box-shadow: 0 0 20px rgba(255,230,0,0.4), 0 1px 0 #B8A000;
+  }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--neon-cyan);
+    padding: 16px 24px;
+    text-decoration: none;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.04em;
+    border: 2px solid var(--neon-cyan);
+    background: transparent;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0,240,255,0.15);
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .btn-secondary:hover {
+    box-shadow: 0 0 20px rgba(0,240,255,0.3);
+  }
+
+  /* Score display */
+  .score-display {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.5rem;
+    color: var(--neon-green);
+    text-shadow: 0 0 6px rgba(57,255,20,0.4);
+    margin-bottom: 40px;
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .score-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .score-value {
+    font-size: 1.2rem;
+    color: var(--neon-yellow);
+    text-shadow: 0 0 10px rgba(255,230,0,0.5);
+  }
+  .score-label {
+    font-size: 0.4rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  /* Hero Screenshot */
+  .hero-screenshot {
+    background: var(--bg-cabinet);
+    border: 3px solid var(--cabinet-border);
+    box-shadow:
+      0 0 30px rgba(255,45,123,0.1),
+      inset 0 0 30px rgba(0,0,0,0.4);
+  }
+  .screenshot-mockup {
+    display: flex;
+    flex-direction: column;
+    min-height: 360px;
+  }
+  .mockup-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    border-bottom: 2px solid var(--cabinet-border);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.45rem;
+    color: var(--text-dim);
+    background: rgba(0,0,0,0.3);
+  }
+  .mockup-topbar-left { display: flex; gap: 8px; }
+  .mockup-topbar-dot {
+    width: 8px; height: 8px;
+    border: 2px solid var(--neon-pink);
+    box-shadow: 0 0 4px var(--neon-pink);
+  }
+  .mockup-body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 160px 1fr 200px;
+  }
+  .mock-sidebar {
+    border-right: 2px solid var(--cabinet-border);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .mock-sidebar-item {
+    height: 8px;
+    background: rgba(255,45,123,0.06);
+    border: 1px solid rgba(255,45,123,0.1);
+  }
+  .mock-sidebar-item.active {
+    background: rgba(255,45,123,0.15);
+    border-color: var(--neon-pink);
+    box-shadow: 0 0 6px rgba(255,45,123,0.2);
+  }
+  .mock-main {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .mock-line {
+    height: 8px;
+    background: rgba(0,240,255,0.04);
+    border: 1px solid rgba(0,240,255,0.06);
+  }
+  .mock-line.title {
+    height: 10px;
+    background: rgba(255,230,0,0.08);
+    width: 45%;
+    border-color: rgba(255,230,0,0.12);
+  }
+  .mock-line.highlight {
+    border-left: 2px solid var(--neon-green);
+    box-shadow: 0 0 4px rgba(57,255,20,0.15);
+  }
+  .mock-right {
+    border-left: 2px solid var(--cabinet-border);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .mock-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 1px solid rgba(0,240,255,0.1);
+    background: rgba(0,240,255,0.02);
+  }
+  .mock-action-dot {
+    width: 6px; height: 6px;
+    background: var(--neon-cyan);
+    box-shadow: 0 0 4px var(--neon-cyan);
+    flex-shrink: 0;
+  }
+  .mock-action-line {
+    height: 6px;
+    background: rgba(0,240,255,0.06);
+    flex: 1;
+  }
+
+  /* Marquee */
+  .marquee-section {
+    overflow: hidden;
+    padding: 20px 0;
+    border-top: 2px solid var(--cabinet-border);
+    border-bottom: 2px solid var(--cabinet-border);
+    position: relative;
+    z-index: 1;
+    background: rgba(0,0,0,0.3);
+  }
+  .marquee-track {
+    display: flex;
+    gap: 40px;
+    animation: marquee 20s linear infinite;
+    white-space: nowrap;
+  }
+  .marquee-item {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.5rem;
+    color: var(--text-dim);
+    flex-shrink: 0;
+    letter-spacing: 0.08em;
+  }
+  .marquee-item.divider {
+    color: var(--neon-pink);
+    text-shadow: 0 0 6px rgba(255,45,123,0.4);
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* Features */
+  .features { position: relative; z-index: 1; }
+  .features-header {
+    padding: 80px 0 40px;
+    border-bottom: 2px solid var(--cabinet-border);
+  }
+  .features-header h2 {
+    font-size: clamp(1rem, 3vw, 1.8rem);
+    line-height: 1.3;
+    color: var(--neon-yellow);
+    text-shadow: 0 0 10px rgba(255,230,0,0.3);
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .feature-card {
+    padding: 48px 32px;
+    border-right: 2px solid var(--cabinet-border);
+    position: relative;
+    transition: background 0.3s;
+  }
+  .feature-card:last-child { border-right: none; }
+  .feature-card:hover {
+    background: rgba(255,45,123,0.03);
+  }
+  .feature-number {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 1.4rem;
+    color: var(--neon-pink);
+    text-shadow: 0 0 10px rgba(255,45,123,0.4);
+    margin-bottom: 24px;
+  }
+  .feature-card h3 {
+    font-size: 0.7rem;
+    margin-bottom: 14px;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 8px rgba(0,240,255,0.3);
+    letter-spacing: 0.04em;
+  }
+  .feature-card p {
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: var(--text-dim);
+  }
+
+  /* Zigzag */
+  .zigzag { position: relative; z-index: 1; }
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .zigzag-copy {
+    padding: 80px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 2px solid var(--cabinet-border);
+  }
+  .zigzag-row.reverse .zigzag-copy {
+    order: 2;
+    border-right: none;
+    border-left: 2px solid var(--cabinet-border);
+  }
+  .zigzag-copy h2 {
+    font-size: clamp(0.7rem, 2vw, 1rem);
+    margin-bottom: 20px;
+    line-height: 1.4;
+  }
+  .zigzag-copy p {
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+  }
+  .zigzag-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-cabinet);
+    min-height: 340px;
+    padding: 36px;
+  }
+  .zigzag-visual-inner {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .conn-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border: 2px solid var(--cabinet-border);
+    background: rgba(0,0,0,0.3);
+    box-shadow: 0 0 6px rgba(0,0,0,0.2);
+  }
+  .conn-icon {
+    width: 28px; height: 28px;
+    border: 2px solid var(--neon-cyan);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.45rem;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 4px var(--neon-cyan);
+    box-shadow: 0 0 6px rgba(0,240,255,0.2);
+  }
+  .conn-line {
+    height: 2px;
+    background: linear-gradient(90deg, var(--neon-cyan), transparent);
+    flex: 1;
+    opacity: 0.4;
+  }
+  .conn-badge {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.4rem;
+    padding: 3px 8px;
+    border: 1px solid rgba(57,255,20,0.3);
+    color: var(--neon-green);
+    letter-spacing: 0.08em;
+    text-shadow: 0 0 4px rgba(57,255,20,0.3);
+  }
+
+  /* Testimonial */
+  .testimonial {
+    padding: 80px 0;
+    border-top: 2px solid var(--cabinet-border);
+    border-bottom: 2px solid var(--cabinet-border);
+    position: relative;
+    z-index: 1;
+    background: rgba(0,0,0,0.2);
+  }
+  .testimonial-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .testimonial blockquote {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+    line-height: 1.5;
+    margin-bottom: 36px;
+    color: var(--text);
+  }
+  .testimonial blockquote::before {
+    content: '"';
+    display: block;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 3rem;
+    color: var(--neon-pink);
+    text-shadow: 0 0 15px rgba(255,45,123,0.5);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+  }
+  .author-avatar {
+    width: 36px; height: 36px;
+    border: 2px solid var(--neon-cyan);
+    background: rgba(0,240,255,0.08);
+    box-shadow: 0 0 8px rgba(0,240,255,0.2);
+  }
+  .author-info { text-align: left; }
+  .author-info .name {
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.9rem;
+    color: var(--neon-yellow);
+    text-shadow: 0 0 4px rgba(255,230,0,0.2);
+  }
+  .author-info .role {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.4rem;
+    color: var(--text-dim);
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  /* Pricing */
+  .pricing { position: relative; z-index: 1; }
+  .pricing-header {
+    padding: 80px 0 40px;
+    text-align: center;
+    border-bottom: 2px solid var(--cabinet-border);
+  }
+  .pricing-header h2 {
+    font-size: clamp(1rem, 3vw, 1.8rem);
+    margin-bottom: 10px;
+    color: var(--neon-pink);
+    text-shadow: 0 0 10px rgba(255,45,123,0.3);
+  }
+  .pricing-header p {
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding-bottom: 80px;
+  }
+  .pricing-card {
+    padding: 44px 28px;
+    border-right: 2px solid var(--cabinet-border);
+    text-align: center;
+    transition: background 0.3s;
+  }
+  .pricing-card:last-child { border-right: none; }
+  .pricing-card:hover { background: rgba(255,45,123,0.03); }
+  .pricing-card.featured {
+    background: rgba(255,45,123,0.05);
+    border: 2px solid var(--neon-pink);
+    box-shadow: 0 0 20px rgba(255,45,123,0.15);
+    position: relative;
+  }
+  .pricing-card.featured::before {
+    content: '★ HIGH SCORE ★';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    background: var(--neon-yellow);
+    color: #000;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.4rem;
+    padding: 7px;
+    letter-spacing: 0.12em;
+    box-shadow: 0 0 12px rgba(255,230,0,0.3);
+  }
+  .pricing-card h3 {
+    font-size: 0.65rem;
+    margin-bottom: 14px;
+    margin-top: 4px;
+    letter-spacing: 0.04em;
+  }
+  .pricing-card .price {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 1.6rem;
+    margin-bottom: 4px;
+    color: var(--neon-green);
+    text-shadow: 0 0 10px rgba(57,255,20,0.3);
+  }
+  .pricing-card .price span {
+    font-size: 0.6rem;
+    text-shadow: none;
+  }
+  .pricing-card .period {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.4rem;
+    margin-bottom: 28px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+  .pricing-card ul {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 32px;
+  }
+  .pricing-card li {
+    padding: 8px 0;
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255,45,123,0.06);
+    color: var(--text-dim);
+  }
+  .pricing-card li::before {
+    content: '►';
+    color: var(--neon-pink);
+    text-shadow: 0 0 4px rgba(255,45,123,0.4);
+  }
+  .btn-pricing {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    text-decoration: none;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.45rem;
+    letter-spacing: 0.04em;
+    border: 2px solid var(--neon-cyan);
+    color: var(--neon-cyan);
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.3s, box-shadow 0.3s;
+    box-shadow: 0 0 8px rgba(0,240,255,0.1);
+  }
+  .btn-pricing:hover {
+    background: rgba(0,240,255,0.06);
+    box-shadow: 0 0 15px rgba(0,240,255,0.2);
+  }
+  .btn-pricing.filled {
+    background: var(--neon-yellow);
+    border-color: var(--neon-yellow);
+    color: #000;
+    box-shadow: 0 0 15px rgba(255,230,0,0.3);
+  }
+  .btn-pricing.filled:hover {
+    box-shadow: 0 0 25px rgba(255,230,0,0.5);
+  }
+
+  /* Insert Coin animation */
+  .insert-coin {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.6rem;
+    color: var(--neon-yellow);
+    text-shadow: 0 0 10px rgba(255,230,0,0.5);
+    animation: blink 1s step-end infinite;
+    margin-bottom: 32px;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* Final CTA */
+  .final-cta {
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .final-cta h2 {
+    font-size: clamp(1rem, 4vw, 2.2rem);
+    line-height: 1.3;
+    margin-bottom: 20px;
+  }
+  .final-cta h2 .line-1 {
+    display: block;
+    color: var(--text);
+  }
+  .final-cta h2 .line-2 {
+    display: block;
+    color: var(--neon-pink);
+    text-shadow: 0 0 15px var(--neon-pink), 0 0 40px rgba(255,45,123,0.3);
+  }
+  .final-cta p {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    color: var(--text-dim);
+    margin-bottom: 40px;
+  }
+
+  /* Footer */
+  footer {
+    padding: 24px 0;
+    text-align: center;
+    border-top: 2px solid var(--cabinet-border);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.4rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .features-grid,
+    .pricing-grid { grid-template-columns: 1fr; }
+    .feature-card { border-right: none; border-bottom: 2px solid var(--cabinet-border); }
+    .feature-card:last-child { border-bottom: none; }
+    .pricing-card { border-right: none; border-bottom: 2px solid var(--cabinet-border); }
+    .pricing-card:last-child { border-bottom: none; }
+    .zigzag-row { grid-template-columns: 1fr; }
+    .zigzag-row.reverse .zigzag-copy { order: 0; border-left: none; }
+    .zigzag-copy { border-right: none !important; border-bottom: 2px solid var(--cabinet-border); }
+    .mockup-body { grid-template-columns: 1fr; }
+    .mock-sidebar, .mock-right { display: none; }
+    .nav-links { display: none; }
+    .hero { padding-top: 120px; min-height: auto; }
+    .zigzag-visual { min-height: 240px; }
+    .score-display { gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="container">
+    <a href="#" class="logo">MEET</a>
+    <div class="nav-links">
+      <a href="#features">FEATURES</a>
+      <a href="#pricing">PRICING</a>
+      <a href="#" class="btn-nav">START FREE</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-tag reveal">INSERT COIN TO START</div>
+    <h1 class="reveal">
+      <span class="line-1">MEETINGS THAT</span>
+      <span class="line-2">DON'T WASTE YOUR WEEK</span>
+    </h1>
+    <p class="subhead reveal">AI notes that turn transcripts into action items. Syncs to Notion, Linear, Slack — so nothing falls through the cracks.</p>
+    <div class="cta-group reveal">
+      <a href="#" class="btn-primary">▶ PLAY — FREE 14 DAYS</a>
+      <a href="#features" class="btn-secondary">CONTROLS ↓</a>
+    </div>
+    <div class="score-display reveal">
+      <div class="score-item">
+        <div class="score-value">1,247</div>
+        <div class="score-label">MEETINGS SAVED</div>
+      </div>
+      <div class="score-item">
+        <div class="score-value">89%</div>
+        <div class="score-label">TIME RECLAIMED</div>
+      </div>
+      <div class="score-item">
+        <div class="score-value">∞</div>
+        <div class="score-label">LIVES IMPROVED</div>
+      </div>
+    </div>
+    <div class="hero-screenshot reveal">
+      <div class="screenshot-mockup">
+        <div class="mockup-topbar">
+          <div class="mockup-topbar-left">
+            <div class="mockup-topbar-dot"></div>
+            <div class="mockup-topbar-dot"></div>
+            <div class="mockup-topbar-dot"></div>
+          </div>
+          <span>meet://level-1/today</span>
+        </div>
+        <div class="mockup-body">
+          <div class="mock-sidebar">
+            <div class="mock-sidebar-item active" style="width:80%"></div>
+            <div class="mock-sidebar-item" style="width:65%"></div>
+            <div class="mock-sidebar-item" style="width:90%"></div>
+            <div class="mock-sidebar-item" style="width:50%"></div>
+            <div class="mock-sidebar-item" style="width:75%"></div>
+          </div>
+          <div class="mock-main">
+            <div class="mock-line title"></div>
+            <div class="mock-line" style="width:100%"></div>
+            <div class="mock-line" style="width:85%"></div>
+            <div class="mock-line" style="width:95%"></div>
+            <div class="mock-line" style="width:70%"></div>
+            <div class="mock-line highlight" style="width:100%"></div>
+            <div class="mock-line highlight" style="width:80%"></div>
+          </div>
+          <div class="mock-right">
+            <div class="mock-action">
+              <div class="mock-action-dot"></div>
+              <div class="mock-action-line"></div>
+            </div>
+            <div class="mock-action">
+              <div class="mock-action-dot"></div>
+              <div class="mock-action-line"></div>
+            </div>
+            <div class="mock-action">
+              <div class="mock-action-dot"></div>
+              <div class="mock-action-line"></div>
+            </div>
+            <div class="mock-action">
+              <div class="mock-action-dot"></div>
+              <div class="mock-action-line"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Marquee -->
+<section class="marquee-section">
+  <div class="marquee-track">
+    <span class="marquee-item">VERCEL</span>
+    <span class="marquee-item divider">★</span>
+    <span class="marquee-item">STRIPE</span>
+    <span class="marquee-item divider">★</span>
+    <span class="marquee-item">NOTION</span>
+    <span class="marquee-item divider">★</span>
+    <span class="marquee-item">LINEAR</span>
+    <span class="marquee-item divider">★</span>
+    <span class="marquee-item">FIGMA</span>
+    <span class="marquee-item divider">★</span>
+    <span class="marquee-item">RAYCAST</span>
+    <span class="marquee-item divider">★</span>
+    <span class="marquee-item">VERCEL</span>
+    <span class="marquee-item divider">★</span>
+    <span class="marquee-item">STRIPE</span>
+    <span class="marquee-item divider">★</span>
+    <span class="marquee-item">NOTION</span>
+    <span class="marquee-item divider">★</span>
+    <span class="marquee-item">LINEAR</span>
+    <span class="marquee-item divider">★</span>
+    <span class="marquee-item">FIGMA</span>
+    <span class="marquee-item divider">★</span>
+    <span class="marquee-item">RAYCAST</span>
+    <span class="marquee-item divider">★</span>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features" id="features">
+  <div class="features-header">
+    <div class="container">
+      <h2 class="reveal">▸ POWER-UPS</h2>
+    </div>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-number">01</div>
+      <h3>TRANSCRIBE</h3>
+      <p>Every word captured. Speaker-labeled. Searchable. Your meetings become a permanent record you can actually find things in.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-number">02</div>
+      <h3>SUMMARIZE</h3>
+      <p>AI distills 60 minutes into 3 bullet points and 5 action items. Skip the replay. Get the signal.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-number">03</div>
+      <h3>SYNC</h3>
+      <p>Pushes to your tools. Notion pages, Linear tickets, Slack threads. One click. Every tool updated.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Zigzag -->
+<section class="zigzag">
+  <div class="zigzag-row">
+    <div class="zigzag-copy reveal">
+      <h2>ONE CLICK.<br><span class="glow-cyan">EVERY TOOL UPDATED.</span></h2>
+      <p>Connect your workspace tools once. Meet pushes the right content to the right place — meeting notes to Notion, bugs to Linear, decisions to Slack. No copy-paste. No "I'll get back to you."</p>
+      <a href="#" class="btn-secondary">VIEW INTEGRATIONS →</a>
+    </div>
+    <div class="zigzag-visual reveal">
+      <div class="zigzag-visual-inner">
+        <div class="conn-row">
+          <div class="conn-icon">N</div>
+          <div class="conn-line"></div>
+          <span class="conn-badge">CONNECTED</span>
+        </div>
+        <div class="conn-row">
+          <div class="conn-icon">L</div>
+          <div class="conn-line"></div>
+          <span class="conn-badge">CONNECTED</span>
+        </div>
+        <div class="conn-row">
+          <div class="conn-icon">S</div>
+          <div class="conn-line"></div>
+          <span class="conn-badge">CONNECTED</span>
+        </div>
+        <div class="conn-row">
+          <div class="conn-icon">G</div>
+          <div class="conn-line"></div>
+          <span class="conn-badge">CONNECTED</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="zigzag-row reverse">
+    <div class="zigzag-copy reveal">
+      <h2>NOTES THAT<br><span class="glow-pink">ACTUALLY LIVE SOMEWHERE USEFUL</span></h2>
+      <p>Every meeting generates a polished Notion page automatically. Headings, tables, timestamps — formatted like a human wrote them. Your team finds the context they need without asking.</p>
+    </div>
+    <div class="zigzag-visual reveal">
+      <div class="zigzag-visual-inner">
+        <div class="mock-line title" style="width:45%;"></div>
+        <div class="mock-line" style="width:100%;"></div>
+        <div class="mock-line" style="width:80%;"></div>
+        <div class="mock-line" style="width:90%;"></div>
+        <div class="mock-line highlight" style="width:70%;"></div>
+        <div class="mock-line highlight" style="width:85%;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonial -->
+<section class="testimonial">
+  <div class="container">
+    <div class="testimonial-inner reveal">
+      <blockquote>We went from 4 hours of note-taking per week to zero. Meet just works.</blockquote>
+      <div class="testimonial-author">
+        <div class="author-avatar"></div>
+        <div class="author-info">
+          <div class="name">Sarah Chen</div>
+          <div class="role">VP OF PRODUCT · LINEAR</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="pricing" id="pricing">
+  <div class="pricing-header">
+    <div class="container">
+      <h2 class="reveal">▸ SELECT DIFFICULTY</h2>
+      <p class="reveal">Start free. Upgrade when you're ready.</p>
+    </div>
+  </div>
+  <div class="pricing-grid">
+    <div class="pricing-card reveal">
+      <h3>FREE</h3>
+      <div class="price">$0<span>/mo</span></div>
+      <div class="period">10 MEETINGS / MONTH</div>
+      <ul>
+        <li>AI transcription</li>
+        <li>Basic summaries</li>
+        <li>1 integration</li>
+      </ul>
+      <a href="#" class="btn-pricing">GET STARTED</a>
+    </div>
+    <div class="pricing-card featured reveal">
+      <h3>PRO</h3>
+      <div class="price">$12<span>/mo</span></div>
+      <div class="period">UNLIMITED MEETINGS</div>
+      <ul>
+        <li>Everything in Free</li>
+        <li>AI summaries & action items</li>
+        <li>Unlimited integrations</li>
+        <li>Search across all meetings</li>
+      </ul>
+      <a href="#" class="btn-pricing filled">START FREE TRIAL</a>
+    </div>
+    <div class="pricing-card reveal">
+      <h3>TEAM</h3>
+      <div class="price">$29<span>/mo</span></div>
+      <div class="period">PER SEAT, MIN 5</div>
+      <ul>
+        <li>Everything in Pro</li>
+        <li>Shared workspace</li>
+        <li>Admin controls</li>
+        <li>SSO & audit logs</li>
+      </ul>
+      <a href="#" class="btn-pricing">CONTACT SALES</a>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<section class="final-cta">
+  <div class="container">
+    <div class="insert-coin reveal">▸ INSERT COIN TO CONTINUE</div>
+    <h2 class="reveal">
+      <span class="line-1">STOP TAKING NOTES.</span>
+      <span class="line-2">START GETTING THINGS DONE.</span>
+    </h2>
+    <p class="reveal">Your calendar already knows about your meetings. Let Meet handle the rest.</p>
+    <a href="#" class="btn-primary reveal">▶ START FREE — NO CREDIT CARD</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <p>© 2024 MEET — GAME ON. BUILT FOR PEOPLE WHO VALUE THEIR TIME.</p>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

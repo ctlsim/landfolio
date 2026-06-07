@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0E0E12;
+    --bg-light: #16161D;
+    --bg-card: #1C1C26;
+    --pixel-1: #FF3CAC;
+    --pixel-2: #784BA0;
+    --pixel-3: #2B86C5;
+    --pixel-4: #00F5D4;
+    --pixel-5: #FEE440;
+    --text-primary: #F0F0F5;
+    --text-mid: #A0A0B5;
+    --text-dim: #656580;
+    --border: #2A2A38;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-mono: 'VT323', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-display);
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+    image-rendering: pixelated;
+  }
+
+  /* ===== PIXEL GRID OVERLAY ===== */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 8px 8px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--text-primary);
+  }
+
+  h1 { font-size: clamp(2.8rem, 6vw, 5rem); letter-spacing: -0.03em; }
+  h2 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.02em; }
+  h3 { font-size: clamp(1.3rem, 2.5vw, 1.6rem); font-weight: 600; }
+
+  section { position: relative; z-index: 1; }
+
+  a { color: var(--pixel-4); text-decoration: none; transition: color 0.2s; }
+  a:hover { color: var(--pixel-1); }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ===== PIXEL DIVIDER ===== */
+  .pixel-divider {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin: 48px auto;
+    max-width: 200px;
+  }
+  .pixel-divider span {
+    width: 8px; height: 8px;
+    display: block;
+    image-rendering: pixelated;
+  }
+  .pixel-divider span:nth-child(1) { background: var(--pixel-1); }
+  .pixel-divider span:nth-child(2) { background: var(--pixel-2); }
+  .pixel-divider span:nth-child(3) { background: var(--pixel-3); }
+  .pixel-divider span:nth-child(4) { background: var(--pixel-4); }
+  .pixel-divider span:nth-child(5) { background: var(--pixel-5); }
+
+  /* ===== PIXEL BUTTONS ===== */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    font-family: var(--font-mono);
+    font-size: 1.15rem;
+    letter-spacing: 0.02em;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+    image-rendering: pixelated;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--pixel-1), var(--pixel-3));
+    color: #fff;
+    box-shadow:
+      4px 4px 0 var(--pixel-2),
+      inset 0 0 0 2px rgba(255,255,255,0.1);
+  }
+  .btn-primary:hover {
+    transform: translate(2px, 2px);
+    box-shadow:
+      2px 2px 0 var(--pixel-2),
+      inset 0 0 0 2px rgba(255,255,255,0.15);
+    color: #fff;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text-primary);
+    border: 2px solid var(--border);
+    box-shadow: 4px 4px 0 var(--border);
+  }
+  .btn-secondary:hover {
+    border-color: var(--pixel-4);
+    box-shadow: 4px 4px 0 var(--pixel-4);
+    color: var(--pixel-4);
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--pixel-4);
+  }
+
+  /* ===== PIXELATED GRADIENT BACKGROUND ===== */
+  .pixel-gradient-bg {
+    position: absolute; inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .pixel-gradient-bg .block {
+    position: absolute;
+    image-rendering: pixelated;
+    opacity: 0.12;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 32px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Pixelated gradient blocks behind hero */
+  .hero .pixel-gradient-bg .block:nth-child(1) {
+    top: 5%; left: 10%;
+    width: 256px; height: 256px;
+    background: var(--pixel-1);
+    filter: blur(60px);
+    animation: pixelDrift1 20s ease-in-out infinite;
+  }
+  .hero .pixel-gradient-bg .block:nth-child(2) {
+    top: 20%; right: 15%;
+    width: 192px; height: 192px;
+    background: var(--pixel-3);
+    filter: blur(50px);
+    animation: pixelDrift2 25s ease-in-out infinite;
+  }
+  .hero .pixel-gradient-bg .block:nth-child(3) {
+    bottom: 20%; left: 25%;
+    width: 160px; height: 160px;
+    background: var(--pixel-4);
+    filter: blur(40px);
+    animation: pixelDrift3 18s ease-in-out infinite;
+  }
+  .hero .pixel-gradient-bg .block:nth-child(4) {
+    bottom: 10%; right: 20%;
+    width: 200px; height: 200px;
+    background: var(--pixel-5);
+    filter: blur(55px);
+    animation: pixelDrift1 22s ease-in-out infinite reverse;
+  }
+
+  @keyframes pixelDrift1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -20px) scale(1.1); }
+    66% { transform: translate(-20px, 15px) scale(0.95); }
+  }
+  @keyframes pixelDrift2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-25px, 30px) scale(1.05); }
+    66% { transform: translate(20px, -25px) scale(0.9); }
+  }
+  @keyframes pixelDrift3 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(35px, 20px) scale(1.15); }
+  }
+
+  .hero-content {
+    max-width: 800px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 18px;
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--pixel-4);
+    margin-bottom: 32px;
+    letter-spacing: 0.05em;
+    box-shadow: 3px 3px 0 var(--border);
+  }
+  .hero-badge .pixel-icon {
+    width: 8px; height: 8px;
+    background: var(--pixel-4);
+    animation: pixelPulse 2s ease-in-out infinite;
+  }
+  @keyframes pixelPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .hero h1 {
+    margin-bottom: 24px;
+  }
+  .hero h1 .gradient-text {
+    background: linear-gradient(90deg, var(--pixel-1), var(--pixel-4), var(--pixel-5));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--text-mid);
+    max-width: 540px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* ===== LOGOS ===== */
+  .logos-section {
+    padding: 60px 32px;
+    text-align: center;
+    background: var(--bg-light);
+    border-top: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .logos-section p {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  .logos-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    opacity: 0.4;
+  }
+
+  .logo-placeholder {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+
+  /* ===== FEATURES ===== */
+  .features-section {
+    padding: 100px 32px;
+    background: var(--bg);
+  }
+
+  .features-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 60px;
+  }
+  .features-header h2 { margin-bottom: 16px; }
+  .features-header p {
+    font-size: 1.05rem;
+    color: var(--text-mid);
+    font-weight: 300;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .feature-card {
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    padding: 32px;
+    position: relative;
+    transition: all 0.2s;
+    box-shadow: 4px 4px 0 var(--border);
+  }
+  .feature-card:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--border);
+    border-color: var(--pixel-3);
+  }
+
+  .feature-icon {
+    width: 48px; height: 48px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 2px;
+  }
+  .feature-icon .px {
+    background: var(--pixel-1);
+  }
+  .feature-card:nth-child(2) .feature-icon .px { background: var(--pixel-3); }
+  .feature-card:nth-child(3) .feature-icon .px { background: var(--pixel-4); }
+  .feature-card:nth-child(4) .feature-icon .px { background: var(--pixel-5); }
+
+  .feature-card h3 { margin-bottom: 10px; }
+  .feature-card p {
+    color: var(--text-mid);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag-section {
+    padding: 100px 32px;
+    background: var(--bg-light);
+    border-top: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .zigzag-row:not(:last-child) { margin-bottom: 80px; }
+  .zigzag-row.reverse .zigzag-visual { order: 2; }
+  .zigzag-row.reverse .zigzag-text { order: 1; }
+
+  .zigzag-text h3 {
+    margin-bottom: 16px;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+  .zigzag-text p {
+    color: var(--text-mid);
+    font-size: 1rem;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .zigzag-visual {
+    aspect-ratio: 4/3;
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 4px 4px 0 var(--border);
+  }
+
+  /* Pixel art mockup inside zigzag visual */
+  .zigzag-visual .pixel-art {
+    position: absolute; inset: 0;
+    display: grid;
+    gap: 0;
+  }
+  .zigzag-visual .pixel-art.pa-3x3 {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+  .zigzag-visual .pixel-art.pa-4x3 {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+  .zigzag-visual .pixel-art .cell {
+    border: 1px solid rgba(255,255,255,0.03);
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial-section {
+    padding: 100px 32px;
+    text-align: center;
+    background: var(--bg);
+    position: relative;
+  }
+
+  .testimonial-section .pixel-gradient-bg .block {
+    width: 180px; height: 180px;
+  }
+  .testimonial-section .pixel-gradient-bg .block:nth-child(1) {
+    top: 20%; left: 5%;
+    background: var(--pixel-2);
+    filter: blur(60px);
+    animation: pixelDrift2 20s ease-in-out infinite;
+  }
+  .testimonial-section .pixel-gradient-bg .block:nth-child(2) {
+    bottom: 15%; right: 10%;
+    background: var(--pixel-5);
+    filter: blur(50px);
+    animation: pixelDrift1 18s ease-in-out infinite reverse;
+  }
+
+  .testimonial-content {
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .testimonial-quote {
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    line-height: 1.5;
+    font-weight: 300;
+    color: var(--text-primary);
+    margin-bottom: 32px;
+    font-style: italic;
+  }
+  .testimonial-quote::before {
+    content: '"';
+    font-family: var(--font-mono);
+    font-size: 3rem;
+    color: var(--pixel-1);
+    display: block;
+    margin-bottom: 8px;
+    font-style: normal;
+  }
+
+  .testimonial-author {
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    color: var(--pixel-4);
+    margin-bottom: 4px;
+  }
+  .testimonial-role {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+
+  /* ===== PRICING ===== */
+  .pricing-section {
+    padding: 100px 32px;
+    background: var(--bg-light);
+    border-top: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .pricing-header {
+    text-align: center;
+    max-width: 550px;
+    margin: 0 auto 60px;
+  }
+  .pricing-header h2 { margin-bottom: 16px; }
+  .pricing-header p {
+    color: var(--text-mid);
+    font-weight: 300;
+    font-size: 1.05rem;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .pricing-card {
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    padding: 36px 32px;
+    text-align: center;
+    position: relative;
+    transition: all 0.2s;
+    box-shadow: 4px 4px 0 var(--border);
+  }
+  .pricing-card:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--border);
+  }
+  .pricing-card.featured {
+    border-color: var(--pixel-1);
+    box-shadow: 4px 4px 0 var(--pixel-1);
+  }
+  .pricing-card.featured:hover {
+    box-shadow: 2px 2px 0 var(--pixel-1);
+  }
+
+  .pricing-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, var(--pixel-1), var(--pixel-3));
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    padding: 4px 16px;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  .pricing-card h3 {
+    margin-bottom: 8px;
+    font-size: 1.3rem;
+  }
+  .pricing-amount {
+    font-family: var(--font-mono);
+    font-size: 2.5rem;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .pricing-amount span {
+    font-size: 1rem;
+    color: var(--text-dim);
+  }
+  .pricing-desc {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+    font-weight: 300;
+  }
+
+  .pricing-features {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 28px;
+  }
+  .pricing-features li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-mid);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pricing-features li::before {
+    content: '#';
+    font-family: var(--font-mono);
+    color: var(--pixel-4);
+    font-size: 1rem;
+  }
+
+  .pricing-card .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ===== FINAL CTA ===== */
+  .cta-section {
+    padding: 120px 32px;
+    text-align: center;
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section .pixel-gradient-bg .block:nth-child(1) {
+    top: 10%; left: 15%;
+    width: 220px; height: 220px;
+    background: var(--pixel-1);
+    filter: blur(60px);
+    animation: pixelDrift1 22s ease-in-out infinite;
+  }
+  .cta-section .pixel-gradient-bg .block:nth-child(2) {
+    bottom: 10%; right: 15%;
+    width: 180px; height: 180px;
+    background: var(--pixel-4);
+    filter: blur(50px);
+    animation: pixelDrift3 18s ease-in-out infinite;
+  }
+
+  .cta-content {
+    max-width: 650px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .cta-content h2 {
+    margin-bottom: 20px;
+  }
+  .cta-content h2 .gradient-text {
+    background: linear-gradient(90deg, var(--pixel-1), var(--pixel-4));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .cta-content p {
+    color: var(--text-mid);
+    font-size: 1.1rem;
+    margin-bottom: 36px;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    padding: 48px 32px;
+    text-align: center;
+    background: var(--bg-light);
+    border-top: 2px solid var(--border);
+  }
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .footer-links a {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--text-dim);
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--pixel-4); }
+
+  .footer p {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+  .footer .footer-pixel {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--pixel-1);
+    margin: 0 4px;
+    vertical-align: middle;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .zigzag-row {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .zigzag-row.reverse .zigzag-text { order: 0; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 360px; }
+    .hero { min-height: 90vh; padding: 100px 24px 60px; }
+    .features-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="pixel-gradient-bg">
+      <div class="block"></div>
+      <div class="block"></div>
+      <div class="block"></div>
+      <div class="block"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="pixel-icon"></span>
+        v2.0 — PIXEL-PERFECT SCHEDULING
+      </div>
+      <h1>Schedule meetings<br><span class="gradient-text">at pixel level</span></h1>
+      <p>Every minute rendered in crisp detail. No blur. No wasted cycles. Just clean, blocky precision for your calendar.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn btn-primary">START RENDERING</a>
+        <a href="#" class="btn btn-secondary">VIEW SOURCE</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LOGOS ===== -->
+  <section class="logos-section">
+    <p>TRUSTED BY TEAMS WHO PIXEL-PERFECT</p>
+    <div class="logos-grid">
+      <span class="logo-placeholder">Vercel</span>
+      <span class="logo-placeholder">Stripe</span>
+      <span class="logo-placeholder">Linear</span>
+      <span class="logo-placeholder">Figma</span>
+      <span class="logo-placeholder">Notion</span>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="features-section">
+    <div class="features-header">
+      <h2>Features, not filler</h2>
+      <p>Every feature is a pixel in the bigger picture. No anti-aliasing your workflow.</p>
+    </div>
+    <div class="pixel-divider">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <div class="px"></div><div class="px"></div><div class="px"></div><div class="px"></div>
+          <div class="px"></div><div class="px" style="background:transparent"></div><div class="px"></div><div class="px"></div>
+          <div class="px"></div><div class="px"></div><div class="px" style="background:transparent"></div><div class="px"></div>
+          <div class="px"></div><div class="px"></div><div class="px"></div><div class="px"></div>
+        </div>
+        <h3>Smart Scheduling</h3>
+        <p>Auto-detects time zones, availability, and meeting length. Zero manual snapping required.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <div class="px"></div><div class="px" style="background:transparent"></div><div class="px" style="background:transparent"></div><div class="px"></div>
+          <div class="px"></div><div class="px"></div><div class="px"></div><div class="px"></div>
+          <div class="px"></div><div class="px"></div><div class="px"></div><div class="px"></div>
+          <div class="px"></div><div class="px" style="background:transparent"></div><div class="px" style="background:transparent"></div><div class="px"></div>
+        </div>
+        <h3>Calendar Sync</h3>
+        <p>Google, Outlook, Apple — all synced in real-time. No dropped frames between calendars.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <div class="px" style="background:transparent"></div><div class="px"></div><div class="px"></div><div class="px" style="background:transparent"></div>
+          <div class="px"></div><div class="px" style="background:transparent"></div><div class="px" style="background:transparent"></div><div class="px"></div>
+          <div class="px"></div><div class="px" style="background:transparent"></div><div class="px" style="background:transparent"></div><div class="px"></div>
+          <div class="px" style="background:transparent"></div><div class="px"></div><div class="px"></div><div class="px" style="background:transparent"></div>
+        </div>
+        <h3>Team Availability</h3>
+        <p>See who's online, away, or in deep work. Color-coded presence at a glance.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <div class="px"></div><div class="px"></div><div class="px"></div><div class="px"></div>
+          <div class="px" style="background:transparent"></div><div class="px"></div><div class="px"></div><div class="px" style="background:transparent"></div>
+          <div class="px" style="background:transparent"></div><div class="px"></div><div class="px"></div><div class="px" style="background:transparent"></div>
+          <div class="px"></div><div class="px"></div><div class="px"></div><div class="px"></div>
+        </div>
+        <h3>Analytics</h3>
+        <p>Meeting heatmaps, productivity scores, and time-waste reports. Data in 8-bit glory.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ZIGZAG ===== -->
+  <section class="zigzag-section">
+    <div class="zigzag-row">
+      <div class="zigzag-text">
+        <h3>Block-by-block scheduling</h3>
+        <p>Every meeting is a pixel on your calendar canvas. Drag, drop, resize — each block snaps perfectly into place. No half-pixels, no blurry edges.</p>
+      </div>
+      <div class="zigzag-visual">
+        <div class="pixel-art pa-4x3">
+          <div class="cell" style="background:var(--pixel-1);opacity:0.6"></div>
+          <div class="cell" style="background:var(--pixel-2);opacity:0.5"></div>
+          <div class="cell" style="background:var(--pixel-3);opacity:0.4"></div>
+          <div class="cell" style="background:var(--pixel-4);opacity:0.3"></div>
+          <div class="cell" style="background:var(--pixel-2);opacity:0.5"></div>
+          <div class="cell" style="background:var(--pixel-3);opacity:0.6"></div>
+          <div class="cell" style="background:var(--pixel-4);opacity:0.5"></div>
+          <div class="cell" style="background:var(--pixel-5);opacity:0.4"></div>
+          <div class="cell" style="background:var(--pixel-3);opacity:0.4"></div>
+          <div class="cell" style="background:var(--pixel-4);opacity:0.6"></div>
+          <div class="cell" style="background:var(--pixel-5);opacity:0.5"></div>
+          <div class="cell" style="background:var(--pixel-1);opacity:0.3"></div>
+        </div>
+      </div>
+    </div>
+    <div class="zigzag-row reverse">
+      <div class="zigzag-text">
+        <h3>Gradient-smooth transitions</h3>
+        <p>From one meeting to the next, your schedule flows like a pixelated gradient — chunky blocks that blend seamlessly. Context switching, solved.</p>
+      </div>
+      <div class="zigzag-visual">
+        <div class="pixel-art pa-3x3">
+          <div class="cell" style="background:linear-gradient(135deg,var(--pixel-1),var(--pixel-2));opacity:0.7"></div>
+          <div class="cell" style="background:linear-gradient(135deg,var(--pixel-2),var(--pixel-3));opacity:0.7"></div>
+          <div class="cell" style="background:linear-gradient(135deg,var(--pixel-3),var(--pixel-4));opacity:0.7"></div>
+          <div class="cell" style="background:linear-gradient(135deg,var(--pixel-1),var(--pixel-4));opacity:0.6"></div>
+          <div class="cell" style="background:linear-gradient(135deg,var(--pixel-2),var(--pixel-5));opacity:0.6"></div>
+          <div class="cell" style="background:linear-gradient(135deg,var(--pixel-3),var(--pixel-1));opacity:0.6"></div>
+          <div class="cell" style="background:linear-gradient(135deg,var(--pixel-4),var(--pixel-5));opacity:0.7"></div>
+          <div class="cell" style="background:linear-gradient(135deg,var(--pixel-5),var(--pixel-1));opacity:0.7"></div>
+          <div class="cell" style="background:linear-gradient(135deg,var(--pixel-1),var(--pixel-3));opacity:0.7"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIAL ===== -->
+  <section class="testimonial-section">
+    <div class="pixel-gradient-bg">
+      <div class="block"></div>
+      <div class="block"></div>
+    </div>
+    <div class="testimonial-content">
+      <div class="testimonial-quote">
+        We cut meeting overhead by 40%. Every pixel of our calendar now serves a purpose. The scheduling is crisp, the sync is instant, and the analytics show exactly where time goes.
+      </div>
+      <div class="testimonial-author">ALEX CHEN</div>
+      <div class="testimonial-role">HEAD OF ENGINEERING, PIXELWORKS</div>
+    </div>
+  </section>
+
+  <!-- ===== PRICING ===== -->
+  <section class="pricing-section">
+    <div class="pricing-header">
+      <h2>Choose your resolution</h2>
+      <p>From 1-bit simplicity to full 32-bit color. Scale your plan as your team grows.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <h3>1-BIT</h3>
+        <div class="pricing-amount">$0<span>/mo</span></div>
+        <p class="pricing-desc">For solo devs. Black and white scheduling.</p>
+        <ul class="pricing-features">
+          <li>5 meetings/month</li>
+          <li>1 calendar sync</li>
+          <li>Basic availability</li>
+        </ul>
+        <a href="#" class="btn btn-secondary">GET STARTED</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">POPULAR</div>
+        <h3>16-BIT</h3>
+        <div class="pricing-amount">$12<span>/mo</span></div>
+        <p class="pricing-desc">For teams. Full color palette unlocked.</p>
+        <ul class="pricing-features">
+          <li>Unlimited meetings</li>
+          <li>All calendar syncs</li>
+          <li>Team availability</li>
+          <li>Analytics dashboard</li>
+        </ul>
+        <a href="#" class="btn btn-primary">UPGRADE NOW</a>
+      </div>
+      <div class="pricing-card">
+        <h3>32-BIT</h3>
+        <div class="pricing-amount">$29<span>/mo</span></div>
+        <p class="pricing-desc">For orgs. Every pixel, every feature.</p>
+        <ul class="pricing-features">
+          <li>Everything in 16-bit</li>
+          <li>API access</li>
+          <li>Custom integrations</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#" class="btn btn-secondary">CONTACT SALES</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FINAL CTA ===== -->
+  <section class="cta-section">
+    <div class="pixel-gradient-bg">
+      <div class="block"></div>
+      <div class="block"></div>
+    </div>
+    <div class="cta-content">
+      <h2>Ready to go <span class="gradient-text">pixel-perfect</span>?</h2>
+      <p>Join 10,000+ teams who render their schedules in full resolution. Free to start, no credit card required.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn btn-primary">START FOR FREE</a>
+        <a href="#" class="btn btn-secondary">SEE DEMO</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="#">Docs</a>
+      <a href="#">API</a>
+      <a href="#">Blog</a>
+      <a href="#">Changelog</a>
+      <a href="#">GitHub</a>
+    </div>
+    <p><span class="footer-pixel"></span> MEET &copy; 2026 <span class="footer-pixel"></span> PIXEL-PERFECT SCHEDULING</p>
+  </footer>
+
+</body>
+</html>

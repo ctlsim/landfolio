@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --space-deep: #060A1A;
+    --space-mid: #0C1230;
+    --space-light: #131B42;
+    --quantum-blue: #1B3FA0;
+    --quantum-cyan: #00D4FF;
+    --quantum-purple: #7B2FFF;
+    --quantum-pink: #FF2DAF;
+    --star-white: #E8EAF6;
+    --star-dim: #8B90B0;
+    --star-muted: #4A4F70;
+    --grid-line: rgba(0, 212, 255, 0.06);
+    --font-sans: 'IBM Plex Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--space-deep);
+    color: var(--star-white);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ===== GRID BACKGROUND ===== */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  section { position: relative; z-index: 1; }
+
+  h1, h2, h3 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--star-white);
+  }
+
+  h1 { font-size: clamp(2.6rem, 5.5vw, 4.5rem); letter-spacing: -0.03em; }
+  h2 { font-size: clamp(2rem, 4vw, 2.8rem); letter-spacing: -0.02em; }
+  h3 { font-size: clamp(1.25rem, 2.2vw, 1.5rem); font-weight: 500; }
+
+  a { color: var(--quantum-cyan); text-decoration: none; transition: all 0.3s; }
+  a:hover { color: var(--quantum-purple); }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ===== PARTICLE CANVAS ===== */
+  #particle-canvas {
+    position: fixed; inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ===== GLOW EFFECTS ===== */
+  .quantum-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+  }
+
+  /* ===== BUTTONS ===== */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 36px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--quantum-cyan), var(--quantum-blue));
+    color: var(--space-deep);
+    border-radius: 4px;
+    font-weight: 700;
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.2), inset 0 1px 0 rgba(255,255,255,0.15);
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute; inset: -2px;
+    background: linear-gradient(135deg, var(--quantum-cyan), var(--quantum-purple), var(--quantum-cyan));
+    border-radius: 6px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s;
+    filter: blur(8px);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 50px rgba(0, 212, 255, 0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+    color: var(--space-deep);
+  }
+  .btn-primary:hover::before { opacity: 1; }
+  .btn-primary span { position: relative; z-index: 1; }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--star-white);
+    border: 1px solid var(--star-muted);
+    border-radius: 4px;
+  }
+  .btn-secondary:hover {
+    border-color: var(--quantum-cyan);
+    color: var(--quantum-cyan);
+    background: rgba(0, 212, 255, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
+  }
+
+  /* ===== QUANTUM CARD ===== */
+  .quantum-card {
+    background: rgba(12, 18, 48, 0.6);
+    border: 1px solid rgba(0, 212, 255, 0.1);
+    border-radius: 4px;
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+    backdrop-filter: blur(10px);
+  }
+  .quantum-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--quantum-cyan), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .quantum-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 1px; height: 100%;
+    background: linear-gradient(180deg, var(--quantum-cyan), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .quantum-card:hover {
+    border-color: rgba(0, 212, 255, 0.25);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 40px rgba(0, 212, 255, 0.08), 0 0 60px rgba(123, 47, 255, 0.04);
+  }
+  .quantum-card:hover::before,
+  .quantum-card:hover::after { opacity: 1; }
+
+  /* ===== DATA NODE DECORATION ===== */
+  .data-node {
+    position: absolute;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--quantum-cyan);
+    box-shadow: 0 0 12px var(--quantum-cyan), 0 0 24px rgba(0, 212, 255, 0.3);
+    animation: nodePulse 3s ease-in-out infinite;
+  }
+  @keyframes nodePulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.3); }
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 32px 80px;
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 50% 0%, rgba(27, 63, 160, 0.15) 0%, transparent 60%);
+  }
+
+  .hero .quantum-glow-1 {
+    top: -20%; left: -10%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(123, 47, 255, 0.12) 0%, transparent 70%);
+    animation: glowFloat1 20s ease-in-out infinite;
+  }
+  .hero .quantum-glow-2 {
+    bottom: -15%; right: -10%;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.08) 0%, transparent 70%);
+    animation: glowFloat2 18s ease-in-out infinite;
+  }
+  @keyframes glowFloat1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(30px, 20px) scale(1.1); }
+  }
+  @keyframes glowFloat2 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-25px, -15px) scale(1.05); }
+  }
+
+  .hero-content {
+    max-width: 800px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 20px;
+    background: rgba(0, 212, 255, 0.06);
+    border: 1px solid rgba(0, 212, 255, 0.15);
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--quantum-cyan);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .hero-badge .node {
+    width: 6px; height: 6px;
+    background: var(--quantum-cyan);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--quantum-cyan);
+    animation: nodePulse 2s ease-in-out infinite;
+  }
+
+  .hero h1 {
+    margin-bottom: 24px;
+  }
+
+  .hero h1 .highlight {
+    background: linear-gradient(135deg, var(--quantum-cyan), var(--quantum-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: clamp(1rem, 1.8vw, 1.15rem);
+    color: var(--star-dim);
+    max-width: 520px;
+    margin: 0 auto 44px;
+    line-height: 1.8;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* ===== LOGOS ===== */
+  .logos-section {
+    padding: 60px 32px;
+    text-align: center;
+    border-top: 1px solid rgba(0, 212, 255, 0.06);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.06);
+    background: rgba(12, 18, 48, 0.3);
+  }
+  .logos-section p {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--star-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+  .logos-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+  .logo-placeholder {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--star-muted);
+    letter-spacing: 0.05em;
+    transition: color 0.3s;
+  }
+  .logo-placeholder:hover { color: var(--star-dim); }
+
+  /* ===== FEATURES ===== */
+  .features-section {
+    padding: 100px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .features-section .quantum-glow {
+    top: 20%; right: -10%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(123, 47, 255, 0.06) 0%, transparent 70%);
+    animation: glowFloat1 22s ease-in-out infinite;
+  }
+
+  .features-header {
+    text-align: center;
+    max-width: 550px;
+    margin: 0 auto 60px;
+    position: relative;
+    z-index: 2;
+  }
+  .features-header h2 { margin-bottom: 16px; }
+  .features-header h2 .highlight {
+    background: linear-gradient(135deg, var(--quantum-cyan), var(--quantum-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .features-header p {
+    color: var(--star-dim);
+    font-size: 1.05rem;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .feature-icon {
+    width: 48px; height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    background: rgba(0, 212, 255, 0.06);
+    border: 1px solid rgba(0, 212, 255, 0.12);
+    color: var(--quantum-cyan);
+    font-family: var(--font-mono);
+  }
+  .feature-card h3 {
+    margin-bottom: 12px;
+    font-size: 1.15rem;
+  }
+  .feature-card p {
+    color: var(--star-dim);
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag-section {
+    padding: 100px 32px;
+    background: rgba(12, 18, 48, 0.3);
+    border-top: 1px solid rgba(0, 212, 255, 0.06);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.06);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 0;
+  }
+  .zigzag-row + .zigzag-row { margin-top: 40px; }
+
+  .zigzag-text h3 {
+    margin-bottom: 16px;
+  }
+  .zigzag-text h3 .highlight {
+    background: linear-gradient(135deg, var(--quantum-cyan), var(--quantum-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .zigzag-text p {
+    color: var(--star-dim);
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  /* ===== PARTICLE VISUALIZATION ===== */
+  .particle-viz {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: rgba(6, 10, 26, 0.8);
+    border: 1px solid rgba(0, 212, 255, 0.1);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .particle-viz canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial-section {
+    padding: 100px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .testimonial-section .quantum-glow-1 {
+    top: -10%; left: 10%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.06) 0%, transparent 70%);
+    animation: glowFloat2 16s ease-in-out infinite;
+  }
+  .testimonial-section .quantum-glow-2 {
+    bottom: -10%; right: 10%;
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(123, 47, 255, 0.06) 0%, transparent 70%);
+    animation: glowFloat1 14s ease-in-out infinite;
+  }
+
+  .testimonial-content {
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .testimonial-metric {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    background: rgba(0, 212, 255, 0.06);
+    border: 1px solid rgba(0, 212, 255, 0.12);
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--quantum-cyan);
+    margin-bottom: 28px;
+  }
+
+  .testimonial-quote {
+    font-family: var(--font-sans);
+    font-size: clamp(1.2rem, 2.8vw, 1.6rem);
+    line-height: 1.5;
+    font-weight: 300;
+    color: var(--star-white);
+    margin-bottom: 36px;
+    font-style: italic;
+  }
+  .testimonial-quote::before {
+    content: '\201C';
+    font-size: 4rem;
+    line-height: 0;
+    display: block;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, var(--quantum-cyan), var(--quantum-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-style: normal;
+  }
+
+  .testimonial-author {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--star-white);
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+  .testimonial-role {
+    font-size: 0.85rem;
+    color: var(--star-dim);
+  }
+
+  /* ===== PRICING ===== */
+  .pricing-section {
+    padding: 100px 32px;
+    background: rgba(12, 18, 48, 0.4);
+    border-top: 1px solid rgba(0, 212, 255, 0.06);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.06);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pricing-header {
+    text-align: center;
+    max-width: 550px;
+    margin: 0 auto 60px;
+    position: relative;
+    z-index: 2;
+  }
+  .pricing-header h2 { margin-bottom: 16px; }
+  .pricing-header h2 .highlight {
+    background: linear-gradient(135deg, var(--quantum-cyan), var(--quantum-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .pricing-header p {
+    color: var(--star-dim);
+    font-size: 1.05rem;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .pricing-card {
+    background: rgba(12, 18, 48, 0.6);
+    border: 1px solid rgba(0, 212, 255, 0.08);
+    border-radius: 4px;
+    padding: 40px 32px;
+    text-align: center;
+    position: relative;
+    transition: all 0.4s;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+  }
+  .pricing-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.3), transparent);
+    transition: all 0.4s;
+  }
+  .pricing-card:hover {
+    border-color: rgba(0, 212, 255, 0.2);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 40px rgba(0, 212, 255, 0.06);
+  }
+  .pricing-card.featured {
+    border-color: rgba(0, 212, 255, 0.2);
+    box-shadow: 0 0 40px rgba(0, 212, 255, 0.06);
+  }
+  .pricing-card.featured::before {
+    height: 2px;
+    background: linear-gradient(90deg, var(--quantum-cyan), var(--quantum-purple));
+  }
+
+  .pricing-badge {
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--quantum-cyan), var(--quantum-purple));
+    color: var(--space-deep);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 20px;
+    white-space: nowrap;
+    border-radius: 0 0 4px 4px;
+  }
+
+  .pricing-card h3 {
+    margin-bottom: 8px;
+    font-size: 1.15rem;
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+  }
+  .pricing-amount {
+    font-family: var(--font-mono);
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--star-white);
+  }
+  .pricing-amount .currency {
+    font-size: 1.3rem;
+    color: var(--star-dim);
+    font-weight: 400;
+    vertical-align: top;
+    line-height: 2.4rem;
+  }
+  .pricing-amount span {
+    font-size: 1rem;
+    color: var(--star-dim);
+    font-weight: 400;
+  }
+  .pricing-desc {
+    color: var(--star-dim);
+    font-size: 0.9rem;
+    margin-bottom: 28px;
+  }
+
+  .pricing-features {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 32px;
+  }
+  .pricing-features li {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.06);
+    color: var(--star-dim);
+    font-size: 0.88rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .pricing-features li::before {
+    content: '\25C9';
+    color: var(--quantum-cyan);
+    font-size: 0.65rem;
+  }
+
+  .pricing-card .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ===== FINAL CTA ===== */
+  .cta-section {
+    padding: 120px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 50% 50%, rgba(27, 63, 160, 0.15) 0%, transparent 60%);
+  }
+
+  .cta-section .quantum-glow-1 {
+    top: -20%; left: 20%;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.08) 0%, transparent 70%);
+    animation: glowFloat1 20s ease-in-out infinite;
+  }
+  .cta-section .quantum-glow-2 {
+    bottom: -20%; right: 20%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(123, 47, 255, 0.08) 0%, transparent 70%);
+    animation: glowFloat2 16s ease-in-out infinite;
+  }
+
+  .cta-content {
+    max-width: 650px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .cta-content h2 {
+    margin-bottom: 20px;
+  }
+  .cta-content h2 .highlight {
+    background: linear-gradient(135deg, var(--quantum-cyan), var(--quantum-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .cta-content p {
+    color: var(--star-dim);
+    font-size: 1.1rem;
+    margin-bottom: 36px;
+    line-height: 1.7;
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    padding: 48px 32px;
+    text-align: center;
+    background: rgba(6, 10, 26, 0.9);
+    border-top: 1px solid rgba(0, 212, 255, 0.06);
+    position: relative;
+  }
+
+  .footer::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--quantum-cyan), var(--quantum-purple), transparent);
+    opacity: 0.3;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .footer-links a {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--star-muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: all 0.3s;
+  }
+  .footer-links a:hover {
+    color: var(--quantum-cyan);
+  }
+
+  .footer p {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--star-muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .zigzag-row {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 360px; }
+    .hero { min-height: 90vh; padding: 100px 24px 60px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .logos-grid { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Particle canvas background -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="quantum-glow quantum-glow-1"></div>
+    <div class="quantum-glow quantum-glow-2"></div>
+    <div class="hero-content">
+      <div class="hero-badge"><span class="node"></span> Now in Beta</div>
+      <h1>Schedule at the<br><span class="highlight">speed of particles</span></h1>
+      <p>Meetings resolved before they form. Availability computed in superposition. Your calendar, collapsed into a single optimal state.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn btn-primary"><span>INITIALIZE</span></a>
+        <a href="#" class="btn btn-secondary">RUN SIMULATION</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LOGOS ===== -->
+  <section class="logos-section">
+    <p>Trusted by quantum-first teams worldwide</p>
+    <div class="logos-grid">
+      <span class="logo-placeholder">Vercel</span>
+      <span class="logo-placeholder">Linear</span>
+      <span class="logo-placeholder">Notion</span>
+      <span class="logo-placeholder">Stripe</span>
+      <span class="logo-placeholder">Figma</span>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="features-section">
+    <div class="quantum-glow"></div>
+    <div class="features-header">
+      <h2>Features with <span class="highlight">quantum precision</span></h2>
+      <p>Every scheduling decision computed across infinite timelines — then collapsed into the one that works.</p>
+    </div>
+    <div class="features-grid">
+      <div class="quantum-card feature-card">
+        <div class="feature-icon">&#9881;</div>
+        <h3>Superposition Scheduling</h3>
+        <p>All possible meeting times exist simultaneously until observed. The algorithm collapses the wave function to find your optimal slot.</p>
+      </div>
+      <div class="quantum-card feature-card">
+        <div class="feature-icon">&#9830;</div>
+        <h3>Entangled Sync</h3>
+        <p>Google, Outlook, Apple — instantaneously linked across any distance. Change one calendar, and all others update at light speed.</p>
+      </div>
+      <div class="quantum-card feature-card">
+        <div class="feature-icon">&#9670;</div>
+        <h3>Quantum Presence</h3>
+        <p>See who's in flow, in meetings, or in superposition. Presence detection that respects both states simultaneously.</p>
+      </div>
+      <div class="quantum-card feature-card">
+        <div class="feature-icon">&#9724;</div>
+        <h3>Particle Analytics</h3>
+        <p>Meeting heatmaps, focus-time distributions, and velocity trajectories. Your team's energy mapped in four dimensions.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ZIGZAG ===== -->
+  <section class="zigzag-section">
+    <div class="zigzag-row">
+      <div class="zigzag-text">
+        <h3>Flow state, <span class="highlight">collapsed</span></h3>
+        <p>Your calendar becomes a quantum field. Every meeting auto-categorized across probability distributions, every gap optimized through wave function analysis. No more context switching — just one coherent state forward.</p>
+      </div>
+      <div class="zigzag-visual">
+        <div class="particle-viz"><canvas id="viz-canvas-1"></canvas></div>
+      </div>
+    </div>
+    <div class="zigzag-row">
+      <div class="zigzag-visual">
+        <div class="particle-viz"><canvas id="viz-canvas-2"></canvas></div>
+      </div>
+      <div class="zigzag-text">
+        <h3>Insights that <span class="highlight">transcend time</span></h3>
+        <p>Weekly reports computed across parallel timelines. See where your team's energy concentrates, which meetings create constructive interference and which cause decoherence — then optimize toward maximum coherence.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIAL ===== -->
+  <section class="testimonial-section">
+    <div class="quantum-glow quantum-glow-1"></div>
+    <div class="quantum-glow quantum-glow-2"></div>
+    <div class="testimonial-content">
+      <div class="testimonial-metric">&#9830; 99.7% scheduling accuracy</div>
+      <div class="testimonial-quote">
+        We reduced meeting collisions from 40% to near-zero. The quantum scheduling algorithm found optimal slots our team couldn't see — like it was computing across parallel universes and picking the best one.
+      </div>
+      <div class="testimonial-author">DR. SAARA KIMMEL</div>
+      <div class="testimonial-role">VP OF ENGINEERING, QUANTUM DYNAMICS LAB</div>
+    </div>
+  </section>
+
+  <!-- ===== PRICING ===== -->
+  <section class="pricing-section">
+    <div class="pricing-header">
+      <h2>Plans with <span class="highlight">quantum scale</span></h2>
+      <p>Start at ground state. Excite to higher energy levels. No hidden fees — just clean transitions.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <h3>GROUND STATE</h3>
+        <div class="pricing-amount"><span class="currency">&#36;</span>0<span>/mo</span></div>
+        <p class="pricing-desc">For solo researchers. The lowest energy level.</p>
+        <ul class="pricing-features">
+          <li>10 meetings per month</li>
+          <li>1 calendar sync</li>
+          <li>Basic presence view</li>
+        </ul>
+        <a href="#" class="btn btn-secondary">BEGIN</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">MOST POPULAR</div>
+        <h3>EXCITED STATE</h3>
+        <div class="pricing-amount"><span class="currency">&#36;</span>12<span>/mo</span></div>
+        <p class="pricing-desc">For growing teams. Full quantum advantage.</p>
+        <ul class="pricing-features">
+          <li>Unlimited meetings</li>
+          <li>All calendar syncs</li>
+          <li>Quantum presence dashboard</li>
+          <li>Particle analytics</li>
+        </ul>
+        <a href="#" class="btn btn-primary"><span>START FREE TRIAL</span></a>
+      </div>
+      <div class="pricing-card">
+        <h3>ENTANGLED</h3>
+        <div class="pricing-amount"><span class="currency">&#36;</span>29<span>/mo</span></div>
+        <p class="pricing-desc">For orgs at scale. Enterprise coherence.</p>
+        <ul class="pricing-features">
+          <li>Everything in Excited</li>
+          <li>API access</li>
+          <li>Custom integrations</li>
+          <li>Dedicated support</li>
+        </ul>
+        <a href="#" class="btn btn-secondary">CONTACT SALES</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FINAL CTA ===== -->
+  <section class="cta-section">
+    <div class="quantum-glow quantum-glow-1"></div>
+    <div class="quantum-glow quantum-glow-2"></div>
+    <div class="cta-content">
+      <h2>Ready to <span class="highlight">collapse the wave</span>?</h2>
+      <p>Join 10,000+ teams who replaced calendar chaos with quantum precision. Free to start. No credit card. No uncertainty — just clarity.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn btn-primary"><span>START FOR FREE</span></a>
+        <a href="#" class="btn btn-secondary">BOOK A DEMO</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="#">Product</a>
+      <a href="#">Pricing</a>
+      <a href="#">Blog</a>
+      <a href="#">Docs</a>
+      <a href="#">Contact</a>
+    </div>
+    <p>MEET &copy; 2026 — SCHEDULING AT THE SPEED OF PARTICLES</p>
+  </footer>
+
+  <script>
+    // ===== BACKGROUND PARTICLE SYSTEM =====
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let mouse = { x: null, y: null };
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    document.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.4;
+        this.vy = (Math.random() - 0.5) * 0.4;
+        this.radius = Math.random() * 1.5 + 0.5;
+        this.opacity = Math.random() * 0.5 + 0.1;
+        this.color = Math.random() > 0.7 ? '#7B2FFF' : '#00D4FF';
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+        // Mouse interaction
+        if (mouse.x !== null) {
+          const dx = this.x - mouse.x;
+          const dy = this.y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 150) {
+            const force = (150 - dist) / 150;
+            this.vx += (dx / dist) * force * 0.02;
+            this.vy += (dy / dist) * force * 0.02;
+          }
+        }
+
+        // Damping
+        this.vx *= 0.999;
+        this.vy *= 0.999;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.opacity;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    // Create particles
+    const numParticles = Math.min(80, Math.floor(window.innerWidth * window.innerHeight / 15000));
+    for (let i = 0; i < numParticles; i++) {
+      particles.push(new Particle());
+    }
+
+    function drawConnections() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 160) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            const opacity = (1 - dist / 160) * 0.15;
+            ctx.strokeStyle = `rgba(0, 212, 255, ${opacity})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      drawConnections();
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // ===== ZIGZAG MINI VISUALIZATIONS =====
+    function createMiniViz(canvasId, color1, color2) {
+      const c = document.getElementById(canvasId);
+      if (!c) return;
+      const mCtx = c.getContext('2d');
+      const rect = c.parentElement.getBoundingClientRect();
+      c.width = rect.width * 2;
+      c.height = rect.height * 2;
+      mCtx.scale(2, 2);
+      const w = rect.width;
+      const h = rect.height;
+
+      const miniParticles = [];
+      for (let i = 0; i < 30; i++) {
+        miniParticles.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.8,
+          vy: (Math.random() - 0.5) * 0.8,
+          r: Math.random() * 2 + 1,
+          color: Math.random() > 0.5 ? color1 : color2
+        });
+      }
+
+      function miniAnimate() {
+        mCtx.clearRect(0, 0, w, h);
+
+        // Draw connections
+        for (let i = 0; i < miniParticles.length; i++) {
+          for (let j = i + 1; j < miniParticles.length; j++) {
+            const dx = miniParticles[i].x - miniParticles[j].x;
+            const dy = miniParticles[i].y - miniParticles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 80) {
+              mCtx.beginPath();
+              mCtx.moveTo(miniParticles[i].x, miniParticles[i].y);
+              mCtx.lineTo(miniParticles[j].x, miniParticles[j].y);
+              mCtx.strokeStyle = `rgba(0, 212, 255, ${(1 - dist / 80) * 0.2})`;
+              mCtx.lineWidth = 0.5;
+              mCtx.stroke();
+            }
+          }
+        }
+
+        // Update and draw particles
+        miniParticles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0 || p.x > w) p.vx *= -1;
+          if (p.y < 0 || p.y > h) p.vy *= -1;
+
+          mCtx.beginPath();
+          mCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          mCtx.fillStyle = p.color;
+          mCtx.globalAlpha = 0.7;
+          mCtx.fill();
+          mCtx.globalAlpha = 1;
+        });
+
+        requestAnimationFrame(miniAnimate);
+      }
+      miniAnimate();
+    }
+
+    createMiniViz('viz-canvas-1', '#00D4FF', '#7B2FFF');
+    createMiniViz('viz-canvas-2', '#7B2FFF', '#00D4FF');
+  </script>
+
+</body>
+</html>

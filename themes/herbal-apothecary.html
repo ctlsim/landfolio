@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-cream: #F7F3EB;
+    --bg-warm: #F0E9DB;
+    --bg-card: #FAF8F4;
+    --sage: #8B9E7E;
+    --sage-deep: #6B7F5E;
+    --sage-light: #A8B89E;
+    --sage-pale: #D4DFD0;
+    --herb-brown: #7A6248;
+    --herb-dark: #5A4632;
+    --herb-light: #A08060;
+    --bottle-green: #4A6741;
+    --bottle-deep: #2D4228;
+    --amber: #C4963C;
+    --amber-light: #D4AA5C;
+    --clay: #B8856C;
+    --clay-light: #D4A88C;
+    --text-primary: #3A3228;
+    --text-secondary: #6B5E50;
+    --text-dim: #9A8E7E;
+    --border: #DDD5C5;
+    --border-light: #E8E0D0;
+    --font-display: 'Fraunces', serif;
+    --font-body: 'Quicksand', sans-serif;
+    --label-gradient: linear-gradient(135deg, #F7F3EB 0%, #E8DFD0 50%, #D4DFD0 100%);
+    --sage-gradient: linear-gradient(135deg, #8B9E7E 0%, #6B7F5E 100%);
+    --amber-gradient: linear-gradient(135deg, #C4963C 0%, #D4AA5C 100%);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg-cream);
+    color: var(--text-primary);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ===== BOTANICAL PATTERN OVERLAY ===== */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(139,158,126,0.04) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(196,150,60,0.03) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(184,133,108,0.03) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  section { position: relative; z-index: 1; }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ===== NAVIGATION ===== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(247,243,235,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-light);
+  }
+  .nav-inner {
+    max-width: 1100px; margin: 0 auto; padding: 0 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--bottle-deep);
+    text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-logo-leaf {
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a {
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--sage-deep); }
+  .nav-cta {
+    font-family: var(--font-body) !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    padding: 8px 20px !important;
+    background: var(--sage) !important;
+    color: #fff !important;
+    border-radius: 24px !important;
+    transition: background 0.2s, transform 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--sage-deep) !important; transform: translateY(-1px); }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 160px 0 100px;
+    text-align: center;
+    position: relative;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 16px 6px 8px;
+    background: var(--sage-pale);
+    border: 1px solid var(--sage-light);
+    border-radius: 24px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--sage-deep);
+    margin-bottom: 32px;
+    font-family: var(--font-body);
+  }
+  .hero-badge-dot {
+    width: 8px; height: 8px;
+    background: var(--sage);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.85); }
+  }
+  .hero h1 {
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+    max-width: 750px;
+    margin-left: auto; margin-right: auto;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--sage-deep);
+  }
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    max-width: 560px;
+    margin: 0 auto 40px;
+    line-height: 1.8;
+  }
+  .hero-actions {
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 48px;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 32px;
+    background: var(--sage);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 28px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.25s;
+    box-shadow: 0 2px 8px rgba(107,127,94,0.2);
+  }
+  .btn-primary:hover {
+    background: var(--sage-deep);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(107,127,94,0.3);
+  }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 32px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: 1.5px solid var(--border);
+    border-radius: 28px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.25s;
+  }
+  .btn-secondary:hover {
+    border-color: var(--sage);
+    color: var(--sage-deep);
+    transform: translateY(-2px);
+  }
+
+  /* Hero illustration — botanical bottle */
+  .hero-visual {
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 40px 0 0;
+  }
+  .hero-bottle {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: var(--bg-card);
+    border-radius: 16px;
+    border: 1px solid var(--border-light);
+    overflow: hidden;
+    box-shadow:
+      0 1px 3px rgba(58,50,40,0.04),
+      0 8px 32px rgba(58,50,40,0.06);
+  }
+  .hero-bottle-header {
+    height: 40px;
+    background: var(--bg-warm);
+    border-bottom: 1px solid var(--border-light);
+    display: flex; align-items: center; padding: 0 16px; gap: 8px;
+  }
+  .hero-bottle-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .hero-bottle-dot:nth-child(1) { background: var(--sage-light); }
+  .hero-bottle-dot:nth-child(2) { background: var(--amber-light); }
+  .hero-bottle-dot:nth-child(3) { background: var(--clay-light); }
+  .hero-bottle-body {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    height: calc(100% - 40px);
+  }
+  .bottle-card {
+    background: var(--bg-cream);
+    border-radius: 12px;
+    border: 1px solid var(--border-light);
+    padding: 20px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .bottle-card-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+  }
+  .bottle-card:nth-child(1) .bottle-card-icon { background: var(--sage-pale); }
+  .bottle-card:nth-child(2) .bottle-card-icon { background: #F0E4CC; }
+  .bottle-card:nth-child(3) .bottle-card-icon { background: #E8D8D0; }
+  .bottle-card-line {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--border-light);
+  }
+  .bottle-card-line.short { width: 60%; }
+  .bottle-card-line.accent { background: var(--sage-pale); }
+
+  /* Floating botanical elements */
+  .botanical-float {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.15;
+  }
+  .botanical-leaf-1 {
+    top: -20px; right: -30px;
+    width: 80px; height: 80px;
+    border: 2px solid var(--sage);
+    border-radius: 0 50% 50% 50%;
+    transform: rotate(-45deg);
+    animation: floatLeaf 8s ease-in-out infinite;
+  }
+  .botanical-leaf-2 {
+    bottom: -15px; left: -25px;
+    width: 60px; height: 60px;
+    border: 2px solid var(--amber);
+    border-radius: 50% 0 50% 50%;
+    transform: rotate(135deg);
+    animation: floatLeaf 10s ease-in-out infinite reverse;
+  }
+  @keyframes floatLeaf {
+    0%, 100% { transform: rotate(-45deg) translateY(0); }
+    50% { transform: rotate(-40deg) translateY(-10px); }
+  }
+
+  /* ===== LOGOS ===== */
+  .logos {
+    padding: 60px 0;
+    border-top: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--border-light);
+  }
+  .logos p {
+    text-align: center;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 28px;
+  }
+  .logos-grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+  .logo-item {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    opacity: 0.5;
+    transition: opacity 0.2s;
+  }
+  .logo-item:hover { opacity: 0.8; }
+
+  /* ===== FEATURES ===== */
+  .features {
+    padding: 100px 0;
+  }
+  .section-label {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--sage);
+    margin-bottom: 12px;
+    padding: 4px 12px;
+    background: var(--sage-pale);
+    border-radius: 12px;
+  }
+  .features h2 {
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+  .features > .container > p {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 520px;
+    margin-bottom: 56px;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 32px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--sage-gradient);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(58,50,40,0.06);
+    border-color: var(--sage-light);
+  }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    background: var(--sage-pale);
+  }
+  .feature-card:nth-child(2) .feature-icon { background: #F0E4CC; }
+  .feature-card:nth-child(3) .feature-icon { background: #E8D8D0; }
+  .feature-card:nth-child(4) .feature-icon { background: #D8D8D0; }
+  .feature-card:nth-child(5) .feature-icon { background: #D0D8D8; }
+  .feature-card:nth-child(6) .feature-icon { background: #E0D8C8; }
+  .feature-card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+  .feature-card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag {
+    padding: 80px 0;
+  }
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+    padding: 60px 0;
+  }
+  .zigzag-row:nth-child(even) .zigzag-visual { order: -1; }
+  .zigzag-content h3 {
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+  .zigzag-content p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+  .zigzag-checklist {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .zigzag-checklist li {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .check-icon {
+    width: 22px; height: 22px;
+    background: var(--sage-pale);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    color: var(--sage-deep);
+    flex-shrink: 0;
+  }
+  .zigzag-visual {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    aspect-ratio: 4/3;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .zigzag-visual-inner {
+    padding: 32px;
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .zigzag-mock-bar {
+    height: 12px;
+    border-radius: 6px;
+    background: var(--border-light);
+  }
+  .zigzag-mock-bar.accent { background: var(--sage-pale); }
+  .zigzag-mock-bar.w60 { width: 60%; }
+  .zigzag-mock-bar.w80 { width: 80%; }
+  .zigzag-mock-bar.w40 { width: 40%; }
+  .zigzag-mock-block {
+    flex: 1;
+    border-radius: 12px;
+    background: var(--bg-warm);
+    border: 1px solid var(--border-light);
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial {
+    padding: 100px 0;
+    background: var(--bg-warm);
+    border-top: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--border-light);
+  }
+  .testimonial-inner {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .testimonial-quote {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin-bottom: 32px;
+    position: relative;
+  }
+  .testimonial-quote::before {
+    content: '\201C';
+    font-size: 4rem;
+    color: var(--sage-light);
+    position: absolute;
+    top: -20px; left: -10px;
+    font-style: normal;
+    line-height: 1;
+  }
+  .testimonial-author {
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+  }
+  .testimonial-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--sage-pale);
+    border: 2px solid var(--sage-light);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--sage-deep);
+  }
+  .testimonial-info { text-align: left; }
+  .testimonial-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+  }
+  .testimonial-role {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+  }
+
+  /* ===== PRICING ===== */
+  .pricing {
+    padding: 100px 0;
+  }
+  .pricing h2 {
+    text-align: center;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    margin-bottom: 16px;
+  }
+  .pricing > .container > p {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    margin-bottom: 56px;
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .price-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 36px 28px;
+    text-align: center;
+    transition: all 0.3s;
+    position: relative;
+  }
+  .price-card.featured {
+    border-color: var(--sage);
+    box-shadow: 0 4px 24px rgba(139,158,126,0.15);
+    transform: scale(1.03);
+  }
+  .price-card.featured::before {
+    content: 'Most Popular';
+    position: absolute;
+    top: -12px; left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 16px;
+    background: var(--sage);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 12px;
+    white-space: nowrap;
+  }
+  .price-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(58,50,40,0.08);
+  }
+  .price-card.featured:hover {
+    transform: scale(1.03) translateY(-4px);
+  }
+  .price-tier {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+  .price-amount {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .price-amount span {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text-dim);
+  }
+  .price-desc {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+  }
+  .price-features {
+    list-style: none;
+    text-align: left;
+    display: flex; flex-direction: column; gap: 10px;
+    margin-bottom: 28px;
+  }
+  .price-features li {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .price-features li::before {
+    content: '\2713';
+    color: var(--sage);
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+  .price-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border-radius: 24px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.25s;
+  }
+  .price-btn-outline {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--text-secondary);
+  }
+  .price-btn-outline:hover {
+    border-color: var(--sage);
+    color: var(--sage-deep);
+  }
+  .price-btn-filled {
+    background: var(--sage);
+    border: 1.5px solid var(--sage);
+    color: #fff;
+  }
+  .price-btn-filled:hover {
+    background: var(--sage-deep);
+    border-color: var(--sage-deep);
+  }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .final-cta-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 50%, rgba(139,158,126,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 50%, rgba(196,150,60,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .final-cta h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .final-cta p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 480px;
+    margin: 0 auto 36px;
+    position: relative;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 48px 0;
+    border-top: 1px solid var(--border-light);
+    text-align: center;
+  }
+  .footer-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--herb-brown);
+  }
+  .footer-links {
+    display: flex; gap: 24px;
+  }
+  .footer-links a {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--sage-deep); }
+  .footer-copy {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+  }
+
+  /* ===== BOTANICAL DIVIDER ===== */
+  .botanical-divider {
+    text-align: center;
+    padding: 20px 0;
+    color: var(--sage-light);
+    font-size: 1.2rem;
+    letter-spacing: 0.5em;
+    opacity: 0.5;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .features-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+    .zigzag-row { grid-template-columns: 1fr; gap: 32px; }
+    .zigzag-row:nth-child(even) .zigzag-visual { order: 0; }
+    .nav-links { display: none; }
+    .hero { padding: 120px 0 60px; }
+    .logos-grid { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <span class="nav-logo-leaf">&#127807;</span>
+        Meet
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#testimonials">Reviews</a>
+        <a href="#" class="nav-cta">Start Free</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Now in public beta
+      </div>
+      <h1>Meetings that <em>nourish</em> your week</h1>
+      <p>A natural approach to scheduling. No synthetic time-wasting, no artificial urgency. Just clean, organic meetings that grow your team.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn-primary">Start Free Trial &#10148;</a>
+        <a href="#" class="btn-secondary">See How It Works</a>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-bottle">
+          <div class="hero-bottle-header">
+            <div class="hero-bottle-dot"></div>
+            <div class="hero-bottle-dot"></div>
+            <div class="hero-bottle-dot"></div>
+          </div>
+          <div class="hero-bottle-body">
+            <div class="bottle-card">
+              <div class="bottle-card-icon">&#128197;</div>
+              <div class="bottle-card-line"></div>
+              <div class="bottle-card-line short accent"></div>
+              <div class="bottle-card-line"></div>
+            </div>
+            <div class="bottle-card">
+              <div class="bottle-card-icon">&#127807;</div>
+              <div class="bottle-card-line"></div>
+              <div class="bottle-card-line short"></div>
+              <div class="bottle-card-line accent"></div>
+            </div>
+            <div class="bottle-card">
+              <div class="bottle-card-icon">&#127793;</div>
+              <div class="bottle-card-line accent"></div>
+              <div class="bottle-card-line short"></div>
+              <div class="bottle-card-line"></div>
+            </div>
+          </div>
+        </div>
+        <div class="botanical-float botanical-leaf-1"></div>
+        <div class="botanical-float botanical-leaf-2"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGOS -->
+  <section class="logos">
+    <div class="container">
+      <p>Trusted by wellness-forward teams</p>
+      <div class="logos-grid">
+        <span class="logo-item">Herbivore</span>
+        <span class="logo-item">Goop</span>
+        <span class="logo-item">Farmacy</span>
+        <span class="logo-item">Ritual</span>
+        <span class="logo-item">Moon Juice</span>
+        <span class="logo-item">True Botinics</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="container">
+      <span class="section-label">&#127807; Ingredients</span>
+      <h2>Everything your schedule needs</h2>
+      <p>Six active ingredients for healthier meetings, distilled from the best scheduling practices.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">&#128161;</div>
+          <h3>Smart Scheduling</h3>
+          <p>AI finds the perfect time slot that aligns with everyone's natural energy rhythms.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#127794;</div>
+          <h3>Agenda Blending</h3>
+          <p>Auto-generate meeting agendas from project context. No more blank-slate meetings.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128203;</div>
+          <h3>Time Protection</h3>
+          <p>Deep work blocks auto-enforce. Your focus time is sacred and defended.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128200;</div>
+          <h3>Usage Analytics</h3>
+          <p>See where your week actually goes. Spot meeting bloat before it spreads.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128101;</div>
+          <h3>Team Harmony</h3>
+          <p>Sync across time zones without the headache. Fair scheduling for everyone.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#9889;</div>
+          <h3>Quick Actions</h3>
+          <p>Reschedule, cancel, or extend with one click. Zero friction, zero drama.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="botanical-divider">&#10041; &#10041; &#10041;</div>
+
+  <!-- ZIGZAG -->
+  <section class="zigzag">
+    <div class="container">
+      <div class="zigzag-row">
+        <div class="zigzag-content">
+          <h3>Harvest your meeting notes</h3>
+          <p>Every meeting auto-generates a structured summary with action items, decisions, and follow-ups. No more lost knowledge.</p>
+          <ul class="zigzag-checklist">
+            <li><span class="check-icon">&#10003;</span> AI-powered transcription</li>
+            <li><span class="check-icon">&#10003;</span> Auto action-item assignment</li>
+            <li><span class="check-icon">&#10003;</span> Searchable meeting archive</li>
+            <li><span class="check-icon">&#10003;</span> Slack & email integrations</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <div class="zigzag-visual-inner">
+            <div class="zigzag-mock-bar w80 accent"></div>
+            <div class="zigzag-mock-bar"></div>
+            <div class="zigzag-mock-bar w60"></div>
+            <div class="zigzag-mock-block"></div>
+            <div class="zigzag-mock-bar w40 accent"></div>
+          </div>
+        </div>
+      </div>
+      <div class="zigzag-row">
+        <div class="zigzag-content">
+          <h3>Root out calendar chaos</h3>
+          <p>Meet learns your patterns and suggests a weekly rhythm that actually works. Fewer meetings, more output, less burnout.</p>
+          <ul class="zigzag-checklist">
+            <li><span class="check-icon">&#10003;</span> Weekly rhythm optimization</li>
+            <li><span class="check-icon">&#10003;</span> Meeting cost calculator</li>
+            <li><span class="check-icon">&#10003;</span> Buffer time enforcement</li>
+            <li><span class="check-icon">&#10003;</span> Focus day suggestions</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <div class="zigzag-visual-inner">
+            <div class="zigzag-mock-bar w60"></div>
+            <div class="zigzag-mock-bar w80 accent"></div>
+            <div class="zigzag-mock-block"></div>
+            <div class="zigzag-mock-bar w40"></div>
+            <div class="zigzag-mock-bar accent"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="testimonial" id="testimonials">
+    <div class="container">
+      <div class="testimonial-inner">
+        <span class="section-label">&#10041; Testimonial</span>
+        <blockquote class="testimonial-quote">
+          Meet transformed how our team uses time. We cut meetings by 40% and everyone actually feels rested. It's like a wellness retreat for your calendar.
+        </blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">A</div>
+          <div class="testimonial-info">
+            <div class="testimonial-name">Ava Chen</div>
+            <div class="testimonial-role">Head of People, Herbivore</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <span class="section-label" style="display:block;text-align:center;margin-bottom:12px;">&#10041; Pricing</span>
+      <h2>Simple, transparent pricing</h2>
+      <p>No hidden fees. No synthetic upsells. Just honest plans.</p>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="price-tier">Seedling</div>
+          <div class="price-amount">$0<span>/mo</span></div>
+          <div class="price-desc">For individuals getting started</div>
+          <ul class="price-features">
+            <li>5 meetings per week</li>
+            <li>Basic scheduling</li>
+            <li>Calendar sync</li>
+            <li>Email support</li>
+          </ul>
+          <a href="#" class="price-btn price-btn-outline">Get Started</a>
+        </div>
+        <div class="price-card featured">
+          <div class="price-tier">Garden</div>
+          <div class="price-amount">$12<span>/mo</span></div>
+          <div class="price-desc">For growing teams</div>
+          <ul class="price-features">
+            <li>Unlimited meetings</li>
+            <li>AI agenda generation</li>
+            <li>Meeting analytics</li>
+            <li>Team scheduling</li>
+            <li>Priority support</li>
+          </ul>
+          <a href="#" class="price-btn price-btn-filled">Start Free Trial</a>
+        </div>
+        <div class="price-card">
+          <div class="price-tier">Orchard</div>
+          <div class="price-amount">$29<span>/mo</span></div>
+          <div class="price-desc">For established organizations</div>
+          <ul class="price-features">
+            <li>Everything in Garden</li>
+            <li>Custom integrations</li>
+            <li>Admin dashboard</li>
+            <li>SSO & security</li>
+            <li>Dedicated account manager</li>
+          </ul>
+          <a href="#" class="price-btn price-btn-outline">Contact Sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta">
+    <div class="final-cta-bg"></div>
+    <div class="container">
+      <h2>Ready to cultivate better meetings?</h2>
+      <p>Join 2,000+ teams who've already transformed their work week. Free for 14 days.</p>
+      <a href="#" class="btn-primary">Start Your Free Trial &#10148;</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-logo">&#127807; Meet</div>
+        <div class="footer-links">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Blog</a>
+          <a href="#">Support</a>
+        </div>
+        <div class="footer-copy">&copy; 2024 Meet. All rights reserved.</div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FDF8F0;
+    --bg-honey: #F7EDD5;
+    --bg-card: #FFFDF7;
+    --amber: #D4920B;
+    --amber-light: #E8B24B;
+    --amber-dark: #A67208;
+    --gold: #C9A84C;
+    --gold-light: #E0C872;
+    --honey: #E8A838;
+    --honey-light: #F0C060;
+    --wax: #F5E6C8;
+    --wax-light: #FAF0DC;
+    --comb: #E8D5B0;
+    --comb-light: #F0E2CC;
+    --brown: #5C4020;
+    --brown-dark: #3D2A14;
+    --ink: #2C1810;
+    --text: #5A4232;
+    --text-dim: #8A7460;
+    --text-muted: #B09880;
+    --accent: var(--amber);
+    --accent-hover: var(--amber-dark);
+    --border: rgba(92,64,32,0.12);
+    --border-light: rgba(92,64,32,0.06);
+    --shadow: rgba(44,24,16,0.06);
+    --shadow-md: rgba(44,24,16,0.1);
+    --hex-size: 60px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--ink);
+  }
+
+  /* Hexagon background pattern */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%235C4020' stroke-width='1'/%3E%3Cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='%235C4020' stroke-width='1'/%3E%3C/svg%3E");
+    background-size: 56px 100px;
+  }
+
+  /* Hexagon clip-path utility */
+  .hex-clip {
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 40px; }
+
+  /* ===== NAV ===== */
+  nav {
+    padding: 28px 0;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .nav-logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.6rem; font-weight: 700; color: var(--ink);
+    letter-spacing: -0.03em;
+  }
+  .nav-logo span { color: var(--amber); }
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a {
+    font-size: 0.88rem; color: var(--text-dim); text-decoration: none;
+    font-weight: 400; transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-cta {
+    font-size: 0.85rem !important; font-weight: 600 !important;
+    color: var(--bg) !important;
+    background: var(--ink); padding: 12px 30px;
+    clip-path: polygon(12px 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0% 50%);
+    transition: background 0.3s, transform 0.3s;
+  }
+  .nav-cta:hover { background: var(--amber); transform: translateY(-1px); }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 120px 0 100px;
+    text-align: center;
+    position: relative;
+  }
+  .hero-hex-bg {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px; height: 500px;
+    opacity: 0.06; pointer-events: none;
+  }
+  .hero-hex-bg svg { width: 100%; height: 100%; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em;
+    color: var(--amber); margin-bottom: 36px;
+    padding: 10px 24px;
+    border: 2px solid var(--amber-light);
+    clip-path: polygon(14px 0%, calc(100% - 14px) 0%, 100% 50%, calc(100% - 14px) 100%, 14px 100%, 0% 50%);
+    background: var(--wax-light);
+  }
+  .hero-badge::before {
+    content: '⬡';
+    font-size: 0.9rem;
+  }
+  .hero h1 {
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    max-width: 800px; margin: 0 auto 28px;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+  .hero h1 .highlight {
+    color: var(--amber);
+    position: relative;
+  }
+  .hero h1 .highlight::after {
+    content: '';
+    position: absolute; bottom: 4px; left: 0; right: 0;
+    height: 6px;
+    background: var(--gold-light);
+    opacity: 0.4;
+    clip-path: polygon(8px 0%, calc(100% - 8px) 0%, 100% 50%, calc(100% - 8px) 100%, 8px 100%, 0% 50%);
+  }
+  .hero p {
+    font-size: 1.15rem; color: var(--text-dim);
+    max-width: 500px; margin: 0 auto 48px;
+    font-weight: 300; line-height: 1.7;
+  }
+  .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.92rem; font-weight: 600;
+    padding: 16px 44px; background: var(--amber); color: var(--bg);
+    border: none; cursor: pointer;
+    transition: all 0.3s; text-decoration: none; display: inline-block;
+    clip-path: polygon(14px 0%, calc(100% - 14px) 0%, 100% 50%, calc(100% - 14px) 100%, 14px 100%, 0% 50%);
+  }
+  .btn-primary:hover { background: var(--amber-dark); transform: translateY(-2px); }
+  .btn-secondary {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.92rem; font-weight: 500;
+    padding: 16px 44px; background: transparent; color: var(--text);
+    border: 2px solid var(--comb); cursor: pointer;
+    transition: all 0.3s; text-decoration: none; display: inline-block;
+    clip-path: polygon(14px 0%, calc(100% - 14px) 0%, 100% 50%, calc(100% - 14px) 100%, 14px 100%, 0% 50%);
+  }
+  .btn-secondary:hover { border-color: var(--amber); color: var(--amber); }
+
+  /* ===== LOGOS ===== */
+  .logos {
+    padding: 80px 0;
+    position: relative;
+  }
+  .logos::before {
+    content: '';
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 60%; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--comb) 20%, var(--comb) 80%, transparent);
+  }
+  .logos-label {
+    text-align: center; font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 36px;
+  }
+  .logos-row {
+    display: flex; justify-content: center; align-items: center;
+    gap: 52px; flex-wrap: wrap; opacity: 0.4;
+  }
+  .logo-item {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.15rem; font-weight: 600; color: var(--text-dim);
+    letter-spacing: -0.01em;
+  }
+
+  /* ===== FEATURES ===== */
+  .features { padding: 100px 0 120px; }
+  .section-label {
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--amber); margin-bottom: 16px;
+  }
+  .section-title {
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+  .section-subtitle {
+    font-size: 1.05rem; color: var(--text-dim); max-width: 480px;
+    font-weight: 300; line-height: 1.7; margin-bottom: 64px;
+  }
+  .features-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .feature-card {
+    padding: 40px 32px;
+    background: var(--bg-card);
+    border: 2px solid var(--border-light);
+    position: relative;
+    transition: all 0.4s;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
+    background: linear-gradient(135deg, var(--amber-light), var(--gold-light), var(--amber));
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.4s;
+    clip-path: polygon(16px 0%, calc(100% - 16px) 0%, 100% 16px, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0% calc(100% - 16px), 0% 16px);
+  }
+  .feature-card {
+    clip-path: polygon(16px 0%, calc(100% - 16px) 0%, 100% 16px, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0% calc(100% - 16px), 0% 16px);
+  }
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px var(--shadow-md);
+  }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon {
+    width: 52px; height: 52px; margin-bottom: 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; color: var(--amber);
+    background: var(--wax);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+  .feature-card h3 {
+    font-size: 1.15rem; margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+  .feature-card p {
+    font-size: 0.9rem; color: var(--text-dim); line-height: 1.65;
+    font-weight: 300;
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag { padding: 80px 0 120px; }
+  .zigzag-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 72px;
+    align-items: center; margin-bottom: 120px;
+  }
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-visual { order: -1; }
+  .zigzag-visual {
+    aspect-ratio: 4/3;
+    background: var(--wax);
+    border: 2px solid var(--comb);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    clip-path: polygon(24px 0%, calc(100% - 24px) 0%, 100% 24px, 100% calc(100% - 24px), calc(100% - 24px) 100%, 24px 100%, 0% calc(100% - 24px), 0% 24px);
+  }
+  .zigzag-visual::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 40%, rgba(232,168,56,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 60%, rgba(201,168,76,0.1) 0%, transparent 50%);
+  }
+  /* Hexagon grid decoration inside visual */
+  .zigzag-visual::after {
+    content: '';
+    position: absolute; inset: 12px;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='69' viewBox='0 0 40 69'%3E%3Cpath d='M20 46L0 35L0 13L20 0L40 13L40 35L20 46L20 69' fill='none' stroke='%235C4020' stroke-width='1.5'/%3E%3Cpath d='M20 0L20 23L0 35L0 57L20 69L40 57L40 35L20 23' fill='none' stroke='%235C4020' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-size: 40px 69px;
+  }
+  .visual-placeholder {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2.8rem; font-weight: 700;
+    color: var(--amber); position: relative;
+    letter-spacing: -0.02em;
+  }
+  .zigzag-content .section-label { margin-bottom: 14px; }
+  .zigzag-content h2 {
+    font-size: 2rem; margin-bottom: 14px;
+    letter-spacing: -0.02em;
+  }
+  .zigzag-content p {
+    font-size: 0.95rem; color: var(--text-dim); line-height: 1.7;
+    font-weight: 300; margin-bottom: 24px;
+  }
+  .zigzag-list { list-style: none; }
+  .zigzag-list li {
+    font-size: 0.9rem; color: var(--text-dim);
+    padding: 10px 0; padding-left: 28px; position: relative;
+    font-weight: 400;
+  }
+  .zigzag-list li::before {
+    content: '⬡'; position: absolute; left: 0; top: 9px;
+    font-size: 0.7rem; color: var(--amber);
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial {
+    padding: 120px 0;
+    text-align: center;
+    background: var(--bg-honey);
+    position: relative;
+  }
+  .testimonial::before {
+    content: '';
+    position: absolute; inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%235C4020' stroke-width='1'/%3E%3Cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='%235C4020' stroke-width='1'/%3E%3C/svg%3E");
+    background-size: 56px 100px;
+  }
+  .testimonial-hex {
+    width: 64px; height: 64px; margin: 0 auto 32px;
+    background: var(--amber);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--bg); font-size: 1.8rem; font-weight: 700;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .testimonial-blockquote {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    font-weight: 500;
+    max-width: 680px; margin: 0 auto 40px;
+    line-height: 1.55; color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .testimonial-author {
+    font-size: 0.95rem; color: var(--text); font-weight: 600;
+  }
+  .testimonial-role {
+    font-size: 0.85rem; color: var(--text-muted); font-weight: 300;
+    margin-top: 6px;
+  }
+
+  /* ===== PRICING ===== */
+  .pricing { padding: 120px 0; }
+  .pricing-header { text-align: center; margin-bottom: 64px; }
+  .pricing-header .section-subtitle { margin: 16px auto 0; }
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    max-width: 980px; margin: 0 auto;
+  }
+  .pricing-card {
+    padding: 44px 36px;
+    background: var(--bg-card);
+    border: 2px solid var(--border-light);
+    text-align: center;
+    transition: all 0.4s;
+    position: relative;
+    clip-path: polygon(20px 0%, calc(100% - 20px) 0%, 100% 20px, 100% calc(100% - 20px), calc(100% - 20px) 100%, 20px 100%, 0% calc(100% - 20px), 0% 20px);
+  }
+  .pricing-card.featured {
+    background: var(--ink); color: var(--bg);
+    border-color: var(--ink);
+  }
+  .pricing-card.featured h3 { color: var(--gold-light); }
+  .pricing-card.featured .price { color: var(--bg); }
+  .pricing-card.featured .price-note { color: rgba(253,248,240,0.5); }
+  .pricing-card.featured .pricing-feature { color: rgba(253,248,240,0.7); }
+  .pricing-card.featured .pricing-feature::before { color: var(--gold-light); }
+  .pricing-card.featured .btn-price {
+    background: var(--amber); color: var(--bg);
+    border-color: var(--amber);
+  }
+  .pricing-card.featured .btn-price:hover {
+    background: var(--amber-dark);
+  }
+  .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px var(--shadow-md); }
+  .pricing-card h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 24px;
+  }
+  .price {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 3rem; font-weight: 700; color: var(--ink);
+    margin-bottom: 4px;
+    letter-spacing: -0.03em;
+  }
+  .price span { font-size: 1rem; color: var(--text-muted); font-weight: 400; }
+  .price-note {
+    font-size: 0.82rem; color: var(--text-muted); margin-bottom: 32px;
+    font-weight: 300;
+  }
+  .pricing-features { list-style: none; margin-bottom: 32px; text-align: left; }
+  .pricing-feature {
+    font-size: 0.9rem; color: var(--text-dim); padding: 9px 0;
+    padding-left: 24px; position: relative; font-weight: 400;
+  }
+  .pricing-feature::before {
+    content: '⬡'; position: absolute; left: 0; top: 8px;
+    font-size: 0.6rem; color: var(--amber);
+  }
+  .btn-price {
+    display: block; width: 100%; padding: 14px;
+    font-size: 0.85rem; font-weight: 600;
+    background: transparent; color: var(--text);
+    border: 2px solid var(--comb); cursor: pointer;
+    transition: all 0.3s; text-decoration: none;
+    font-family: 'Outfit', sans-serif;
+    clip-path: polygon(12px 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0% 50%);
+  }
+  .btn-price:hover { border-color: var(--amber); color: var(--amber); }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    padding: 140px 0; text-align: center;
+    position: relative;
+    background: var(--bg-honey);
+  }
+  .final-cta::before {
+    content: '';
+    position: absolute; inset: 0;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%235C4020' stroke-width='1'/%3E%3Cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='%235C4020' stroke-width='1'/%3E%3C/svg%3E");
+    background-size: 56px 100px;
+  }
+  .final-cta-hex {
+    width: 120px; height: 120px; margin: 0 auto 40px;
+    background: linear-gradient(135deg, var(--amber), var(--gold));
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .final-cta-hex span {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2.4rem; font-weight: 700; color: var(--bg);
+  }
+  .final-cta h2 {
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    margin-bottom: 20px; position: relative;
+    letter-spacing: -0.03em;
+  }
+  .final-cta h2 .highlight { color: var(--amber); }
+  .final-cta p {
+    font-size: 1.05rem; color: var(--text-dim);
+    max-width: 460px; margin: 0 auto 40px;
+    font-weight: 300; line-height: 1.7;
+    position: relative;
+  }
+  .final-cta .btn-primary { position: relative; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 72px 0 48px;
+    border-top: 2px solid var(--border);
+    background: var(--bg);
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
+    margin-bottom: 56px;
+  }
+  .footer-brand .nav-logo { margin-bottom: 16px; display: inline-block; }
+  .footer-brand p {
+    font-size: 0.88rem; color: var(--text-muted);
+    font-weight: 300; line-height: 1.65; max-width: 280px;
+  }
+  .footer-col h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 20px;
+  }
+  .footer-col a {
+    display: block; font-size: 0.88rem; color: var(--text-dim);
+    text-decoration: none; padding: 7px 0; font-weight: 400;
+    transition: color 0.3s;
+  }
+  .footer-col a:hover { color: var(--amber); }
+  .footer-bottom {
+    border-top: 1px solid var(--border-light); padding-top: 32px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-bottom p {
+    font-size: 0.78rem; color: var(--text-muted); font-weight: 300;
+  }
+  .footer-bottom-links { display: flex; gap: 28px; }
+  .footer-bottom-links a {
+    font-size: 0.78rem; color: var(--text-muted); text-decoration: none;
+    font-weight: 400; transition: color 0.3s;
+  }
+  .footer-bottom-links a:hover { color: var(--amber); }
+
+  /* ===== DIVIDER ===== */
+  .hex-divider {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    padding: 24px 0;
+  }
+  .hex-divider span {
+    display: block; width: 8px; height: 8px;
+    background: var(--comb);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+  .hex-divider span:nth-child(2) { width: 6px; height: 6px; opacity: 0.6; }
+  .hex-divider span:nth-child(3) { width: 4px; height: 4px; opacity: 0.3; }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-in {
+    opacity: 0;
+    animation: fade-in-up 0.8s ease forwards;
+  }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+  .delay-5 { animation-delay: 0.5s; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .features-grid { grid-template-columns: 1fr; }
+    .zigzag-row { grid-template-columns: 1fr; gap: 40px; }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .nav-links { display: none; }
+    .container { padding: 0 24px; }
+    .hero { padding: 80px 0 60px; }
+    .hero-hex-bg { width: 280px; height: 280px; }
+    .final-cta-hex { width: 80px; height: 80px; }
+    .final-cta-hex span { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <div class="container">
+    <nav>
+      <div class="nav-logo">m<span>eet</span></div>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#testimonial">Reviews</a>
+        <a href="#cta" class="nav-cta">Start Free</a>
+      </div>
+    </nav>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-hex-bg">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="100,10 180,55 180,145 100,190 20,145 20,55" fill="none" stroke="currentColor" stroke-width="1" style="color: var(--amber)"/>
+        <polygon points="100,30 160,60 160,140 100,170 40,140 40,60" fill="none" stroke="currentColor" stroke-width="0.5" style="color: var(--amber)"/>
+        <polygon points="100,50 140,70 140,130 100,150 60,130 60,70" fill="none" stroke="currentColor" stroke-width="0.5" style="color: var(--amber)"/>
+      </svg>
+    </div>
+    <div class="container">
+      <div class="hero-badge animate-in">Now in Public Beta</div>
+      <h1 class="animate-in delay-1">Meetings built like a <span class="highlight">honeycomb</span></h1>
+      <p class="animate-in delay-2">
+        Structured. Efficient. Every cell serves a purpose. No wasted space, no wasted time.
+      </p>
+      <div class="hero-actions animate-in delay-3">
+        <a href="#" class="btn-primary">Start Free</a>
+        <a href="#" class="btn-secondary">See How It Works</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="hex-divider"><span></span><span></span><span></span></div>
+
+  <!-- LOGOS -->
+  <section class="logos">
+    <div class="container">
+      <p class="logos-label">Trusted by structured teams</p>
+      <div class="logos-row">
+        <span class="logo-item">Hive</span>
+        <span class="logo-item">Comb</span>
+        <span class="logo-item">Swarm</span>
+        <span class="logo-item">Nectar</span>
+        <span class="logo-item">Apex</span>
+        <span class="logo-item">Hexa</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="hex-divider"><span></span><span></span><span></span></div>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="container">
+      <p class="section-label">What it does</p>
+      <h2 class="section-title">Every cell has a purpose</h2>
+      <p class="section-subtitle">
+        Nature's most efficient structure, applied to your team's schedule. Six sides. Zero waste.
+      </p>
+      <div class="features-grid">
+        <div class="feature-card animate-in">
+          <div class="feature-icon">⬡</div>
+          <h3>Smart Scheduling</h3>
+          <p>Timezone-aware booking that clicks into place. Like hexagons fitting together — no gaps, no overlaps.</p>
+        </div>
+        <div class="feature-card animate-in delay-1">
+          <div class="feature-icon">⬡</div>
+          <h3>Focus Rooms</h3>
+          <p>Structured meeting spaces with clear boundaries. Every participant knows their role from the start.</p>
+        </div>
+        <div class="feature-card animate-in delay-2">
+          <div class="feature-icon">⬡</div>
+          <h3>Hive Analytics</h3>
+          <p>See your team's meeting patterns from above. Macro view of efficiency, micro view of action items.</p>
+        </div>
+        <div class="feature-card animate-in delay-3">
+          <div class="feature-icon">⬡</div>
+          <h3>Calendar Sync</h3>
+          <p>Google, Outlook, Apple — all connected. Your availability flows between tools like honey through a comb.</p>
+        </div>
+        <div class="feature-card animate-in delay-4">
+          <div class="feature-icon">⬡</div>
+          <h3>Team Presence</h3>
+          <p>See who's available at a glance. Color-coded cells show status without the noise of chat apps.</p>
+        </div>
+        <div class="feature-card animate-in delay-5">
+          <div class="feature-icon">⬡</div>
+          <h3>Meeting Notes</h3>
+          <p>Auto-captured and structured. Each decision gets its own cell. Searchable, shareable, actionable.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ZIGZAG -->
+  <section class="zigzag">
+    <div class="container">
+      <div class="zigzag-row">
+        <div class="zigzag-content">
+          <p class="section-label">The structure</p>
+          <h2>Efficiency by design</h2>
+          <p>Bees evolved hexagons for a reason: maximum storage, minimum material. We applied the same logic to meetings. Every minute counts. Every cell connects.</p>
+          <ul class="zigzag-list">
+            <li>One-click booking links</li>
+            <li>Automatic timezone conversion</li>
+            <li>Smart buffer between meetings</li>
+            <li>No double-booking possible</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <span class="visual-placeholder">⬡</span>
+        </div>
+      </div>
+      <div class="zigzag-row reverse">
+        <div class="zigzag-content">
+          <p class="section-label">Built for teams</p>
+          <h2>One hive, many cells</h2>
+          <p>Each team member has their own cell. Each project has its own cluster. Zoom out to see the whole hive — or zoom in to focus on one conversation.</p>
+          <ul class="zigzag-list">
+            <li>Team availability overlays</li>
+            <li>Role-based room templates</li>
+            <li>Guest access without accounts</li>
+            <li>Export to any calendar format</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <span class="visual-placeholder">⬡⬡</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="testimonial" id="testimonial">
+    <div class="container">
+      <div class="testimonial-hex">"</div>
+      <blockquote class="testimonial-blockquote">
+        Our team went from chaotic scheduling to a well-oiled hive in one week. Meet's structure made everything click into place.
+      </blockquote>
+      <p class="testimonial-author">Marcus Chen</p>
+      <p class="testimonial-role">VP of Engineering, Hexa Labs</p>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <div class="pricing-header">
+        <p class="section-label">Pricing</p>
+        <h2 class="section-title">Pick your cell size</h2>
+        <p class="section-subtitle">Start small. Scale when the hive grows.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <h3>Solo</h3>
+          <div class="price">$0 <span>/mo</span></div>
+          <p class="price-note">Free forever</p>
+          <ul class="pricing-features">
+            <li class="pricing-feature">5 booking pages</li>
+            <li class="pricing-feature">Calendar sync</li>
+            <li class="pricing-feature">Email reminders</li>
+            <li class="pricing-feature">Basic analytics</li>
+          </ul>
+          <a href="#" class="btn-price">Get started</a>
+        </div>
+        <div class="pricing-card featured">
+          <h3>Team</h3>
+          <div class="price">$12 <span>/mo</span></div>
+          <p class="price-note">Per person, billed annually</p>
+          <ul class="pricing-features">
+            <li class="pricing-feature">Unlimited booking pages</li>
+            <li class="pricing-feature">Team availability</li>
+            <li class="pricing-feature">Focus rooms</li>
+            <li class="pricing-feature">Meeting notes AI</li>
+            <li class="pricing-feature">Priority support</li>
+          </ul>
+          <a href="#" class="btn-price">Start free trial</a>
+        </div>
+        <div class="pricing-card">
+          <h3>Hive</h3>
+          <div class="price">$29 <span>/mo</span></div>
+          <p class="price-note">Per person, billed annually</p>
+          <ul class="pricing-features">
+            <li class="pricing-feature">Everything in Team</li>
+            <li class="pricing-feature">Custom domains</li>
+            <li class="pricing-feature">API access</li>
+            <li class="pricing-feature">SSO & SAML</li>
+            <li class="pricing-feature">Dedicated manager</li>
+          </ul>
+          <a href="#" class="btn-price">Contact sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta" id="cta">
+    <div class="final-cta-hex"><span>⬡</span></div>
+    <div class="container">
+      <h2>Ready to build your <span class="highlight">hive</span>?</h2>
+      <p>No credit card. No commitment. Just structured meetings that actually work.</p>
+      <a href="#" class="btn-primary">Start your free account</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="nav-logo">m<span>eet</span></div>
+          <p>Structured meetings for efficient teams. Every cell serves a purpose.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="#">Features</a>
+          <a href="#">Pricing</a>
+          <a href="#">Integrations</a>
+          <a href="#">Changelog</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About</a>
+          <a href="#">Blog</a>
+          <a href="#">Careers</a>
+          <a href="#">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Security</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 Meet. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Twitter</a>
+          <a href="#">GitHub</a>
+          <a href="#">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = 'running';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.animate-in').forEach(el => {
+      el.style.animationPlayState = 'paused';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

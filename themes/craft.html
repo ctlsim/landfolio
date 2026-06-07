@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;500;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --kraft: #D4A574;
+    --kraft-dark: #B8895C;
+    --kraft-light: #E8CDB0;
+    --kraft-bg: #F5EDE3;
+    --ink: #2C1810;
+    --ink-light: #5C4033;
+    --ink-faint: #8B7355;
+    --twine: #C4A265;
+    --stamp-red: #A0522D;
+    --stamp-green: #556B2F;
+    --wax: #8B0000;
+    --paper: #FAF3EB;
+    --paper-dark: #EDE0D0;
+    --highlight: #FFF8DC;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Unbounded', sans-serif;
+    background: var(--kraft-bg);
+    color: var(--ink);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Unbounded', sans-serif;
+    font-weight: 500;
+  }
+
+  /* Kraft paper texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Container */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* Handwritten utility */
+  .handwritten {
+    font-family: 'Caveat', cursive;
+  }
+
+  /* Stamp utility */
+  .stamp {
+    display: inline-block;
+    padding: 6px 16px;
+    border: 2px solid var(--stamp-red);
+    color: var(--stamp-red);
+    font-family: 'Caveat', cursive;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transform: rotate(-3deg);
+    opacity: 0.8;
+    border-radius: 2px;
+  }
+
+  /* Twine divider */
+  .twine-divider {
+    height: 3px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--twine) 0px,
+      var(--twine) 8px,
+      transparent 8px,
+      transparent 12px
+    );
+    opacity: 0.4;
+    margin: 0;
+  }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(245,237,227,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 2px solid var(--kraft);
+  }
+  nav .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  .logo {
+    font-family: 'Caveat', cursive;
+    font-size: 2rem;
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 700;
+  }
+  .logo::after {
+    content: '✉';
+    margin-left: 4px;
+    font-size: 1.2rem;
+  }
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a {
+    color: var(--ink-light);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--stamp-red); }
+  .btn-nav {
+    color: var(--paper) !important;
+    background: var(--stamp-red);
+    padding: 10px 24px;
+    font-size: 0.75rem !important;
+    font-weight: 500;
+    border: none;
+    border-radius: 2px;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-nav:hover {
+    background: var(--wax);
+    transform: rotate(-1deg);
+  }
+
+  /* Hero */
+  .hero {
+    padding: 160px 0 80px;
+    position: relative;
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .hero-tag {
+    font-family: 'Caveat', cursive;
+    font-size: 1.3rem;
+    color: var(--ink-faint);
+    margin-bottom: 28px;
+    width: fit-content;
+    padding: 4px 0;
+    border-bottom: 2px solid var(--kraft);
+  }
+  .hero h1 {
+    font-size: clamp(3rem, 9vw, 7rem);
+    line-height: 0.95;
+    margin-bottom: 32px;
+    max-width: 850px;
+    font-weight: 700;
+  }
+  .hero h1 .accent {
+    font-family: 'Caveat', cursive;
+    color: var(--stamp-red);
+    font-weight: 700;
+  }
+  .hero .subhead {
+    font-size: 0.9rem;
+    max-width: 480px;
+    margin-bottom: 44px;
+    line-height: 1.7;
+    color: var(--ink-light);
+    font-weight: 300;
+  }
+  .cta-group {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 80px;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--stamp-red);
+    color: var(--paper);
+    padding: 18px 36px;
+    text-decoration: none;
+    font-family: 'Unbounded', sans-serif;
+    font-weight: 500;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 2px;
+    box-shadow: 3px 3px 0 var(--kraft-dark);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .btn-primary:hover {
+    box-shadow: 4px 4px 0 var(--kraft-dark);
+    transform: translate(-1px, -1px);
+  }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink-light);
+    padding: 18px 28px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 400;
+    border: 2px solid var(--kraft);
+    background: transparent;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover {
+    border-color: var(--stamp-red);
+    color: var(--stamp-red);
+  }
+
+  /* Hero Screenshot */
+  .hero-screenshot {
+    border: 2px solid var(--kraft);
+    background: var(--paper);
+    box-shadow: 4px 4px 0 var(--kraft);
+  }
+  .screenshot-mockup {
+    display: flex;
+    flex-direction: column;
+    min-height: 380px;
+  }
+  .mockup-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--kraft-light);
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    color: var(--ink-faint);
+  }
+  .mockup-topbar-left { display: flex; gap: 8px; }
+  .mockup-topbar-dot {
+    width: 8px; height: 8px;
+    border: 1.5px solid var(--kraft);
+    border-radius: 50%;
+  }
+  .mockup-body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 180px 1fr 220px;
+  }
+  .mock-sidebar {
+    border-right: 1px solid var(--kraft-light);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .mock-sidebar-item {
+    height: 8px;
+    background: var(--kraft-light);
+    border-radius: 1px;
+  }
+  .mock-sidebar-item.active {
+    background: var(--stamp-red);
+    opacity: 0.7;
+  }
+  .mock-main {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .mock-line {
+    height: 8px;
+    background: var(--kraft-light);
+    border-radius: 1px;
+  }
+  .mock-line.title {
+    height: 12px;
+    background: var(--kraft);
+    width: 50%;
+  }
+  .mock-line.highlight {
+    border-left: 3px solid var(--stamp-green);
+    padding-left: 10px;
+    background: var(--highlight);
+  }
+  .mock-right {
+    border-left: 1px solid var(--kraft-light);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .mock-action {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--kraft-light);
+    background: var(--paper);
+    border-radius: 1px;
+  }
+  .mock-action-dot {
+    width: 6px; height: 6px;
+    background: var(--stamp-red);
+    opacity: 0.6;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .mock-action-line {
+    height: 6px;
+    background: var(--kraft-light);
+    flex: 1;
+    border-radius: 1px;
+  }
+
+  /* Marquee */
+  .marquee-section {
+    overflow: hidden;
+    padding: 24px 0;
+    border-top: 2px solid var(--kraft);
+    border-bottom: 2px solid var(--kraft);
+    background: var(--paper);
+  }
+  .marquee-track {
+    display: flex;
+    gap: 48px;
+    animation: marquee 25s linear infinite;
+    white-space: nowrap;
+  }
+  .marquee-item {
+    font-family: 'Caveat', cursive;
+    font-size: 1.4rem;
+    color: var(--ink-faint);
+    flex-shrink: 0;
+  }
+  .marquee-item.divider {
+    color: var(--kraft);
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* Features */
+  .features { }
+  .features-header {
+    padding: 80px 0 48px;
+    border-bottom: 2px solid var(--kraft);
+  }
+  .features-header h2 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1;
+    font-weight: 700;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .feature-card {
+    padding: 56px 36px;
+    border-right: 1px solid var(--kraft);
+    position: relative;
+    transition: background 0.3s;
+  }
+  .feature-card:last-child { border-right: none; }
+  .feature-card:hover { background: rgba(212,165,116,0.08); }
+  .feature-number {
+    font-family: 'Caveat', cursive;
+    font-size: 3.5rem;
+    color: var(--stamp-red);
+    opacity: 0.3;
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+  .feature-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .feature-card p {
+    font-size: 0.82rem;
+    line-height: 1.8;
+    color: var(--ink-light);
+    font-weight: 300;
+  }
+
+  /* Zigzag */
+  .zigzag { }
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .zigzag-copy {
+    padding: 80px 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 1px solid var(--kraft);
+  }
+  .zigzag-row.reverse .zigzag-copy {
+    order: 2;
+    border-right: none;
+    border-left: 1px solid var(--kraft);
+  }
+  .zigzag-copy h2 {
+    font-size: 2rem;
+    margin-bottom: 24px;
+    line-height: 1.15;
+    font-weight: 500;
+  }
+  .zigzag-copy p {
+    font-size: 0.85rem;
+    line-height: 1.8;
+    color: var(--ink-light);
+    margin-bottom: 32px;
+    font-weight: 300;
+  }
+  .zigzag-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--paper);
+    min-height: 360px;
+    padding: 40px;
+  }
+  .zigzag-visual-inner {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .conn-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border: 1.5px solid var(--kraft);
+    background: var(--paper);
+    border-radius: 2px;
+  }
+  .conn-icon {
+    width: 30px; height: 30px;
+    border: 1.5px solid var(--stamp-red);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--stamp-red);
+    border-radius: 50%;
+    background: rgba(160,82,45,0.05);
+  }
+  .conn-line {
+    height: 2px;
+    background: var(--kraft);
+    flex: 1;
+    opacity: 0.4;
+  }
+  .conn-badge {
+    font-family: 'Caveat', cursive;
+    font-size: 0.95rem;
+    padding: 2px 10px;
+    border: 1px solid var(--stamp-green);
+    color: var(--stamp-green);
+    border-radius: 2px;
+  }
+
+  /* Testimonial */
+  .testimonial {
+    padding: 100px 0;
+    border-top: 2px solid var(--kraft);
+    border-bottom: 2px solid var(--kraft);
+    background: var(--paper);
+  }
+  .testimonial-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .testimonial blockquote {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    line-height: 1.3;
+    margin-bottom: 40px;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .testimonial blockquote::before {
+    content: '\201C';
+    font-size: 5rem;
+    color: var(--kraft);
+    line-height: 0;
+    vertical-align: -0.4em;
+    margin-right: 4px;
+  }
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  .author-avatar {
+    width: 40px; height: 40px;
+    border: 2px solid var(--kraft);
+    background: var(--kraft-light);
+    border-radius: 50%;
+  }
+  .author-info { text-align: left; }
+  .author-info .name {
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  .author-info .role {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    color: var(--ink-faint);
+    margin-top: 2px;
+  }
+
+  /* Pricing */
+  .pricing { }
+  .pricing-header {
+    padding: 80px 0 48px;
+    text-align: center;
+    border-bottom: 2px solid var(--kraft);
+  }
+  .pricing-header h2 {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+  .pricing-header p {
+    font-family: 'Caveat', cursive;
+    font-size: 1.3rem;
+    color: var(--ink-faint);
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding-bottom: 80px;
+  }
+  .pricing-card {
+    padding: 48px 32px;
+    border-right: 1px solid var(--kraft);
+    text-align: center;
+    position: relative;
+    transition: background 0.3s;
+  }
+  .pricing-card:last-child { border-right: none; }
+  .pricing-card:hover { background: rgba(212,165,116,0.06); }
+  .pricing-card.featured {
+    background: var(--paper);
+    border: 2px solid var(--stamp-red);
+    box-shadow: 4px 4px 0 var(--kraft);
+  }
+  .pricing-card.featured::before {
+    content: 'MOST POPULAR';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    background: var(--stamp-red);
+    color: var(--paper);
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    padding: 4px 20px;
+    border-radius: 2px;
+  }
+  .pricing-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+    margin-top: 8px;
+    font-weight: 500;
+  }
+  .pricing-card .price {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+  .pricing-card .price span {
+    font-size: 0.9rem;
+    font-weight: 300;
+  }
+  .pricing-card .period {
+    font-family: 'Caveat', cursive;
+    font-size: 1.1rem;
+    margin-bottom: 32px;
+    color: var(--ink-faint);
+  }
+  .pricing-card ul {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 36px;
+  }
+  .pricing-card li {
+    padding: 10px 0;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--kraft-light);
+    color: var(--ink-light);
+    font-weight: 300;
+  }
+  .pricing-card li::before {
+    content: '\2713';
+    color: var(--stamp-green);
+    font-weight: 700;
+  }
+  .btn-pricing {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    text-decoration: none;
+    font-family: 'Unbounded', sans-serif;
+    font-weight: 400;
+    font-size: 0.78rem;
+    text-align: center;
+    border: 2px solid var(--kraft);
+    color: var(--ink);
+    background: transparent;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .btn-pricing:hover {
+    border-color: var(--stamp-red);
+    color: var(--stamp-red);
+  }
+  .btn-pricing.filled {
+    background: var(--stamp-red);
+    border-color: var(--stamp-red);
+    color: var(--paper);
+    box-shadow: 2px 2px 0 var(--kraft-dark);
+  }
+  .btn-pricing.filled:hover {
+    background: var(--wax);
+    border-color: var(--wax);
+  }
+
+  /* Final CTA */
+  .final-cta {
+    padding: 120px 0;
+    text-align: center;
+    background: var(--paper);
+    border-top: 2px solid var(--kraft);
+  }
+  .final-cta h2 {
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    line-height: 1;
+    margin-bottom: 24px;
+    font-weight: 700;
+  }
+  .final-cta h2 .accent {
+    font-family: 'Caveat', cursive;
+    color: var(--stamp-red);
+    font-weight: 700;
+  }
+  .final-cta p {
+    font-size: 0.9rem;
+    color: var(--ink-light);
+    margin-bottom: 48px;
+    font-weight: 300;
+  }
+
+  /* Footer */
+  footer {
+    padding: 28px 0;
+    text-align: center;
+    border-top: 2px solid var(--kraft);
+    font-family: 'Caveat', cursive;
+    font-size: 1.1rem;
+    color: var(--ink-faint);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .features-grid,
+    .pricing-grid { grid-template-columns: 1fr; }
+    .feature-card { border-right: none; border-bottom: 1px solid var(--kraft); }
+    .feature-card:last-child { border-bottom: none; }
+    .pricing-card { border-right: none; border-bottom: 1px solid var(--kraft); }
+    .pricing-card:last-child { border-bottom: none; }
+    .zigzag-row { grid-template-columns: 1fr; }
+    .zigzag-row.reverse .zigzag-copy { order: 0; border-left: none; }
+    .zigzag-copy { border-right: none !important; border-bottom: 1px solid var(--kraft); }
+    .mockup-body { grid-template-columns: 1fr; }
+    .mock-sidebar, .mock-right { display: none; }
+    .nav-links { display: none; }
+    .hero { padding-top: 120px; min-height: auto; }
+    .zigzag-visual { min-height: 260px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="container">
+    <a href="#" class="logo">Meet</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="btn-nav">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-tag reveal">AI Meeting Notes</div>
+    <h1 class="reveal">Meetings That Don't<br><span class="accent">Waste Your Week</span></h1>
+    <p class="subhead reveal">AI notes that turn transcripts into action items. Syncs to Notion, Linear, Slack — so nothing falls through the cracks.</p>
+    <div class="cta-group reveal">
+      <a href="#" class="btn-primary">Connect calendar — free 14 days</a>
+      <a href="#features" class="btn-secondary">See how it works ↓</a>
+    </div>
+    <div class="hero-screenshot reveal">
+      <div class="screenshot-mockup">
+        <div class="mockup-topbar">
+          <div class="mockup-topbar-left">
+            <div class="mockup-topbar-dot"></div>
+            <div class="mockup-topbar-dot"></div>
+            <div class="mockup-topbar-dot"></div>
+          </div>
+          <span>meet://meetings/today</span>
+        </div>
+        <div class="mockup-body">
+          <div class="mock-sidebar">
+            <div class="mock-sidebar-item active" style="width:80%"></div>
+            <div class="mock-sidebar-item" style="width:65%"></div>
+            <div class="mock-sidebar-item" style="width:90%"></div>
+            <div class="mock-sidebar-item" style="width:50%"></div>
+            <div class="mock-sidebar-item" style="width:75%"></div>
+          </div>
+          <div class="mock-main">
+            <div class="mock-line title"></div>
+            <div class="mock-line" style="width:100%"></div>
+            <div class="mock-line" style="width:85%"></div>
+            <div class="mock-line" style="width:95%"></div>
+            <div class="mock-line" style="width:70%"></div>
+            <div class="mock-line highlight" style="width:100%"></div>
+            <div class="mock-line highlight" style="width:80%"></div>
+          </div>
+          <div class="mock-right">
+            <div class="mock-action">
+              <div class="mock-action-dot"></div>
+              <div class="mock-action-line"></div>
+            </div>
+            <div class="mock-action">
+              <div class="mock-action-dot"></div>
+              <div class="mock-action-line"></div>
+            </div>
+            <div class="mock-action">
+              <div class="mock-action-dot"></div>
+              <div class="mock-action-line"></div>
+            </div>
+            <div class="mock-action">
+              <div class="mock-action-dot"></div>
+              <div class="mock-action-line"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Marquee -->
+<section class="marquee-section">
+  <div class="marquee-track">
+    <span class="marquee-item">Vercel</span>
+    <span class="marquee-item divider">✦</span>
+    <span class="marquee-item">Stripe</span>
+    <span class="marquee-item divider">✦</span>
+    <span class="marquee-item">Notion</span>
+    <span class="marquee-item divider">✦</span>
+    <span class="marquee-item">Linear</span>
+    <span class="marquee-item divider">✦</span>
+    <span class="marquee-item">Figma</span>
+    <span class="marquee-item divider">✦</span>
+    <span class="marquee-item">Raycast</span>
+    <span class="marquee-item divider">✦</span>
+    <span class="marquee-item">Vercel</span>
+    <span class="marquee-item divider">✦</span>
+    <span class="marquee-item">Stripe</span>
+    <span class="marquee-item divider">✦</span>
+    <span class="marquee-item">Notion</span>
+    <span class="marquee-item divider">✦</span>
+    <span class="marquee-item">Linear</span>
+    <span class="marquee-item divider">✦</span>
+    <span class="marquee-item">Figma</span>
+    <span class="marquee-item divider">✦</span>
+    <span class="marquee-item">Raycast</span>
+    <span class="marquee-item divider">✦</span>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features" id="features">
+  <div class="features-header">
+    <div class="container">
+      <h2 class="reveal">What it does</h2>
+    </div>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-number">壹</div>
+      <h3>Transcribe</h3>
+      <p>Every word captured. Speaker-labeled. Searchable. Your meetings become a permanent record you can actually find things in.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-number">貳</div>
+      <h3>Summarize</h3>
+      <p>AI distills 60 minutes into 3 bullet points and 5 action items. Skip the replay. Get the signal.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-number">參</div>
+      <h3>Sync</h3>
+      <p>Pushes to your tools. Notion pages, Linear tickets, Slack threads. One click. Every tool updated.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Zigzag -->
+<section class="zigzag">
+  <div class="zigzag-row">
+    <div class="zigzag-copy reveal">
+      <h2>One click.<br>Every tool updated.</h2>
+      <p>Connect your workspace tools once. Meet pushes the right content to the right place — meeting notes to Notion, bugs to Linear, decisions to Slack. No copy-paste. No "I'll get back to you."</p>
+      <a href="#" class="btn-secondary">View integrations →</a>
+    </div>
+    <div class="zigzag-visual reveal">
+      <div class="zigzag-visual-inner">
+        <div class="conn-row">
+          <div class="conn-icon">N</div>
+          <div class="conn-line"></div>
+          <span class="conn-badge">Connected</span>
+        </div>
+        <div class="conn-row">
+          <div class="conn-icon">L</div>
+          <div class="conn-line"></div>
+          <span class="conn-badge">Connected</span>
+        </div>
+        <div class="conn-row">
+          <div class="conn-icon">S</div>
+          <div class="conn-line"></div>
+          <span class="conn-badge">Connected</span>
+        </div>
+        <div class="conn-row">
+          <div class="conn-icon">G</div>
+          <div class="conn-line"></div>
+          <span class="conn-badge">Connected</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="zigzag-row reverse">
+    <div class="zigzag-copy reveal">
+      <h2>Notes that<br>actually live somewhere useful</h2>
+      <p>Every meeting generates a polished Notion page automatically. Headings, tables, timestamps — formatted like a human wrote them. Your team finds the context they need without asking.</p>
+    </div>
+    <div class="zigzag-visual reveal">
+      <div class="zigzag-visual-inner">
+        <div class="mock-line title" style="width:45%;"></div>
+        <div class="mock-line" style="width:100%;"></div>
+        <div class="mock-line" style="width:80%;"></div>
+        <div class="mock-line" style="width:90%;"></div>
+        <div class="mock-line highlight" style="width:70%;"></div>
+        <div class="mock-line highlight" style="width:85%;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonial -->
+<section class="testimonial">
+  <div class="container">
+    <div class="testimonial-inner reveal">
+      <blockquote>We went from 4 hours of note-taking per week to zero. Meet just works.</blockquote>
+      <div class="testimonial-author">
+        <div class="author-avatar"></div>
+        <div class="author-info">
+          <div class="name">Sarah Chen</div>
+          <div class="role">VP of Product · Linear</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="pricing" id="pricing">
+  <div class="pricing-header">
+    <div class="container">
+      <h2 class="reveal">Pricing</h2>
+      <p class="reveal">Start free. Upgrade when you're ready.</p>
+    </div>
+  </div>
+  <div class="pricing-grid">
+    <div class="pricing-card reveal">
+      <h3>Free</h3>
+      <div class="price">$0<span>/mo</span></div>
+      <div class="period">10 meetings / month</div>
+      <ul>
+        <li>AI transcription</li>
+        <li>Basic summaries</li>
+        <li>1 integration</li>
+      </ul>
+      <a href="#" class="btn-pricing">Get started</a>
+    </div>
+    <div class="pricing-card featured reveal">
+      <h3>Pro</h3>
+      <div class="price">$12<span>/mo</span></div>
+      <div class="period">Unlimited meetings</div>
+      <ul>
+        <li>Everything in Free</li>
+        <li>AI summaries & action items</li>
+        <li>Unlimited integrations</li>
+        <li>Search across all meetings</li>
+      </ul>
+      <a href="#" class="btn-pricing filled">Start free trial</a>
+    </div>
+    <div class="pricing-card reveal">
+      <h3>Team</h3>
+      <div class="price">$29<span>/mo</span></div>
+      <div class="period">Per seat, min 5</div>
+      <ul>
+        <li>Everything in Pro</li>
+        <li>Shared workspace</li>
+        <li>Admin controls</li>
+        <li>SSO & audit logs</li>
+      </ul>
+      <a href="#" class="btn-pricing">Contact sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<section class="final-cta">
+  <div class="container">
+    <h2 class="reveal">Stop taking notes.<br><span class="accent">Start getting things done.</span></h2>
+    <p class="reveal">Your calendar already knows about your meetings. Let Meet handle the rest.</p>
+    <a href="#" class="btn-primary reveal">Start free — no credit card →</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <p>© 2024 Meet. Built for people who value their time.</p>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

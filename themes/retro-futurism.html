@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Righteous&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F0E8;
+    --bg-light: #FAF7F2;
+    --bg-card: #FFFFFF;
+    --bg-card-alt: #F0EDE6;
+    --text: #1A1A2E;
+    --text-dim: #5A5A6E;
+    --text-muted: #9A9AAA;
+    --orange: #FF6B2B;
+    --orange-light: #FF8F5E;
+    --orange-dark: #E55A1B;
+    --orange-glow: rgba(255, 107, 43, 0.15);
+    --chrome-1: #E8E4DD;
+    --chrome-2: #D4CFC6;
+    --chrome-3: #C8C2B8;
+    --silver: #B8B4AC;
+    --border: rgba(26, 26, 46, 0.08);
+    --shadow-hard: 4px 4px 0px var(--text);
+    --shadow-orange: 4px 4px 0px var(--orange);
+    --radius: 12px;
+    --radius-lg: 20px;
+    --radius-xl: 32px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 400;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Righteous', cursive;
+    line-height: 1.15;
+    letter-spacing: 0.02em;
+  }
+
+  /* ============ BACKGROUND SHAPES ============ */
+  .bg-shapes {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0;
+    overflow: hidden;
+  }
+
+  .saucer {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.06;
+    background: var(--orange);
+  }
+
+  .saucer::after {
+    content: '';
+    position: absolute;
+    bottom: -20%;
+    left: 10%;
+    width: 80%;
+    height: 40%;
+    border-radius: 50%;
+    background: var(--chrome-2);
+    opacity: 0.5;
+  }
+
+  .saucer:nth-child(1) {
+    width: 300px; height: 80px;
+    top: 10%; left: -5%;
+    animation: saucerFloat 25s ease-in-out infinite;
+  }
+
+  .saucer:nth-child(2) {
+    width: 200px; height: 55px;
+    top: 40%; right: -3%;
+    animation: saucerFloat 30s ease-in-out infinite reverse;
+    animation-delay: -8s;
+  }
+
+  .saucer:nth-child(3) {
+    width: 250px; height: 70px;
+    bottom: 15%; left: 30%;
+    animation: saucerFloat 20s ease-in-out infinite;
+    animation-delay: -12s;
+  }
+
+  .saucer:nth-child(4) {
+    width: 150px; height: 40px;
+    top: 60%; left: 10%;
+    animation: saucerFloat 22s ease-in-out infinite reverse;
+    animation-delay: -5s;
+  }
+
+  /* Atomic starbursts */
+  .starburst {
+    position: absolute;
+    width: 60px; height: 60px;
+    opacity: 0.04;
+  }
+
+  .starburst::before, .starburst::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--text);
+  }
+
+  .starburst::before { transform: rotate(0deg); }
+  .starburst::after { transform: rotate(45deg); }
+
+  .starburst:nth-child(5) { top: 20%; right: 15%; }
+  .starburst:nth-child(6) { bottom: 30%; left: 5%; }
+  .starburst:nth-child(7) { top: 70%; right: 8%; }
+
+  @keyframes saucerFloat {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(30px, -20px) rotate(3deg); }
+    50% { transform: translate(-15px, 15px) rotate(-2deg); }
+    75% { transform: translate(20px, 10px) rotate(1deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+  }
+
+  /* Googie arch divider */
+  .googie-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 40px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .googie-divider::before {
+    content: '';
+    flex: 1;
+    max-width: 200px;
+    height: 2px;
+    background: var(--chrome-2);
+  }
+
+  .googie-divider::after {
+    content: '';
+    flex: 1;
+    max-width: 200px;
+    height: 2px;
+    background: var(--chrome-2);
+  }
+
+  .googie-star {
+    width: 10px; height: 10px;
+    background: var(--orange);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  /* Container */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  section {
+    padding: 100px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 36px;
+    font-family: 'Righteous', cursive;
+    font-size: 15px;
+    text-decoration: none;
+    border: 2px solid var(--text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: var(--radius);
+    letter-spacing: 0.04em;
+  }
+
+  .btn-primary {
+    background: var(--orange);
+    color: white;
+    border-color: var(--text);
+    box-shadow: var(--shadow-hard);
+  }
+
+  .btn-primary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--text);
+    background: var(--orange-light);
+  }
+
+  .btn-primary:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px var(--text);
+  }
+
+  .btn-secondary {
+    background: var(--bg-card);
+    color: var(--text);
+    box-shadow: var(--shadow-hard);
+  }
+
+  .btn-secondary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--text);
+    background: var(--bg-card-alt);
+  }
+
+  .btn-secondary:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px var(--text);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--orange);
+    border-color: var(--orange);
+    box-shadow: none;
+  }
+
+  .btn-ghost:hover {
+    background: var(--orange-glow);
+    transform: translate(-2px, -2px);
+    box-shadow: 3px 3px 0px var(--orange);
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding-top: 60px;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 24px;
+    padding: 8px 24px;
+    border: 2px solid var(--orange);
+    border-radius: 50px;
+    background: var(--orange-glow);
+  }
+
+  .hero h1 {
+    font-size: clamp(44px, 8vw, 84px);
+    color: var(--text);
+    max-width: 850px;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 .highlight {
+    color: var(--orange);
+    position: relative;
+    display: inline-block;
+  }
+
+  .hero h1 .highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: var(--orange);
+    opacity: 0.25;
+    border-radius: 3px;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--text-dim);
+    max-width: 520px;
+    margin-bottom: 40px;
+    font-weight: 300;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 70px;
+  }
+
+  /* Hero mockup — saucer-shaped */
+  .hero-mockup {
+    width: 100%;
+    max-width: 850px;
+    background: var(--bg-card);
+    border: 2px solid var(--text);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-hard);
+    position: relative;
+  }
+
+  .mockup-bar {
+    height: 36px;
+    background: var(--bg-card-alt);
+    border-bottom: 2px solid var(--text);
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    gap: 8px;
+  }
+
+  .mockup-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--text);
+  }
+
+  .mockup-dot:nth-child(1) { background: var(--orange); }
+  .mockup-dot:nth-child(2) { background: var(--chrome-1); }
+  .mockup-dot:nth-child(3) { background: var(--chrome-2); }
+
+  .mockup-body {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 16px;
+    height: 280px;
+  }
+
+  .mockup-sidebar {
+    background: var(--bg-card-alt);
+    border: 2px solid var(--text);
+    border-radius: var(--radius);
+    padding: 14px;
+  }
+
+  .mockup-sidebar-line {
+    height: 8px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    background: var(--chrome-1);
+    border: 1px solid var(--border);
+  }
+
+  .mockup-sidebar-line:nth-child(1) { width: 60%; background: var(--orange-glow); border-color: var(--orange); }
+  .mockup-sidebar-line:nth-child(2) { width: 80%; }
+  .mockup-sidebar-line:nth-child(3) { width: 45%; }
+  .mockup-sidebar-line:nth-child(4) { width: 70%; }
+  .mockup-sidebar-line:nth-child(5) { width: 55%; }
+
+  .mockup-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .mockup-card {
+    background: var(--bg-card-alt);
+    border: 2px solid var(--text);
+    border-radius: var(--radius);
+    padding: 14px;
+  }
+
+  .mockup-card-title {
+    height: 8px;
+    width: 45%;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    background: var(--orange-glow);
+    border: 1px solid var(--orange);
+  }
+
+  .mockup-card-line {
+    height: 4px;
+    background: var(--chrome-1);
+    border-radius: 2px;
+    margin-bottom: 6px;
+    border: 1px solid var(--border);
+  }
+
+  .mockup-card-line:nth-child(2) { width: 90%; }
+  .mockup-card-line:nth-child(3) { width: 75%; }
+  .mockup-card-line:nth-child(4) { width: 60%; }
+
+  /* ============ LOGOS ============ */
+  .logos-section {
+    padding: 60px 0;
+  }
+
+  .logos-label {
+    text-align: center;
+    font-family: 'Outfit', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 36px;
+  }
+
+  .logos-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 44px;
+    flex-wrap: wrap;
+  }
+
+  .logo-item {
+    font-family: 'Righteous', cursive;
+    font-size: 18px;
+    color: var(--text-muted);
+    opacity: 0.4;
+    letter-spacing: 0.06em;
+  }
+
+  /* ============ FEATURES ============ */
+  .features-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .section-eyebrow {
+    font-family: 'Outfit', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-size: clamp(30px, 4.5vw, 46px);
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .section-subtitle {
+    font-size: 16px;
+    color: var(--text-dim);
+    max-width: 500px;
+    margin: 0 auto;
+    font-weight: 300;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .feature-card {
+    background: var(--bg-card);
+    padding: 32px 24px;
+    border: 2px solid var(--text);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-hard);
+    position: relative;
+    transition: all 0.2s ease;
+  }
+
+  .feature-card:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 7px 7px 0px var(--text);
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: -2px; left: -2px;
+    width: 30px; height: 30px;
+    background: var(--orange);
+    border-radius: 0 var(--radius-lg) 0 0;
+    border-right: 2px solid var(--text);
+    border-bottom: 2px solid var(--text);
+  }
+
+  .feature-icon {
+    width: 44px; height: 44px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    border: 2px solid var(--text);
+    border-radius: 50%;
+    background: var(--orange-glow);
+    color: var(--orange);
+  }
+
+  .feature-card h3 {
+    font-size: 18px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .feature-card p {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* ============ ZIGZAG ============ */
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: center;
+    margin-bottom: 80px;
+  }
+
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-visual { order: 2; }
+  .zigzag-row.reverse .zigzag-content { order: 1; }
+
+  .zigzag-content h3 {
+    font-size: 30px;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+
+  .zigzag-content p {
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 20px;
+    font-weight: 300;
+  }
+
+  .zigzag-visual {
+    aspect-ratio: 4/3;
+    background: var(--bg-card);
+    border: 2px solid var(--text);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-hard);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .visual-inner {
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .visual-bar {
+    height: 14px;
+    border-radius: 7px;
+    border: 2px solid var(--text);
+  }
+
+  .visual-bar.c1 { background: var(--orange-glow); }
+  .visual-bar.c2 { background: var(--chrome-1); }
+  .visual-bar.c3 { background: var(--bg-card-alt); }
+  .visual-bar.c4 { background: var(--chrome-2); }
+  .visual-bar.w70 { width: 70%; }
+  .visual-bar.w50 { width: 50%; }
+  .visual-bar.w85 { width: 85%; }
+  .visual-bar.w40 { width: 40%; }
+
+  .visual-block {
+    flex: 1;
+    background: var(--bg-card-alt);
+    border: 2px solid var(--text);
+    border-radius: var(--radius);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .visual-mini {
+    border-radius: var(--radius);
+    border: 2px solid var(--text);
+  }
+
+  .visual-mini:nth-child(1) { background: var(--orange-glow); }
+  .visual-mini:nth-child(2) { background: var(--chrome-1); }
+  .visual-mini:nth-child(3) { background: var(--chrome-2); }
+  .visual-mini:nth-child(4) { background: var(--bg-card-alt); }
+
+  /* ============ TESTIMONIAL ============ */
+  .testimonial-section {
+    background: var(--bg-light);
+    border-top: 2px solid var(--text);
+    border-bottom: 2px solid var(--text);
+  }
+
+  .testimonial-card {
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .testimonial-quote {
+    font-family: 'Righteous', cursive;
+    font-size: clamp(20px, 3vw, 28px);
+    color: var(--text);
+    line-height: 1.4;
+    margin-bottom: 36px;
+  }
+
+  .testimonial-quote::before {
+    content: '\201C';
+    display: block;
+    font-size: 80px;
+    color: var(--orange);
+    line-height: 0.7;
+    margin-bottom: 8px;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .testimonial-avatar {
+    width: 48px; height: 48px;
+    border: 2px solid var(--text);
+    border-radius: 50%;
+    background: var(--orange-glow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--orange);
+    font-family: 'Righteous', cursive;
+    font-size: 16px;
+  }
+
+  .testimonial-name { text-align: left; }
+
+  .testimonial-name strong {
+    display: block;
+    font-family: 'Righteous', cursive;
+    font-size: 15px;
+    color: var(--text);
+  }
+
+  .testimonial-name span {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+
+  /* ============ PRICING ============ */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .pricing-card {
+    background: var(--bg-card);
+    padding: 36px 28px;
+    border: 2px solid var(--text);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-hard);
+    text-align: center;
+    transition: all 0.2s ease;
+  }
+
+  .pricing-card.featured {
+    border-color: var(--orange);
+    box-shadow: var(--shadow-orange);
+    position: relative;
+    background: linear-gradient(180deg, var(--orange-glow), var(--bg-card) 30%);
+  }
+
+  .pricing-card.featured::after {
+    content: '\2605';
+    position: absolute;
+    top: -14px; right: 24px;
+    font-size: 22px;
+    color: var(--orange);
+    background: var(--bg-card);
+    border: 2px solid var(--text);
+    width: 32px; height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    line-height: 1;
+  }
+
+  .pricing-card:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 7px 7px 0px var(--text);
+  }
+
+  .pricing-card.featured:hover {
+    box-shadow: 7px 7px 0px var(--orange);
+  }
+
+  .pricing-tier {
+    font-family: 'Outfit', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .pricing-card.featured .pricing-tier { color: var(--orange); }
+
+  .pricing-amount {
+    font-family: 'Righteous', cursive;
+    font-size: 44px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .pricing-amount span {
+    font-size: 14px;
+    color: var(--text-dim);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+  }
+
+  .pricing-desc {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+    font-weight: 300;
+  }
+
+  .pricing-features {
+    list-style: none;
+    margin-bottom: 28px;
+    text-align: left;
+  }
+
+  .pricing-features li {
+    font-size: 13px;
+    color: var(--text-dim);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-weight: 400;
+  }
+
+  .pricing-features li::before {
+    content: '\25C6';
+    color: var(--orange);
+    margin-right: 8px;
+    font-size: 8px;
+  }
+
+  /* ============ FINAL CTA ============ */
+  .final-cta {
+    text-align: center;
+    padding: 100px 0;
+    position: relative;
+  }
+
+  .final-cta-box {
+    background: var(--text);
+    color: white;
+    padding: 60px 40px;
+    border-radius: var(--radius-xl);
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .final-cta-box::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -20%;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: var(--orange);
+    opacity: 0.1;
+  }
+
+  .final-cta-box::after {
+    content: '';
+    position: absolute;
+    bottom: -30%; left: -10%;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: var(--orange-light);
+    opacity: 0.08;
+  }
+
+  .final-cta h2 {
+    font-size: clamp(30px, 4.5vw, 48px);
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .final-cta h2 .highlight {
+    color: var(--orange);
+  }
+
+  .final-cta p {
+    font-size: 16px;
+    opacity: 0.7;
+    max-width: 440px;
+    margin: 0 auto 36px;
+    font-weight: 300;
+    position: relative;
+    z-index: 1;
+  }
+
+  .final-cta .btn-primary {
+    position: relative;
+    z-index: 1;
+    border-color: white;
+    box-shadow: 4px 4px 0px rgba(255,255,255,0.3);
+  }
+
+  .final-cta .btn-primary:hover {
+    box-shadow: 6px 6px 0px rgba(255,255,255,0.4);
+  }
+
+  .final-cta .btn-secondary {
+    position: relative;
+    z-index: 1;
+    background: transparent;
+    color: white;
+    border-color: rgba(255,255,255,0.3);
+    box-shadow: none;
+  }
+
+  .final-cta .btn-secondary:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.5);
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    padding: 50px 0;
+    border-top: 2px solid var(--text);
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 36px;
+  }
+
+  .footer-brand h4 {
+    font-family: 'Righteous', cursive;
+    font-size: 22px;
+    color: var(--text);
+    margin-bottom: 10px;
+    letter-spacing: 0.06em;
+  }
+
+  .footer-brand p {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    max-width: 240px;
+    font-weight: 300;
+  }
+
+  .footer-col h5 {
+    font-family: 'Righteous', cursive;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 14px;
+  }
+
+  .footer-col a {
+    display: block;
+    font-size: 13px;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 4px 0;
+    transition: color 0.2s ease;
+    font-weight: 400;
+  }
+
+  .footer-col a:hover { color: var(--orange); }
+
+  .footer-bottom {
+    padding-top: 24px;
+    border-top: 2px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .footer-bottom p {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 768px) {
+    .container { padding: 0 24px; }
+    section { padding: 70px 0; }
+
+    .features-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .zigzag-row { grid-template-columns: 1fr; gap: 30px; }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .zigzag-row.reverse .zigzag-content { order: 0; }
+
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+
+    .mockup-body { grid-template-columns: 1fr; }
+    .mockup-sidebar { display: none; }
+
+    .final-cta-box { padding: 40px 24px; }
+  }
+
+  /* Fade-in animation */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-shapes">
+  <div class="saucer"></div>
+  <div class="saucer"></div>
+  <div class="saucer"></div>
+  <div class="saucer"></div>
+  <div class="starburst"></div>
+  <div class="starburst"></div>
+  <div class="starburst"></div>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container">
+    <p class="hero-eyebrow">&#9898; Straight from the future</p>
+    <h1>Meetings from <span class="highlight">tomorrow</span></h1>
+    <p class="hero-sub">They told us the future would have flying cars. Instead we got calendar invites. Meet fixes that — with style from 1965.</p>
+    <div class="hero-buttons">
+      <a href="#" class="btn btn-primary">Blast Off Free Trial</a>
+      <a href="#" class="btn btn-secondary">View Blueprint</a>
+    </div>
+    <div class="hero-mockup">
+      <div class="mockup-bar">
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+      </div>
+      <div class="mockup-body">
+        <div class="mockup-sidebar">
+          <div class="mockup-sidebar-line"></div>
+          <div class="mockup-sidebar-line"></div>
+          <div class="mockup-sidebar-line"></div>
+          <div class="mockup-sidebar-line"></div>
+          <div class="mockup-sidebar-line"></div>
+        </div>
+        <div class="mockup-main">
+          <div class="mockup-card">
+            <div class="mockup-card-title"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+          </div>
+          <div class="mockup-card">
+            <div class="mockup-card-title"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+          </div>
+          <div class="mockup-card">
+            <div class="mockup-card-title"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+          </div>
+          <div class="mockup-card">
+            <div class="mockup-card-title"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="googie-divider"><div class="googie-star"></div></div>
+
+<!-- ============ LOGOS ============ -->
+<section class="logos-section">
+  <div class="container">
+    <p class="logos-label">Pioneered by forward-thinking teams</p>
+    <div class="logos-grid">
+      <span class="logo-item">Airbnb</span>
+      <span class="logo-item">Stripe</span>
+      <span class="logo-item">Notion</span>
+      <span class="logo-item">Figma</span>
+      <span class="logo-item">Spotify</span>
+      <span class="logo-item">Slack</span>
+    </div>
+  </div>
+</section>
+
+<div class="googie-divider"><div class="googie-star"></div></div>
+
+<!-- ============ FEATURES ============ -->
+<section class="features">
+  <div class="container">
+    <div class="features-header fade-in">
+      <p class="section-eyebrow">&#9670; Mission Capabilities</p>
+      <h2 class="section-title">Everything your meetings need</h2>
+      <p class="section-subtitle">Six systems engineered for teams who want to reach orbit, not just the next quarter.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-in">
+        <div class="feature-icon">&#9733;</div>
+        <h3>Smart Scheduling</h3>
+        <p>AI that finds the perfect time for everyone, across time zones and calendars.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">&#9898;</div>
+        <h3>Agenda Builder</h3>
+        <p>Structured agendas with time limits, topic owners, and auto-distribution.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">&#9899;</div>
+        <h3>Live Transcription</h3>
+        <p>Real-time speech-to-text with speaker labels and smart action extraction.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">&#10040;</div>
+        <h3>Decision Log</h3>
+        <p>Every decision captured, timestamped, and linked to the right person.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">&#10038;</div>
+        <h3>Analytics</h3>
+        <p>Meeting efficiency metrics, time tracking, and productivity insights.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">&#10047;</div>
+        <h3>Integrations</h3>
+        <p>Connects with Slack, Teams, Notion, Jira, and 200+ other tools.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="googie-divider"><div class="googie-star"></div></div>
+
+<!-- ============ ZIGZAG ============ -->
+<section class="zigzag">
+  <div class="container">
+    <div class="zigzag-row fade-in">
+      <div class="zigzag-content">
+        <p class="section-eyebrow">&#9670; Intelligence</p>
+        <h3>Scheduling that thinks ahead</h3>
+        <p>Our system studies 47 signals per meeting — availability patterns, energy levels, topic difficulty — to place every meeting exactly where it belongs.</p>
+        <a href="#" class="btn btn-ghost">Explore &#8594;</a>
+      </div>
+      <div class="zigzag-visual">
+        <div class="visual-inner">
+          <div class="visual-bar c1 w70"></div>
+          <div class="visual-bar c2 w85"></div>
+          <div class="visual-bar c3 w50"></div>
+          <div class="visual-bar c4 w40"></div>
+          <div class="visual-block">
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="zigzag-row reverse fade-in">
+      <div class="zigzag-content">
+        <p class="section-eyebrow">&#9670; Clarity</p>
+        <h3>Summaries that actually help</h3>
+        <p>Minutes after your meeting ends, everyone gets a clean summary: decisions made, tasks assigned, deadlines set, full context preserved.</p>
+        <a href="#" class="btn btn-ghost">Explore &#8594;</a>
+      </div>
+      <div class="zigzag-visual">
+        <div class="visual-inner">
+          <div class="visual-bar c2 w85"></div>
+          <div class="visual-bar c1 w70"></div>
+          <div class="visual-bar c4 w50"></div>
+          <div class="visual-bar c3 w40"></div>
+          <div class="visual-block">
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIAL ============ -->
+<section class="testimonial-section">
+  <div class="container">
+    <div class="testimonial-card fade-in">
+      <blockquote class="testimonial-quote">
+        We saved 12,000 hours last quarter. Meet didn't just fix our meetings — it changed how our whole company thinks about time.
+      </blockquote>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">VH</div>
+        <div class="testimonial-name">
+          <strong>Victoria Hartmann</strong>
+          <span>COO, Meridian Partners</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="pricing">
+  <div class="container">
+    <div class="features-header fade-in">
+      <p class="section-eyebrow">&#9670; Pricing Plans</p>
+      <h2 class="section-title">Simple, honest pricing</h2>
+      <p class="section-subtitle">No tricks. No hidden fees. Cancel whenever you like.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card fade-in">
+        <p class="pricing-tier">Starter</p>
+        <p class="pricing-amount">$12 <span>/user/mo</span></p>
+        <p class="pricing-desc">For small focused teams</p>
+        <ul class="pricing-features">
+          <li>Smart scheduling</li>
+          <li>Agenda builder</li>
+          <li>Basic transcription</li>
+          <li>Email summaries</li>
+          <li>5 integrations</li>
+        </ul>
+        <a href="#" class="btn btn-ghost">Choose</a>
+      </div>
+      <div class="pricing-card featured fade-in">
+        <p class="pricing-tier">Growth</p>
+        <p class="pricing-amount">$29 <span>/user/mo</span></p>
+        <p class="pricing-desc">For growing organizations</p>
+        <ul class="pricing-features">
+          <li>Everything in Starter</li>
+          <li>Live transcription</li>
+          <li>Decision log</li>
+          <li>Analytics dashboard</li>
+          <li>50+ integrations</li>
+        </ul>
+        <a href="#" class="btn btn-primary">Choose</a>
+      </div>
+      <div class="pricing-card fade-in">
+        <p class="pricing-tier">Enterprise</p>
+        <p class="pricing-amount">Custom</p>
+        <p class="pricing-desc">For large-scale teams</p>
+        <ul class="pricing-features">
+          <li>Everything in Growth</li>
+          <li>SSO & SAML</li>
+          <li>Dedicated support</li>
+          <li>Custom integrations</li>
+          <li>SLA guarantee</li>
+        </ul>
+        <a href="#" class="btn btn-ghost">Contact</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="googie-divider"><div class="googie-star"></div></div>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="final-cta">
+  <div class="container fade-in">
+    <div class="final-cta-box">
+      <h2>The future of meetings is <span class="highlight">now</span></h2>
+      <p>Stop wasting time on meetings that could have been emails. Start your free 14-day trial today.</p>
+      <div class="hero-buttons">
+        <a href="#" class="btn btn-primary">Start Free Trial</a>
+        <a href="#" class="btn btn-secondary">Talk to Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h4>MEET</h4>
+        <p>Handcrafted meeting intelligence for teams who refuse to waste time.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Product</h5>
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Integrations</a>
+        <a href="#">Changelog</a>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <a href="#">About</a>
+        <a href="#">Blog</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Security</a>
+        <a href="#">GDPR</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 Meet. All rights reserved.</p>
+      <p>Made with retro-futuristic care.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

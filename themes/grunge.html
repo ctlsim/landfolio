@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Grunge Theme</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rock+Salt&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1a1714;
+    --bg-light: #2a2520;
+    --text: #d4c8b8;
+    --text-dim: #8a7e6e;
+    --accent: #c44d28;
+    --accent-dim: #8a3a1e;
+    --coffee: #6b4c3b;
+    --rust: #a0522d;
+    --ink: #2c2416;
+    --paper: #d4c8b0;
+    --tear: #3a322a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Special Elite', cursive;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  /* Coffee stain overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -100px;
+    right: -100px;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, transparent 30%, rgba(107,76,59,0.06) 31%, rgba(107,76,59,0.12) 32%, transparent 33%, transparent 50%, rgba(107,76,59,0.04) 51%, rgba(107,76,59,0.08) 52%, transparent 53%, transparent 65%, rgba(107,76,59,0.03) 66%, transparent 67%);
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+
+  /* Torn edge utility */
+  .torn-top {
+    clip-path: polygon(0% 8px, 3% 2px, 6% 6px, 9% 1px, 12% 5px, 15% 2px, 18% 7px, 21% 1px, 24% 4px, 27% 0px, 30% 6px, 33% 2px, 36% 7px, 39% 1px, 42% 5px, 45% 0px, 48% 6px, 51% 3px, 54% 7px, 57% 1px, 60% 5px, 63% 0px, 66% 6px, 69% 2px, 72% 7px, 75% 1px, 78% 5px, 81% 0px, 84% 6px, 87% 3px, 90% 7px, 93% 1px, 96% 5px, 99% 2px, 100% 8px, 100% 100%, 0% 100%);
+  }
+  .torn-bottom {
+    clip-path: polygon(0% 0%, 100% 0%, 100% calc(100% - 8px), 97% calc(100% - 2px), 94% calc(100% - 6px), 91% calc(100% - 1px), 88% calc(100% - 5px), 85% calc(100% - 2px), 82% calc(100% - 7px), 79% calc(100% - 1px), 76% calc(100% - 4px), 73% 100%, 70% calc(100% - 6px), 67% calc(100% - 2px), 64% calc(100% - 7px), 61% calc(100% - 1px), 58% calc(100% - 5px), 55% 100%, 52% calc(100% - 6px), 49% calc(100% - 3px), 46% calc(100% - 7px), 43% calc(100% - 1px), 40% calc(100% - 5px), 37% 100%, 34% calc(100% - 6px), 31% calc(100% - 2px), 28% calc(100% - 7px), 25% calc(100% - 1px), 22% calc(100% - 5px), 19% 100%, 16% calc(100% - 6px), 13% calc(100% - 3px), 10% calc(100% - 7px), 7% calc(100% - 1px), 4% calc(100% - 5px), 1% calc(100% - 2px), 0% calc(100% - 8px));
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg);
+    border-bottom: 2px solid var(--tear);
+    padding: 16px 0;
+  }
+  nav .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: 'Rock Salt', cursive;
+    font-size: 1.3rem;
+    color: var(--text);
+    text-decoration: none;
+    transform: rotate(-2deg);
+    display: inline-block;
+  }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    transition: width 0.3s;
+  }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta {
+    background: var(--accent);
+    color: var(--paper) !important;
+    padding: 8px 20px;
+    text-decoration: none;
+    font-family: 'Rock Salt', cursive;
+    font-size: 0.75rem;
+    transform: rotate(1deg);
+    border: 2px solid var(--accent-dim);
+    transition: all 0.2s;
+  }
+  .nav-cta:hover {
+    background: var(--accent-dim);
+    transform: rotate(-1deg);
+  }
+  .nav-cta::after { display: none !important; }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 100px 0 80px;
+    text-align: center;
+    position: relative;
+  }
+  .hero-badge {
+    display: inline-block;
+    font-family: 'Special Elite', cursive;
+    font-size: 0.8rem;
+    padding: 6px 16px;
+    border: 2px solid var(--coffee);
+    color: var(--text-dim);
+    margin-bottom: 32px;
+    transform: rotate(-1deg);
+    position: relative;
+  }
+  .hero-badge::before {
+    content: '✦';
+    margin-right: 6px;
+    color: var(--accent);
+  }
+  .hero h1 {
+    font-family: 'Rock Salt', cursive;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    line-height: 1.2;
+    margin-bottom: 24px;
+    color: var(--text);
+    transform: rotate(-0.5deg);
+    text-shadow: 2px 2px 0 var(--ink), 4px 4px 0 rgba(0,0,0,0.3);
+  }
+  .hero h1 .accent { color: var(--accent); }
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--text-dim);
+    max-width: 560px;
+    margin: 0 auto 40px;
+    line-height: 1.8;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 60px;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--paper);
+    padding: 14px 32px;
+    text-decoration: none;
+    font-family: 'Rock Salt', cursive;
+    font-size: 0.85rem;
+    border: 3px solid var(--accent-dim);
+    box-shadow: 4px 4px 0 var(--ink);
+    transform: rotate(-1deg);
+    transition: all 0.15s;
+  }
+  .btn-primary:hover {
+    transform: rotate(0deg) translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    padding: 14px 32px;
+    text-decoration: none;
+    font-family: 'Special Elite', cursive;
+    font-size: 1rem;
+    border: 2px solid var(--coffee);
+    transform: rotate(1deg);
+    transition: all 0.15s;
+  }
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: rotate(0deg);
+  }
+
+  /* Mockup */
+  .hero-mockup {
+    max-width: 750px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .mockup-frame {
+    background: var(--bg-light);
+    border: 3px solid var(--tear);
+    padding: 0;
+    position: relative;
+    box-shadow: 6px 6px 0 var(--ink), inset 0 0 30px rgba(0,0,0,0.3);
+  }
+  .mockup-topbar {
+    display: flex;
+    gap: 6px;
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--tear);
+    background: var(--ink);
+  }
+  .mockup-dot {
+    width: 10px;
+    height: 10px;
+    border: 2px solid var(--coffee);
+    border-radius: 0;
+  }
+  .mockup-body {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 60px 1fr 80px;
+    gap: 16px;
+    min-height: 200px;
+  }
+  .mockup-sidebar-bar {
+    height: 8px;
+    background: var(--tear);
+    margin-bottom: 8px;
+  }
+  .mockup-sidebar-bar.active {
+    background: var(--accent);
+    width: 80%;
+  }
+  .mockup-line {
+    height: 8px;
+    background: var(--tear);
+    margin-bottom: 8px;
+  }
+  .mockup-line.title {
+    height: 12px;
+    width: 60%;
+    background: var(--coffee);
+  }
+  .mockup-action {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px;
+    border: 2px solid var(--tear);
+    margin-bottom: 6px;
+  }
+  .mockup-action-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+  .mockup-action-line {
+    height: 5px;
+    flex: 1;
+    background: var(--tear);
+  }
+
+  /* Coffee stain decoration */
+  .coffee-stain {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid rgba(107,76,59,0.15);
+    top: -30px;
+    right: -40px;
+    pointer-events: none;
+  }
+  .coffee-stain::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    border: 2px solid rgba(107,76,59,0.1);
+  }
+
+  /* ===== LOGOS ===== */
+  .logos {
+    padding: 60px 0;
+    border-top: 2px solid var(--tear);
+    border-bottom: 2px solid var(--tear);
+    text-align: center;
+  }
+  .logos p {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 30px;
+  }
+  .logos-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    opacity: 0.4;
+  }
+  .logo-placeholder {
+    font-family: 'Special Elite', cursive;
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    transform: rotate(var(--rot, 0deg));
+  }
+
+  /* ===== FEATURES ===== */
+  .features {
+    padding: 80px 0;
+    position: relative;
+  }
+  .section-label {
+    font-family: 'Rock Salt', cursive;
+    font-size: 0.7rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+    transform: rotate(-1deg);
+    display: inline-block;
+  }
+  .section-title {
+    font-family: 'Rock Salt', cursive;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    margin-bottom: 16px;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .section-desc {
+    color: var(--text-dim);
+    font-size: 1.05rem;
+    max-width: 500px;
+    margin-bottom: 48px;
+    line-height: 1.8;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .feature-card {
+    background: var(--bg-light);
+    border: 2px solid var(--tear);
+    padding: 28px;
+    position: relative;
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: all 0.2s;
+  }
+  .feature-card:hover {
+    transform: translate(2px, 2px) rotate(-0.5deg);
+    box-shadow: 2px 2px 0 var(--ink);
+    border-color: var(--coffee);
+  }
+  .feature-icon {
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+    display: block;
+    filter: grayscale(0.3);
+  }
+  .feature-card h3 {
+    font-family: 'Rock Salt', cursive;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: var(--text);
+    transform: rotate(-0.5deg);
+  }
+  .feature-card p {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+  /* Tape decoration */
+  .tape {
+    position: absolute;
+    width: 60px;
+    height: 18px;
+    background: rgba(196,77,40,0.15);
+    top: -8px;
+    left: 20px;
+    transform: rotate(-3deg);
+    border: 1px solid rgba(196,77,40,0.1);
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag {
+    padding: 80px 0;
+    border-top: 2px solid var(--tear);
+  }
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+    margin-bottom: 64px;
+  }
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-visual { order: 2; }
+  .zigzag-row.reverse .zigzag-text { order: 1; }
+  .zigzag-text h3 {
+    font-family: 'Rock Salt', cursive;
+    font-size: 1.3rem;
+    margin-bottom: 16px;
+    color: var(--text);
+    transform: rotate(-1deg);
+    display: inline-block;
+  }
+  .zigzag-text p {
+    color: var(--text-dim);
+    font-size: 1rem;
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+  .zigzag-text ul {
+    list-style: none;
+    padding: 0;
+  }
+  .zigzag-text li {
+    padding: 6px 0;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    position: relative;
+    padding-left: 24px;
+  }
+  .zigzag-text li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+  .zigzag-visual {
+    background: var(--bg-light);
+    border: 2px solid var(--tear);
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 4px 4px 0 var(--ink);
+    overflow: hidden;
+  }
+  .zigzag-visual::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(107,76,59,0.03) 10px,
+      rgba(107,76,59,0.03) 20px
+    );
+  }
+  .zigzag-visual-icon {
+    font-size: 3rem;
+    filter: grayscale(0.4);
+    z-index: 1;
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial {
+    padding: 80px 0;
+    background: var(--ink);
+    border-top: 3px solid var(--coffee);
+    border-bottom: 3px solid var(--coffee);
+    text-align: center;
+    position: relative;
+  }
+  .testimonial::before {
+    content: '"';
+    font-family: 'Rock Salt', cursive;
+    font-size: 8rem;
+    color: var(--accent);
+    opacity: 0.15;
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    line-height: 1;
+  }
+  .testimonial blockquote {
+    font-family: 'Special Elite', cursive;
+    font-size: 1.3rem;
+    color: var(--text);
+    max-width: 650px;
+    margin: 0 auto 32px;
+    line-height: 1.8;
+    position: relative;
+    z-index: 1;
+  }
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  .testimonial-avatar {
+    width: 48px;
+    height: 48px;
+    background: var(--coffee);
+    border: 2px solid var(--tear);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  }
+  .testimonial-name {
+    font-family: 'Rock Salt', cursive;
+    font-size: 0.85rem;
+    color: var(--text);
+  }
+  .testimonial-role {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+
+  /* ===== PRICING ===== */
+  .pricing {
+    padding: 80px 0;
+    text-align: center;
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    margin-top: 48px;
+  }
+  .price-card {
+    background: var(--bg-light);
+    border: 2px solid var(--tear);
+    padding: 32px 28px;
+    text-align: left;
+    position: relative;
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: all 0.2s;
+  }
+  .price-card:hover {
+    transform: translate(2px, 2px) rotate(-0.5deg);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  .price-card.featured {
+    border-color: var(--accent);
+    transform: rotate(-1deg);
+  }
+  .price-card.featured:hover {
+    transform: rotate(0deg) translate(2px, 2px);
+  }
+  .price-badge {
+    position: absolute;
+    top: -12px;
+    right: 16px;
+    background: var(--accent);
+    color: var(--paper);
+    font-family: 'Rock Salt', cursive;
+    font-size: 0.6rem;
+    padding: 4px 12px;
+    transform: rotate(2deg);
+    border: 2px solid var(--accent-dim);
+  }
+  .price-tier {
+    font-family: 'Rock Salt', cursive;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .price-amount {
+    font-family: 'Rock Salt', cursive;
+    font-size: 2.2rem;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .price-amount span {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+  .price-desc {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+  .price-features {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 28px;
+  }
+  .price-features li {
+    padding: 6px 0;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    position: relative;
+    padding-left: 22px;
+  }
+  .price-features li::before {
+    content: '✦';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 0.7rem;
+  }
+  .price-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    text-align: center;
+    text-decoration: none;
+    font-family: 'Rock Salt', cursive;
+    font-size: 0.75rem;
+    border: 2px solid var(--coffee);
+    color: var(--text);
+    background: transparent;
+    transform: rotate(0.5deg);
+    transition: all 0.15s;
+  }
+  .price-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .price-card.featured .price-btn {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent-dim);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .price-card.featured .price-btn:hover {
+    background: var(--accent-dim);
+  }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    padding: 80px 0;
+    text-align: center;
+    border-top: 2px solid var(--tear);
+    position: relative;
+  }
+  .final-cta h2 {
+    font-family: 'Rock Salt', cursive;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    margin-bottom: 16px;
+    color: var(--text);
+    transform: rotate(-0.5deg);
+  }
+  .final-cta p {
+    color: var(--text-dim);
+    font-size: 1.05rem;
+    max-width: 480px;
+    margin: 0 auto 32px;
+    line-height: 1.8;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 40px 0;
+    border-top: 2px solid var(--tear);
+    text-align: center;
+  }
+  footer p {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+  footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  footer a:hover { text-decoration: underline; }
+
+  /* Stamped decoration */
+  .stamp {
+    position: absolute;
+    font-family: 'Rock Salt', cursive;
+    font-size: 0.65rem;
+    color: var(--accent);
+    opacity: 0.2;
+    border: 3px solid var(--accent);
+    padding: 6px 12px;
+    transform: rotate(-15deg);
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .container { padding: 0 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 60px 0 40px; }
+    .hero h1 { font-size: 2rem; }
+    .hero-actions { flex-direction: column; align-items: center; }
+    .mockup-body { grid-template-columns: 1fr; }
+    .mockup-sidebar, .mockup-actions { display: none; }
+    .zigzag-row { grid-template-columns: 1fr; gap: 24px; }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .zigzag-row.reverse .zigzag-text { order: 0; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .logos-grid { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="#" class="nav-logo">Meet</a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+    </ul>
+    <a href="#" class="nav-cta">Get Started</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Now in Public Beta</div>
+    <h1>Weave your ideas<br>into <span class="accent">reality</span></h1>
+    <p>Meet connects your scattered thoughts, notes, and projects into one living fabric. Stop juggling tools. Start creating.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Start Free Trial</a>
+      <a href="#" class="btn-secondary">See How It Works</a>
+    </div>
+    <div class="hero-mockup">
+      <div class="coffee-stain"></div>
+      <div class="mockup-frame">
+        <div class="mockup-topbar">
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-sidebar">
+            <div class="mockup-sidebar-bar active"></div>
+            <div class="mockup-sidebar-bar" style="width:65%"></div>
+            <div class="mockup-sidebar-bar" style="width:80%"></div>
+            <div class="mockup-sidebar-bar" style="width:50%"></div>
+            <div class="mockup-sidebar-bar" style="width:70%"></div>
+          </div>
+          <div class="mockup-main">
+            <div class="mockup-line title"></div>
+            <div class="mockup-line" style="width:100%"></div>
+            <div class="mockup-line" style="width:85%"></div>
+            <div class="mockup-line" style="width:95%"></div>
+            <div class="mockup-line" style="width:60%"></div>
+          </div>
+          <div class="mockup-actions">
+            <div class="mockup-action"><div class="mockup-action-dot"></div><div class="mockup-action-line"></div></div>
+            <div class="mockup-action"><div class="mockup-action-dot"></div><div class="mockup-action-line"></div></div>
+            <div class="mockup-action"><div class="mockup-action-dot"></div><div class="mockup-action-line"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<section class="logos">
+  <div class="container">
+    <p>Trusted by makers everywhere</p>
+    <div class="logos-grid">
+      <span class="logo-placeholder" style="--rot:-2deg">ACME</span>
+      <span class="logo-placeholder" style="--rot:1deg">NOVA</span>
+      <span class="logo-placeholder" style="--rot:-1deg">PIXEL</span>
+      <span class="logo-placeholder" style="--rot:2deg">DRIFT</span>
+      <span class="logo-placeholder" style="--rot:-3deg">EMBER</span>
+      <span class="logo-placeholder" style="--rot:1deg">FORGE</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-label">// What it does</div>
+    <h2 class="section-title">Tools that don't fight each other</h2>
+    <p class="section-desc">Most productivity suites feel like a toolbox left in the rain. Meet's different — everything clicks together.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="tape"></div>
+        <span class="feature-icon">🧵</span>
+        <h3>Thread Notes</h3>
+        <p>Connect ideas with threads. Every note links to every other note. Your brain, externalized.</p>
+      </div>
+      <div class="feature-card">
+        <div class="tape" style="left:60px; transform:rotate(2deg);"></div>
+        <span class="feature-icon">📐</span>
+        <h3>Pattern Boards</h3>
+        <p>Visual kanban that actually makes sense. Drag, drop, connect. See the shape of your work.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">⚡</span>
+        <h3>Quick Weave</h3>
+        <p>Capture anything in under 3 seconds. Keyboard-first, mobile-ready, zero friction.</p>
+      </div>
+      <div class="feature-card">
+        <div class="tape" style="left:40px;"></div>
+        <span class="feature-icon">🔒</span>
+        <h3>Private by Default</h3>
+        <p>End-to-end encryption. Your thoughts stay yours. No data mining, no ads, no selling out.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🤝</span>
+        <h3>Shared Looms</h3>
+        <p>Invite your team. Real-time collaboration without the Slack notification hell.</p>
+      </div>
+      <div class="feature-card">
+        <div class="tape" style="left:50px; transform:rotate(-4deg);"></div>
+        <span class="feature-icon">📤</span>
+        <h3>Export Anywhere</h3>
+        <p>Markdown, PDF, Notion, Obsidian. Your data is yours. Export it, own it, move it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZIGZAG -->
+<section class="zigzag" id="how">
+  <div class="container">
+    <div class="section-label">// How it works</div>
+    <h2 class="section-title" style="margin-bottom:48px">Three steps. Zero friction.</h2>
+
+    <div class="zigzag-row">
+      <div class="zigzag-text">
+        <h3>01 — Capture</h3>
+        <p>Drop thoughts in fast. Voice, text, images, links. Meet sorts the chaos.</p>
+        <ul>
+          <li>Keyboard shortcut from anywhere</li>
+          <li>Mobile camera for quick snaps</li>
+          <li>Auto-tags with AI (optional)</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <span class="zigzag-visual-icon">📝</span>
+      </div>
+    </div>
+
+    <div class="zigzag-row reverse">
+      <div class="zigzag-text">
+        <h3>02 — Connect</h3>
+        <p>Thread related ideas together. See patterns emerge. Find links you didn't know existed.</p>
+        <ul>
+          <li>Smart suggestions for connections</li>
+          <li>Visual graph of your knowledge</li>
+          <li>Backlinks auto-generated</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <span class="zigzag-visual-icon">🔗</span>
+      </div>
+    </div>
+
+    <div class="zigzag-row">
+      <div class="zigzag-text">
+        <h3>03 — Ship</h3>
+        <p>Turn notes into docs, docs into projects, projects into reality. One flow.</p>
+        <ul>
+          <li>One-click publish to web</li>
+          <li>Export to any format</li>
+          <li>Share with living links</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <span class="zigzag-visual-icon">🚀</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial">
+  <div class="container">
+    <blockquote>
+      I switched from three different apps to just Meet. It's like someone finally built the notebook I've been imagining since college. Raw, honest, and it just works.
+    </blockquote>
+    <div class="testimonial-author">
+      <div class="testimonial-avatar">🧔</div>
+      <div>
+        <div class="testimonial-name">Marcus Chen</div>
+        <div class="testimonial-role">Indie Maker & Writer</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-label">// Pricing</div>
+    <h2 class="section-title">Pick your thread</h2>
+    <p class="section-desc" style="margin:0 auto 48px;text-align:center">Free to start. Fair when you scale. No bullshit.</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-tier">Solo</div>
+        <div class="price-amount">$0 <span>/mo</span></div>
+        <p class="price-desc">For individuals who think in threads. Unlimited notes, basic features.</p>
+        <ul class="price-features">
+          <li>Unlimited notes & threads</li>
+          <li>3 pattern boards</li>
+          <li>Markdown export</li>
+          <li>Mobile app access</li>
+        </ul>
+        <a href="#" class="price-btn">Start Free</a>
+      </div>
+      <div class="price-card featured">
+        <div class="price-badge">Most Popular</div>
+        <div class="price-tier">Maker</div>
+        <div class="price-amount">$12 <span>/mo</span></div>
+        <p class="price-desc">For serious creators. AI tagging, unlimited boards, priority sync.</p>
+        <ul class="price-features">
+          <li>Everything in Solo</li>
+          <li>Unlimited pattern boards</li>
+          <li>AI auto-tagging</li>
+          <li>Full export suite</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#" class="price-btn">Go Maker</a>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">Studio</div>
+        <div class="price-amount">$29 <span>/mo</span></div>
+        <p class="price-desc">For teams that ship together. Shared meets, admin controls, SSO.</p>
+        <ul class="price-features">
+          <li>Everything in Maker</li>
+          <li>Up to 10 team members</li>
+          <li>Shared team meets</li>
+          <li>Admin dashboard</li>
+          <li>SSO & SAML</li>
+          <li>API access</li>
+        </ul>
+        <a href="#" class="price-btn">Start Studio</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="container">
+    <div class="stamp" style="top:20px;right:10%">beta access</div>
+    <h2>Ready to weave?</h2>
+    <p>Join thousands of makers who stopped fighting their tools and started creating.</p>
+    <a href="#" class="btn-primary">Start Your Free Trial</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>© 2026 Meet. Built with grit. <a href="#">Privacy</a> · <a href="#">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

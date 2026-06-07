@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Zine / DIY Punk Theme</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f0ece2;
+    --paper-dark: #e5e0d3;
+    --ink: #1a1a1a;
+    --ink-light: #333333;
+    --red: #e60012;
+    --red-dim: #cc0010;
+    --red-light: rgba(230, 0, 18, 0.12);
+    --highlight: rgba(230, 0, 18, 0.25);
+    --xerox: #d4d0c8;
+    --xerox-dark: #b8b4a8;
+    --tear: #c8c4b8;
+    --stamp: rgba(26, 26, 26, 0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Special Elite', cursive;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Xerox noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.12;
+    mix-blend-mode: multiply;
+  }
+
+  /* Xerox banding */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.008) 3px,
+      rgba(0,0,0,0.008) 4px
+    );
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+
+  /* Torn edge utilities */
+  .torn-top {
+    clip-path: polygon(0% 10px, 2% 3px, 5% 8px, 8% 2px, 11% 9px, 14% 1px, 17% 7px, 20% 3px, 23% 10px, 26% 2px, 29% 8px, 32% 4px, 35% 1px, 38% 9px, 41% 5px, 44% 2px, 47% 8px, 50% 3px, 53% 10px, 56% 1px, 59% 7px, 62% 4px, 65% 9px, 68% 2px, 71% 8px, 74% 5px, 77% 3px, 80% 10px, 83% 1px, 86% 7px, 89% 4px, 92% 9px, 95% 2px, 98% 8px, 100% 10px, 100% 100%, 0% 100%);
+  }
+  .torn-bottom {
+    clip-path: polygon(0% 0%, 100% 0%, 100% calc(100% - 10px), 98% calc(100% - 3px), 95% calc(100% - 8px), 92% calc(100% - 2px), 89% calc(100% - 9px), 86% calc(100% - 1px), 83% calc(100% - 7px), 80% calc(100% - 3px), 77% calc(100% - 10px), 74% calc(100% - 5px), 71% calc(100% - 8px), 68% calc(100% - 2px), 65% calc(100% - 9px), 62% calc(100% - 4px), 59% calc(100% - 7px), 56% calc(100% - 1px), 53% calc(100% - 10px), 50% calc(100% - 3px), 47% calc(100% - 8px), 44% calc(100% - 5px), 41% calc(100% - 9px), 38% calc(100% - 2px), 35% calc(100% - 7px), 32% calc(100% - 4px), 29% calc(100% - 10px), 26% calc(100% - 1px), 23% calc(100% - 8px), 20% calc(100% - 3px), 17% calc(100% - 9px), 14% calc(100% - 5px), 11% calc(100% - 7px), 8% calc(100% - 2px), 5% calc(100% - 10px), 2% calc(100% - 4px), 0% calc(100% - 8px));
+  }
+
+  /* Highlighter utility */
+  .highlight {
+    background: var(--highlight);
+    padding: 2px 6px;
+    display: inline;
+    transform: skewX(-2deg);
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--paper);
+    border-bottom: 3px solid var(--ink);
+    padding: 14px 0;
+  }
+  nav .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: 'Anton', sans-serif;
+    font-size: 1.8rem;
+    color: var(--ink);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transform: rotate(-1deg);
+    display: inline-block;
+    position: relative;
+  }
+  .nav-logo::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--red);
+    transform: skewX(-12deg);
+  }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a {
+    color: var(--ink-light);
+    text-decoration: none;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: color 0.15s;
+    position: relative;
+  }
+  .nav-links a:hover { color: var(--red); }
+  .nav-links a::before {
+    content: '//';
+    margin-right: 4px;
+    color: var(--red);
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .nav-links a:hover::before { opacity: 1; }
+  .nav-cta {
+    background: var(--ink);
+    color: var(--paper) !important;
+    padding: 8px 20px;
+    text-decoration: none;
+    font-family: 'Anton', sans-serif;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transform: rotate(1deg);
+    transition: all 0.15s;
+    border: 2px solid var(--ink);
+  }
+  .nav-cta:hover {
+    background: var(--red);
+    border-color: var(--red);
+    transform: rotate(-1deg);
+  }
+  .nav-cta::before { display: none !important; }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 100px 0 80px;
+    text-align: center;
+    position: relative;
+  }
+  .hero-badge {
+    display: inline-block;
+    font-family: 'Anton', sans-serif;
+    font-size: 0.75rem;
+    padding: 6px 18px;
+    border: 3px solid var(--ink);
+    color: var(--ink);
+    margin-bottom: 32px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    transform: rotate(-2deg);
+    position: relative;
+    background: var(--paper);
+  }
+  .hero-badge::before {
+    content: '★';
+    margin-right: 8px;
+    color: var(--red);
+  }
+  .hero h1 {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    line-height: 0.95;
+    margin-bottom: 24px;
+    color: var(--ink);
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+  }
+  .hero h1 .line {
+    display: block;
+  }
+  .hero h1 .line:nth-child(1) {
+    transform: rotate(-1deg);
+  }
+  .hero h1 .line:nth-child(2) {
+    transform: rotate(0.5deg);
+    margin-left: 10%;
+  }
+  .hero h1 .accent {
+    color: var(--red);
+    position: relative;
+    display: inline-block;
+  }
+  .hero h1 .accent::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: -4px;
+    right: -4px;
+    height: 8px;
+    background: var(--highlight);
+    z-index: -1;
+    transform: skewX(-12deg);
+  }
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--ink-light);
+    max-width: 560px;
+    margin: 0 auto 40px;
+    line-height: 1.8;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 60px;
+  }
+  .btn-primary {
+    background: var(--red);
+    color: var(--paper);
+    padding: 14px 36px;
+    text-decoration: none;
+    font-family: 'Anton', sans-serif;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: 3px solid var(--ink);
+    transform: rotate(-1deg);
+    transition: all 0.15s;
+    position: relative;
+  }
+  .btn-primary:hover {
+    transform: rotate(0deg) translate(2px, 2px);
+    box-shadow: -2px -2px 0 var(--ink);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    padding: 14px 36px;
+    text-decoration: none;
+    font-family: 'Anton', sans-serif;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: 3px solid var(--ink);
+    transform: rotate(1deg);
+    transition: all 0.15s;
+  }
+  .btn-secondary:hover {
+    background: var(--ink);
+    color: var(--paper);
+    transform: rotate(0deg);
+  }
+
+  /* Mockup */
+  .hero-mockup {
+    max-width: 750px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .mockup-frame {
+    background: var(--paper-dark);
+    border: 3px solid var(--ink);
+    padding: 0;
+    position: relative;
+    box-shadow: 8px 8px 0 var(--ink);
+  }
+  .mockup-topbar {
+    display: flex;
+    gap: 6px;
+    padding: 10px 14px;
+    border-bottom: 3px solid var(--ink);
+    background: var(--ink);
+  }
+  .mockup-dot {
+    width: 10px;
+    height: 10px;
+    border: 2px solid var(--xerox);
+    border-radius: 0;
+  }
+  .mockup-dot:first-child { background: var(--red); border-color: var(--red); }
+  .mockup-body {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 60px 1fr 80px;
+    gap: 16px;
+    min-height: 200px;
+  }
+  .mockup-sidebar-bar {
+    height: 8px;
+    background: var(--xerox);
+    margin-bottom: 8px;
+    border: 1px solid var(--xerox-dark);
+  }
+  .mockup-sidebar-bar.active {
+    background: var(--red);
+    width: 80%;
+    border-color: var(--red);
+  }
+  .mockup-line {
+    height: 8px;
+    background: var(--xerox);
+    margin-bottom: 8px;
+    border: 1px solid var(--xerox-dark);
+  }
+  .mockup-line.title {
+    height: 14px;
+    width: 60%;
+    background: var(--ink);
+    border: none;
+  }
+  .mockup-action {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px;
+    border: 2px solid var(--xerox-dark);
+    margin-bottom: 6px;
+  }
+  .mockup-action-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--red);
+    flex-shrink: 0;
+  }
+  .mockup-action-line {
+    height: 5px;
+    flex: 1;
+    background: var(--xerox);
+    border: 1px solid var(--xerox-dark);
+  }
+
+  /* Stamped watermark */
+  .hero-stamp {
+    position: absolute;
+    top: 20px;
+    right: -20px;
+    font-family: 'Anton', sans-serif;
+    font-size: 1.4rem;
+    color: var(--red);
+    opacity: 0.15;
+    border: 4px solid var(--red);
+    padding: 8px 16px;
+    transform: rotate(15deg);
+    text-transform: uppercase;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== LOGOS ===== */
+  .logos {
+    padding: 60px 0;
+    border-top: 3px solid var(--ink);
+    border-bottom: 3px solid var(--ink);
+    text-align: center;
+    position: relative;
+  }
+  .logos::before {
+    content: 'AS SEEN IN';
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    background: var(--paper);
+    padding: 0 16px;
+    font-family: 'Anton', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--ink-light);
+  }
+  .logos-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    opacity: 0.5;
+  }
+  .logo-placeholder {
+    font-family: 'Anton', sans-serif;
+    font-size: 1.3rem;
+    color: var(--ink-light);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transform: rotate(var(--rot, 0deg));
+  }
+
+  /* ===== FEATURES ===== */
+  .features {
+    padding: 80px 0;
+    position: relative;
+  }
+  .section-label {
+    font-family: 'Anton', sans-serif;
+    font-size: 0.7rem;
+    color: var(--red);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 12px;
+    display: inline-block;
+    position: relative;
+  }
+  .section-label::before {
+    content: '>> ';
+  }
+  .section-title {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    margin-bottom: 16px;
+    color: var(--ink);
+    text-transform: uppercase;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+  .section-desc {
+    color: var(--ink-light);
+    font-size: 1.05rem;
+    max-width: 500px;
+    margin-bottom: 48px;
+    line-height: 1.8;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .feature-card {
+    background: var(--paper-dark);
+    border: 3px solid var(--ink);
+    padding: 28px;
+    position: relative;
+    box-shadow: 6px 6px 0 var(--ink);
+    transition: all 0.15s;
+  }
+  .feature-card:hover {
+    transform: translate(3px, 3px);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .feature-card:nth-child(odd) { transform: rotate(-0.5deg); }
+  .feature-card:nth-child(even) { transform: rotate(0.5deg); }
+  .feature-card:nth-child(odd):hover { transform: rotate(0deg) translate(3px, 3px); }
+  .feature-card:nth-child(even):hover { transform: rotate(0deg) translate(3px, 3px); }
+  .feature-icon {
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .feature-card h3 {
+    font-family: 'Anton', sans-serif;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: var(--ink);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .feature-card p {
+    color: var(--ink-light);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+  /* Red highlighter mark */
+  .highlighter-mark {
+    position: absolute;
+    background: var(--highlight);
+    z-index: 0;
+    pointer-events: none;
+  }
+  .highlighter-mark.top {
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 12px;
+    transform: skewX(-12deg) rotate(-1deg);
+  }
+  .highlighter-mark.bottom {
+    bottom: 0;
+    left: 15%;
+    right: 15%;
+    height: 10px;
+    transform: skewX(-12deg) rotate(1deg);
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag {
+    padding: 80px 0;
+    border-top: 3px solid var(--ink);
+  }
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+    margin-bottom: 64px;
+  }
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-visual { order: 2; }
+  .zigzag-row.reverse .zigzag-text { order: 1; }
+  .zigzag-text h3 {
+    font-family: 'Anton', sans-serif;
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+    color: var(--ink);
+    text-transform: uppercase;
+  }
+  .zigzag-text h3 .step-num {
+    color: var(--red);
+    font-size: 0.8em;
+    margin-right: 8px;
+  }
+  .zigzag-text p {
+    color: var(--ink-light);
+    font-size: 1rem;
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+  .zigzag-text ul {
+    list-style: none;
+    padding: 0;
+  }
+  .zigzag-text li {
+    padding: 6px 0;
+    color: var(--ink-light);
+    font-size: 0.9rem;
+    position: relative;
+    padding-left: 28px;
+  }
+  .zigzag-text li::before {
+    content: '✕';
+    position: absolute;
+    left: 0;
+    color: var(--red);
+    font-weight: bold;
+  }
+  .zigzag-visual {
+    background: var(--paper-dark);
+    border: 3px solid var(--ink);
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 6px 6px 0 var(--ink);
+    overflow: hidden;
+  }
+  .zigzag-visual::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 8px,
+      var(--stamp) 8px,
+      var(--stamp) 9px
+    );
+  }
+  .zigzag-visual-icon {
+    font-size: 3rem;
+    z-index: 1;
+  }
+  /* Xerox smudge on visual */
+  .zigzag-visual::after {
+    content: '';
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(0,0,0,0.04) 0%, transparent 70%);
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial {
+    padding: 80px 0;
+    background: var(--ink);
+    border-top: 4px solid var(--red);
+    border-bottom: 4px solid var(--red);
+    text-align: center;
+    position: relative;
+  }
+  .testimonial::before {
+    content: '✕';
+    font-family: 'Anton', sans-serif;
+    font-size: 10rem;
+    color: var(--red);
+    opacity: 0.08;
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    line-height: 1;
+  }
+  .testimonial blockquote {
+    font-family: 'Special Elite', cursive;
+    font-size: 1.3rem;
+    color: var(--paper);
+    max-width: 650px;
+    margin: 0 auto 32px;
+    line-height: 1.8;
+    position: relative;
+    z-index: 1;
+  }
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  .testimonial-avatar {
+    width: 48px;
+    height: 48px;
+    background: var(--red);
+    border: 3px solid var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  }
+  .testimonial-name {
+    font-family: 'Anton', sans-serif;
+    font-size: 0.9rem;
+    color: var(--paper);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .testimonial-role {
+    font-size: 0.8rem;
+    color: var(--xerox-dark);
+  }
+
+  /* ===== PRICING ===== */
+  .pricing {
+    padding: 80px 0;
+    text-align: center;
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    margin-top: 48px;
+  }
+  .price-card {
+    background: var(--paper-dark);
+    border: 3px solid var(--ink);
+    padding: 32px 28px;
+    text-align: left;
+    position: relative;
+    box-shadow: 6px 6px 0 var(--ink);
+    transition: all 0.15s;
+  }
+  .price-card:hover {
+    transform: translate(3px, 3px);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .price-card.featured {
+    border-color: var(--red);
+    transform: rotate(-1deg);
+    box-shadow: 6px 6px 0 var(--red);
+  }
+  .price-card.featured:hover {
+    transform: rotate(0deg) translate(3px, 3px);
+    box-shadow: 3px 3px 0 var(--red);
+  }
+  .price-badge {
+    position: absolute;
+    top: -14px;
+    right: 16px;
+    background: var(--red);
+    color: var(--paper);
+    font-family: 'Anton', sans-serif;
+    font-size: 0.65rem;
+    padding: 4px 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transform: rotate(3deg);
+    border: 2px solid var(--ink);
+  }
+  .price-tier {
+    font-family: 'Anton', sans-serif;
+    font-size: 0.9rem;
+    color: var(--ink-light);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .price-amount {
+    font-family: 'Anton', sans-serif;
+    font-size: 2.4rem;
+    color: var(--ink);
+    margin-bottom: 4px;
+    line-height: 1;
+  }
+  .price-amount span {
+    font-size: 0.9rem;
+    color: var(--ink-light);
+  }
+  .price-desc {
+    color: var(--ink-light);
+    font-size: 0.85rem;
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+  .price-features {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 28px;
+  }
+  .price-features li {
+    padding: 6px 0;
+    font-size: 0.85rem;
+    color: var(--ink-light);
+    position: relative;
+    padding-left: 22px;
+  }
+  .price-features li::before {
+    content: '✕';
+    position: absolute;
+    left: 0;
+    color: var(--red);
+    font-size: 0.7rem;
+    font-weight: bold;
+  }
+  .price-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    text-align: center;
+    text-decoration: none;
+    font-family: 'Anton', sans-serif;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: 3px solid var(--ink);
+    color: var(--ink);
+    background: transparent;
+    transition: all 0.15s;
+  }
+  .price-btn:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .price-card.featured .price-btn {
+    background: var(--red);
+    color: var(--paper);
+    border-color: var(--red);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .price-card.featured .price-btn:hover {
+    background: var(--red-dim);
+  }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    padding: 80px 0;
+    text-align: center;
+    border-top: 3px solid var(--ink);
+    position: relative;
+  }
+  .final-cta h2 {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    margin-bottom: 16px;
+    color: var(--ink);
+    text-transform: uppercase;
+    line-height: 1.05;
+  }
+  .final-cta p {
+    color: var(--ink-light);
+    font-size: 1.05rem;
+    max-width: 480px;
+    margin: 0 auto 32px;
+    line-height: 1.8;
+  }
+
+  /* Stamped decoration */
+  .stamp {
+    position: absolute;
+    font-family: 'Anton', sans-serif;
+    font-size: 0.7rem;
+    color: var(--red);
+    opacity: 0.2;
+    border: 3px solid var(--red);
+    padding: 6px 14px;
+    transform: rotate(-12deg);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    pointer-events: none;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 40px 0;
+    border-top: 3px solid var(--ink);
+    text-align: center;
+  }
+  footer p {
+    font-size: 0.8rem;
+    color: var(--ink-light);
+  }
+  footer a {
+    color: var(--red);
+    text-decoration: none;
+  }
+  footer a:hover { text-decoration: underline; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .container { padding: 0 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 60px 0 40px; }
+    .hero h1 { font-size: 2.5rem; }
+    .hero h1 .line:nth-child(2) { margin-left: 0; }
+    .hero-actions { flex-direction: column; align-items: center; }
+    .mockup-body { grid-template-columns: 1fr; }
+    .mockup-sidebar, .mockup-actions { display: none; }
+    .zigzag-row { grid-template-columns: 1fr; gap: 24px; }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .zigzag-row.reverse .zigzag-text { order: 0; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .logos-grid { gap: 24px; }
+    .hero-stamp { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="#" class="nav-logo">Meet</a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+    </ul>
+    <a href="#" class="nav-cta">Get Started</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Now in Public Beta</div>
+    <h1>
+      <span class="line">Stop wasting</span>
+      <span class="line">time on <span class="accent">meetings</span></span>
+    </h1>
+    <p>Meet connects your scattered thoughts, notes, and projects into one living fabric. Stop juggling tools. Start creating.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Start Free Trial</a>
+      <a href="#" class="btn-secondary">See How It Works</a>
+    </div>
+    <div class="hero-mockup">
+      <div class="hero-stamp">DIY</div>
+      <div class="mockup-frame">
+        <div class="mockup-topbar">
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-sidebar">
+            <div class="mockup-sidebar-bar active"></div>
+            <div class="mockup-sidebar-bar" style="width:65%"></div>
+            <div class="mockup-sidebar-bar" style="width:80%"></div>
+            <div class="mockup-sidebar-bar" style="width:50%"></div>
+            <div class="mockup-sidebar-bar" style="width:70%"></div>
+          </div>
+          <div class="mockup-main">
+            <div class="mockup-line title"></div>
+            <div class="mockup-line" style="width:100%"></div>
+            <div class="mockup-line" style="width:85%"></div>
+            <div class="mockup-line" style="width:95%"></div>
+            <div class="mockup-line" style="width:60%"></div>
+          </div>
+          <div class="mockup-actions">
+            <div class="mockup-action"><div class="mockup-action-dot"></div><div class="preview-action-line"></div></div>
+            <div class="mockup-action"><div class="mockup-action-dot"></div><div class="mockup-action-line"></div></div>
+            <div class="mockup-action"><div class="mockup-action-dot"></div><div class="mockup-action-line"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<section class="logos">
+  <div class="container">
+    <div class="logos-grid">
+      <span class="logo-placeholder" style="--rot:-3deg">ACME</span>
+      <span class="logo-placeholder" style="--rot:2deg">NOVA</span>
+      <span class="logo-placeholder" style="--rot:-1deg">PIXEL</span>
+      <span class="logo-placeholder" style="--rot:3deg">DRIFT</span>
+      <span class="logo-placeholder" style="--rot:-2deg">EMBER</span>
+      <span class="logo-placeholder" style="--rot:1deg">FORGE</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-label">What it does</div>
+    <h2 class="section-title">Tools that don't<br>fight each other</h2>
+    <p class="section-desc">Most productivity suites feel like a toolbox left in the rain. Meet's different — everything clicks together.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="highlighter-mark top"></div>
+        <span class="feature-icon">✂️</span>
+        <h3>Thread Notes</h3>
+        <p>Connect ideas with threads. Every note links to every other note. Your brain, externalized.</p>
+      </div>
+      <div class="feature-card">
+        <div class="highlighter-mark bottom"></div>
+        <span class="feature-icon">📐</span>
+        <h3>Pattern Boards</h3>
+        <p>Visual kanban that actually makes sense. Drag, drop, connect. See the shape of your work.</p>
+      </div>
+      <div class="feature-card">
+        <div class="highlighter-mark top"></div>
+        <span class="feature-icon">⚡</span>
+        <h3>Quick Weave</h3>
+        <p>Capture anything in under 3 seconds. Keyboard-first, mobile-ready, zero friction.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔒</span>
+        <h3>Private by Default</h3>
+        <p>End-to-end encryption. Your thoughts stay yours. No data mining, no ads, no selling out.</p>
+      </div>
+      <div class="feature-card">
+        <div class="highlighter-mark bottom"></div>
+        <span class="feature-icon">🤝</span>
+        <h3>Shared Looms</h3>
+        <p>Invite your team. Real-time collaboration without the Slack notification hell.</p>
+      </div>
+      <div class="feature-card">
+        <div class="highlighter-mark top"></div>
+        <span class="feature-icon">📤</span>
+        <h3>Export Anywhere</h3>
+        <p>Markdown, PDF, Notion, Obsidian. Your data is yours. Export it, own it, move it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZIGZAG -->
+<section class="zigzag" id="how">
+  <div class="container">
+    <div class="section-label">How it works</div>
+    <h2 class="section-title" style="margin-bottom:48px">Three steps.<br>Zero friction.</h2>
+
+    <div class="zigzag-row">
+      <div class="zigzag-text">
+        <h3><span class="step-num">01 —</span> Capture</h3>
+        <p>Drop thoughts in fast. Voice, text, images, links. Meet sorts the chaos.</p>
+        <ul>
+          <li>Keyboard shortcut from anywhere</li>
+          <li>Mobile camera for quick snaps</li>
+          <li>Auto-tags with AI (optional)</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <span class="zigzag-visual-icon">📝</span>
+      </div>
+    </div>
+
+    <div class="zigzag-row reverse">
+      <div class="zigzag-text">
+        <h3><span class="step-num">02 —</span> Connect</h3>
+        <p>Thread related ideas together. See patterns emerge. Find links you didn't know existed.</p>
+        <ul>
+          <li>Smart suggestions for connections</li>
+          <li>Visual graph of your knowledge</li>
+          <li>Backlinks auto-generated</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <span class="zigzag-visual-icon">🔗</span>
+      </div>
+    </div>
+
+    <div class="zigzag-row">
+      <div class="zigzag-text">
+        <h3><span class="step-num">03 —</span> Ship</h3>
+        <p>Turn notes into docs, docs into projects, projects into reality. One flow.</p>
+        <ul>
+          <li>One-click publish to web</li>
+          <li>Export to any format</li>
+          <li>Share with living links</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <span class="zigzag-visual-icon">🚀</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial">
+  <div class="container">
+    <blockquote>
+      I switched from three different apps to just Meet. It's like someone finally built the notebook I've been imagining since college. Raw, honest, and it just works.
+    </blockquote>
+    <div class="testimonial-author">
+      <div class="testimonial-avatar">🧔</div>
+      <div>
+        <div class="testimonial-name">Marcus Chen</div>
+        <div class="testimonial-role">Indie Maker & Writer</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title">Pick your thread</h2>
+    <p class="section-desc" style="margin:0 auto 48px;text-align:center">Free to start. Fair when you scale. No bullshit.</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-tier">Solo</div>
+        <div class="price-amount">$0 <span>/mo</span></div>
+        <p class="price-desc">For individuals who think in threads. Unlimited notes, basic features.</p>
+        <ul class="price-features">
+          <li>Unlimited notes & threads</li>
+          <li>3 pattern boards</li>
+          <li>Markdown export</li>
+          <li>Mobile app access</li>
+        </ul>
+        <a href="#" class="price-btn">Start Free</a>
+      </div>
+      <div class="price-card featured">
+        <div class="price-badge">Most Popular</div>
+        <div class="price-tier">Maker</div>
+        <div class="price-amount">$12 <span>/mo</span></div>
+        <p class="price-desc">For serious creators. AI tagging, unlimited boards, priority sync.</p>
+        <ul class="price-features">
+          <li>Everything in Solo</li>
+          <li>Unlimited pattern boards</li>
+          <li>AI auto-tagging</li>
+          <li>Full export suite</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#" class="price-btn">Go Maker</a>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">Studio</div>
+        <div class="price-amount">$29 <span>/mo</span></div>
+        <p class="price-desc">For teams that ship together. Shared meets, admin controls, SSO.</p>
+        <ul class="price-features">
+          <li>Everything in Maker</li>
+          <li>Up to 10 team members</li>
+          <li>Shared team meets</li>
+          <li>Admin dashboard</li>
+          <li>SSO & SAML</li>
+          <li>API access</li>
+        </ul>
+        <a href="#" class="price-btn">Start Studio</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="container">
+    <div class="stamp" style="top:20px;right:10%">limited</div>
+    <h2>Ready to make noise?</h2>
+    <p>Join thousands of makers who stopped fighting their tools and started creating.</p>
+    <a href="#" class="btn-primary">Start Your Free Trial</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>© 2026 Meet. Made by hand. <a href="#">Privacy</a> · <a href="#">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

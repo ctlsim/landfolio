@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Space / Astronautical Theme</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060918;
+    --bg-deep: #030510;
+    --bg-card: #0A0E27;
+    --bg-card-hover: #0F1435;
+    --surface: #111640;
+    --border: rgba(100, 120, 200, 0.12);
+    --text: #E2E8F0;
+    --text-dim: #6B7DB0;
+    --text-bright: #F8FAFC;
+    --accent: #00B4D8;
+    --accent-glow: rgba(0, 180, 216, 0.25);
+    --accent-dim: rgba(0, 180, 216, 0.08);
+    --orange: #FF6B35;
+    --orange-glow: rgba(255, 107, 53, 0.2);
+    --gold: #FFD700;
+    --silver: #8892B0;
+    --navy-light: #1A2350;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Starfield canvas */
+  #starfield {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+  /* ===== ORBITAL RINGS ===== */
+  .orbital-ring {
+    position: absolute;
+    border: 1px solid rgba(0, 180, 216, 0.06);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(6, 9, 24, 0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 0;
+  }
+  nav .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-logo .logo-icon {
+    width: 28px;
+    height: 28px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: var(--accent);
+    position: relative;
+  }
+  .nav-logo .logo-icon::after {
+    content: '';
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(0, 180, 216, 0.2);
+    border-radius: 50%;
+  }
+  .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta {
+    background: var(--accent) !important;
+    color: var(--bg-deep) !important;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem !important;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .nav-cta:hover {
+    box-shadow: 0 0 20px var(--accent-glow);
+    transform: translateY(-1px);
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 120px 0 100px;
+    text-align: center;
+    position: relative;
+  }
+  .hero .orbital-ring {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .hero .orbital-ring:nth-child(1) { width: 500px; height: 500px; }
+  .hero .orbital-ring:nth-child(2) { width: 700px; height: 700px; }
+  .hero .orbital-ring:nth-child(3) { width: 900px; height: 900px; }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    padding: 6px 16px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(0, 180, 216, 0.15);
+    border-radius: 100px;
+    color: var(--accent);
+    margin-bottom: 32px;
+    letter-spacing: 0.05em;
+  }
+  .hero-badge .badge-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; box-shadow: 0 0 4px var(--accent); }
+    50% { opacity: 0.4; box-shadow: none; }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.2rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    color: var(--text-bright);
+    letter-spacing: -0.03em;
+  }
+  .hero h1 .accent {
+    background: linear-gradient(135deg, var(--accent), #48E0F0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--text-dim);
+    max-width: 560px;
+    margin: 0 auto 40px;
+    line-height: 1.8;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 70px;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg-deep);
+    padding: 14px 32px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 8px;
+    transition: box-shadow 0.2s, transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary:hover {
+    box-shadow: 0 0 30px var(--accent-glow), 0 8px 30px rgba(0, 180, 216, 0.15);
+    transform: translateY(-2px);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    padding: 14px 32px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Mockup */
+  .hero-mockup {
+    max-width: 780px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .mockup-frame {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4), 0 0 60px var(--accent-dim);
+  }
+  .mockup-topbar {
+    display: flex;
+    gap: 6px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.2);
+  }
+  .mockup-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--silver);
+    opacity: 0.3;
+  }
+  .mockup-body {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 60px 1fr 80px;
+    gap: 16px;
+    min-height: 220px;
+  }
+  .mockup-sidebar-bar {
+    height: 6px;
+    background: var(--surface);
+    border-radius: 3px;
+    margin-bottom: 8px;
+  }
+  .mockup-sidebar-bar.active {
+    background: var(--accent);
+    opacity: 0.5;
+    width: 80%;
+    box-shadow: 0 0 8px var(--accent-glow);
+  }
+  .mockup-line {
+    height: 6px;
+    background: var(--surface);
+    border-radius: 3px;
+    margin-bottom: 8px;
+  }
+  .mockup-line.title {
+    height: 10px;
+    width: 60%;
+    background: var(--navy-light);
+  }
+  .mockup-action {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px;
+    background: var(--surface);
+    border-radius: 6px;
+    margin-bottom: 6px;
+  }
+  .mockup-action-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 6px var(--accent-glow);
+  }
+  .mockup-action-line {
+    height: 4px;
+    flex: 1;
+    background: var(--surface);
+    border-radius: 2px;
+  }
+
+  /* Mission patch decoration */
+  .mission-patch {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 2px solid var(--orange);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.5rem;
+    color: var(--orange);
+    background: rgba(255, 107, 53, 0.05);
+    top: -20px;
+    right: -20px;
+    transform: rotate(15deg);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    z-index: 2;
+  }
+  .mission-patch::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(255, 107, 53, 0.2);
+    border-radius: 50%;
+  }
+
+  /* ===== LOGOS ===== */
+  .logos {
+    padding: 60px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+  .logos-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 32px;
+  }
+  .logos-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    opacity: 0.4;
+  }
+  .logo-item {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.05em;
+  }
+
+  /* ===== FEATURES ===== */
+  .features {
+    padding: 100px 0;
+    position: relative;
+  }
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::before {
+    content: '';
+    width: 16px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  .section-desc {
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    max-width: 520px;
+    margin-bottom: 60px;
+    line-height: 1.8;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .feature-card:hover {
+    border-color: rgba(0, 180, 216, 0.2);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(0, 180, 216, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+  .feature-card h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+  }
+  .feature-card p {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+  .feature-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 2px 8px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-top: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag {
+    padding: 80px 0;
+  }
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    padding: 60px 0;
+  }
+  .zigzag-row + .zigzag-row {
+    border-top: 1px solid var(--border);
+  }
+  .zigzag-row.reverse .zigzag-visual { order: -1; }
+  .zigzag-content h3 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+  .zigzag-content p {
+    font-size: 1rem;
+    color: var(--text-dim);
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+  .zigzag-content ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .zigzag-content li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+  .zigzag-content li::before {
+    content: '◆';
+    color: var(--accent);
+    font-size: 0.5rem;
+  }
+  .zigzag-visual {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    min-height: 260px;
+    position: relative;
+    overflow: hidden;
+  }
+  .zigzag-visual .visual-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    height: 100%;
+  }
+  .visual-cell {
+    background: var(--surface);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+  .visual-cell.highlight {
+    background: var(--accent-dim);
+    border-color: rgba(0, 180, 216, 0.15);
+    color: var(--accent);
+  }
+  .visual-cell.wide { grid-column: span 2; }
+  .visual-cell.tall { grid-row: span 2; }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial {
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+    background: linear-gradient(180deg, transparent, var(--accent-dim), transparent);
+  }
+  .testimonial-quote {
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    font-weight: 500;
+    color: var(--text-bright);
+    max-width: 700px;
+    margin: 0 auto 32px;
+    line-height: 1.5;
+    font-style: italic;
+  }
+  .testimonial-quote::before {
+    content: '"';
+    color: var(--accent);
+    font-size: 3rem;
+    line-height: 0;
+    vertical-align: -0.3em;
+    margin-right: 4px;
+  }
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  .testimonial-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--navy-light);
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  }
+  .testimonial-info { text-align: left; }
+  .testimonial-name {
+    font-weight: 600;
+    color: var(--text-bright);
+    font-size: 0.95rem;
+  }
+  .testimonial-role {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+  }
+  .testimonial-stars {
+    color: var(--gold);
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+  }
+
+  /* ===== PRICING ===== */
+  .pricing {
+    padding: 100px 0;
+  }
+  .pricing-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+  .pricing-header .section-label { justify-content: center; }
+  .pricing-header .section-label::before { display: none; }
+  .pricing-header .section-desc { margin: 0 auto; }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+  .pricing-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 36px;
+    position: relative;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .pricing-card:hover {
+    transform: translateY(-4px);
+  }
+  .pricing-card.featured {
+    border-color: var(--accent);
+    box-shadow: 0 0 40px var(--accent-dim);
+  }
+  .pricing-card.featured::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), #48E0F0);
+    border-radius: 12px 12px 0 0;
+  }
+  .pricing-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 4px 10px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-bottom: 16px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .pricing-tier {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+  .pricing-amount {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+    letter-spacing: -0.03em;
+  }
+  .pricing-amount span {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text-dim);
+  }
+  .pricing-desc {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+    line-height: 1.6;
+  }
+  .pricing-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .pricing-features li {
+    font-size: 0.88rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pricing-features li::before {
+    content: '✦';
+    color: var(--accent);
+    font-size: 0.6rem;
+  }
+  .pricing-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+  .pricing-btn-primary {
+    background: var(--accent);
+    color: var(--bg-deep);
+  }
+  .pricing-btn-primary:hover {
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+  .pricing-btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .pricing-btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+  }
+  .cta-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 80px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-box::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at center, var(--accent-dim), transparent 60%);
+    pointer-events: none;
+  }
+  .cta-box h2 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+    position: relative;
+  }
+  .cta-box p {
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    margin-bottom: 36px;
+    position: relative;
+  }
+  .cta-box .btn-primary { position: relative; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 48px 0;
+    border-top: 1px solid var(--border);
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-brand {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .footer-brand .logo-icon {
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.55rem;
+    color: var(--accent);
+  }
+  .footer-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+  .footer-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--accent); }
+  .footer-copy {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    opacity: 0.6;
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .features-grid, .pricing-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+    .zigzag-row { grid-template-columns: 1fr; gap: 32px; }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .nav-links { display: none; }
+    .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+  }
+  @media (max-width: 600px) {
+    .container { padding: 0 20px; }
+    .hero { padding: 80px 0 60px; }
+    .mockup-body { grid-template-columns: 1fr; }
+    .mockup-sidebar, .mockup-actions { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <a href="#" class="nav-logo">
+      <span class="logo-icon">◆</span>
+      Meet
+    </a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#" class="nav-cta">Launch App</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="orbital-ring"></div>
+  <div class="orbital-ring"></div>
+  <div class="orbital-ring"></div>
+  <div class="container">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      MISSION STATUS: ACTIVE
+    </div>
+    <h1>Weave your ideas<br>into <span class="accent">orbits</span></h1>
+    <p>Meet connects your team's workflow across every plane. Plan, build, and ship — from launchpad to landing.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Begin Launch Sequence ▸</a>
+      <a href="#" class="btn-secondary">View Flight Manual</a>
+    </div>
+    <div class="hero-mockup">
+      <div class="mission-patch">MK-IV</div>
+      <div class="mockup-frame">
+        <div class="mockup-topbar">
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-sidebar">
+            <div class="mockup-sidebar-bar active" style="width:80%"></div>
+            <div class="mockup-sidebar-bar" style="width:65%"></div>
+            <div class="mockup-sidebar-bar" style="width:90%"></div>
+            <div class="mockup-sidebar-bar" style="width:50%"></div>
+            <div class="mockup-sidebar-bar" style="width:70%"></div>
+          </div>
+          <div class="mockup-main">
+            <div class="mockup-line title"></div>
+            <div class="mockup-line" style="width:100%"></div>
+            <div class="mockup-line" style="width:85%"></div>
+            <div class="mockup-line" style="width:95%"></div>
+            <div class="mockup-line" style="width:60%"></div>
+          </div>
+          <div class="mockup-actions">
+            <div class="mockup-action"><div class="mockup-action-dot"></div><div class="mockup-action-line"></div></div>
+            <div class="mockup-action"><div class="mockup-action-dot"></div><div class="mockup-action-line"></div></div>
+            <div class="mockup-action"><div class="mockup-action-dot"></div><div class="mockup-action-line"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<section class="logos">
+  <div class="container">
+    <div class="logos-label">Trusted by teams at mission-critical orgs</div>
+    <div class="logos-grid">
+      <span class="logo-item">NASA</span>
+      <span class="logo-item">SpaceX</span>
+      <span class="logo-item">ESA</span>
+      <span class="logo-item">Blue Origin</span>
+      <span class="logo-item">Rocket Lab</span>
+      <span class="logo-item">Axiom</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-label">Capabilities</div>
+    <div class="section-title">Built for deep work</div>
+    <div class="section-desc">Every tool your crew needs to navigate complexity and deliver payloads on schedule.</div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🛰️</div>
+        <h3>Orbital Planning</h3>
+        <p>Map your project trajectory with Gantt-style timelines that adapt to velocity changes.</p>
+        <span class="feature-tag">TIMELINE</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔭</div>
+        <h3>Deep Observation</h3>
+        <p>Real-time telemetry on every task. Spot bottlenecks before they become mission-critical.</p>
+        <span class="feature-tag">ANALYTICS</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🚀</div>
+        <h3>Launch Sequences</h3>
+        <p>Automated CI/CD pipelines integrated directly into your workflow. Zero manual steps.</p>
+        <span class="feature-tag">AUTOMATION</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌍</div>
+        <h3>Global Comms</h3>
+        <p>Threaded discussions, async updates, and video briefings — all inside Meet.</p>
+        <span class="feature-tag">COMMUNICATION</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h3>Shield Protocol</h3>
+        <p>Enterprise-grade security. SOC2, GDPR, SSO. Your data stays in your orbit.</p>
+        <span class="feature-tag">SECURITY</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Rapid Response</h3>
+        <p>Sub-50ms load times. Your workspace feels instant, even at interplanetary scale.</p>
+        <span class="feature-tag">PERFORMANCE</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZIGZAG -->
+<section class="zigzag">
+  <div class="container">
+    <div class="zigzag-row">
+      <div class="zigzag-content">
+        <div class="section-label">Command Center</div>
+        <h3>Your mission dashboard</h3>
+        <p>Every metric, every team member, every deadline — visible from a single console. No more switching between tools.</p>
+        <ul>
+          <li>Real-time project velocity tracking</li>
+          <li>Automated sprint retrospectives</li>
+          <li>Custom telemetry widgets</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <div class="visual-grid">
+          <div class="visual-cell highlight tall">VEL<br>94%</div>
+          <div class="visual-cell">TASKS<br>142</div>
+          <div class="visual-cell">DEPLOY<br>✓</div>
+          <div class="visual-cell wide">SPRINT 24<br>ON TRACK</div>
+          <div class="visual-cell highlight">BUGS<br>3</div>
+        </div>
+      </div>
+    </div>
+    <div class="zigzag-row reverse">
+      <div class="zigzag-content">
+        <div class="section-label">Crew Coordination</div>
+        <h3>Ship together, land together</h3>
+        <p>Assign roles, set permissions, and track handoffs. Every crew member knows their station and their timeline.</p>
+        <ul>
+          <li>Role-based access controls</li>
+          <li>Cross-team dependency mapping</li>
+          <li>Automated shift handoff notes</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <div class="visual-grid">
+          <div class="visual-cell">CMD<br>ONLINE</div>
+          <div class="visual-cell highlight">PILOT<br>ACTIVE</div>
+          <div class="visual-cell">NAV<br>STANDBY</div>
+          <div class="visual-cell wide">CREW STATUS<br>ALL GREEN</div>
+          <div class="visual-cell">ENG<br>ONLINE</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial">
+  <div class="container">
+    <div class="testimonial-stars">★ ★ ★ ★ ★</div>
+    <div class="testimonial-quote">
+      Meet transformed how our engineering crew coordinates. We went from chaotic Slack threads to a single source of truth. Like upgrading from radio to laser comms.
+    </div>
+    <div class="testimonial-author">
+      <div class="testimonial-avatar">👨‍🚀</div>
+      <div class="testimonial-info">
+        <div class="testimonial-name">Commander Sarah Chen</div>
+        <div class="testimonial-role">VP Engineering, Orbital Dynamics</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="pricing-header">
+      <div class="section-label">Select Your Mission</div>
+      <div class="section-title">Pricing for every orbit</div>
+      <div class="section-desc">Start free. Scale when you're ready for deeper space.</div>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-tier">Lunar</div>
+        <div class="pricing-amount">$0 <span>/mo</span></div>
+        <div class="pricing-desc">For solo explorers and small crews testing the waters.</div>
+        <ul class="pricing-features">
+          <li>Up to 5 crew members</li>
+          <li>3 active missions</li>
+          <li>Basic telemetry</li>
+          <li>Community support</li>
+        </ul>
+        <a href="#" class="pricing-btn pricing-btn-secondary">Start Free Launch</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">Most Popular</div>
+        <div class="pricing-tier">Orbital</div>
+        <div class="pricing-amount">$29 <span>/mo</span></div>
+        <div class="pricing-desc">For teams ready to establish a permanent presence.</div>
+        <ul class="pricing-features">
+          <li>Unlimited crew</li>
+          <li>Unlimited missions</li>
+          <li>Advanced analytics</li>
+          <li>Priority comms support</li>
+          <li>Custom integrations</li>
+        </ul>
+        <a href="#" class="pricing-btn pricing-btn-primary">Begin Orbital Flight</a>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-tier">Interstellar</div>
+        <div class="pricing-amount">$99 <span>/mo</span></div>
+        <div class="pricing-desc">For organizations operating at galactic scale.</div>
+        <ul class="pricing-features">
+          <li>Everything in Orbital</li>
+          <li>SSO & SAML</li>
+          <li>Dedicated mission control</li>
+          <li>Custom SLA</li>
+          <li>On-premise deployment</li>
+        </ul>
+        <a href="#" class="pricing-btn pricing-btn-secondary">Contact Launch Control</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="container">
+    <div class="cta-box">
+      <h2>Ready for liftoff?</h2>
+      <p>Join 10,000+ crews already navigating with Meet. Free to start. No credit card required.</p>
+      <a href="#" class="btn-primary">Initiate Launch Sequence ▸</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="logo-icon">◆</span>
+        Meet
+      </div>
+      <ul class="footer-links">
+        <li><a href="#">Documentation</a></li>
+        <li><a href="#">API</a></li>
+        <li><a href="#">Status</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+      <div class="footer-copy">© 2026 Meet. All missions reserved.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Starfield
+  const canvas = document.getElementById('starfield');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  function initStars() {
+    stars = [];
+    const count = Math.floor((canvas.width * canvas.height) / 4000);
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.2 + 0.2,
+        a: Math.random(),
+        da: (Math.random() - 0.5) * 0.01,
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (const s of stars) {
+      s.a += s.da;
+      if (s.a > 1 || s.a < 0.1) s.da *= -1;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(180, 200, 255, ${s.a * 0.6})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  initStars();
+  draw();
+  window.addEventListener('resize', () => { resize(); initStars(); });
+</script>
+
+</body>
+</html>

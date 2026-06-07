@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #1A3C2A;
+    --forest-deep: #0F2618;
+    --forest-light: #2D5A3F;
+    --sage: #7A9E7E;
+    --sage-light: #A8C5AB;
+    --moss: #5C7A5E;
+    --cream: #F5F0E8;
+    --cream-warm: #EDE5D5;
+    --sand: #D4C5A9;
+    --leaf: #4A7C59;
+    --leaf-light: #6B9F72;
+    --earth: #8B7355;
+    --earth-light: #A89279;
+    --bark: #5C4033;
+    --sprout: #8BC34A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--cream);
+    color: var(--forest-deep);
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+  }
+
+  /* Leaf pattern background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(122, 158, 126, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(74, 124, 89, 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 60% 80%, rgba(139, 195, 74, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Organic floating shapes */
+  .organic-shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.15;
+    pointer-events: none;
+    animation: float 20s ease-in-out infinite;
+  }
+  .organic-shape-1 {
+    width: 400px;
+    height: 400px;
+    background: var(--sage);
+    top: 10%;
+    right: -100px;
+    animation-delay: 0s;
+  }
+  .organic-shape-2 {
+    width: 300px;
+    height: 300px;
+    background: var(--leaf);
+    bottom: 20%;
+    left: -80px;
+    animation-delay: -7s;
+  }
+  .organic-shape-3 {
+    width: 250px;
+    height: 250px;
+    background: var(--sprout);
+    top: 50%;
+    right: 10%;
+    animation-delay: -14s;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(20px, -30px) scale(1.05); }
+    50% { transform: translate(-10px, 20px) scale(0.95); }
+    75% { transform: translate(15px, 10px) scale(1.02); }
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Container */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(245, 240, 232, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(26, 60, 42, 0.08);
+  }
+  nav .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--forest);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .logo span { color: var(--leaf); }
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a {
+    color: var(--forest);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--leaf); }
+  .btn-nav {
+    background: var(--forest) !important;
+    color: var(--cream) !important;
+    padding: 10px 24px;
+    border-radius: 100px;
+    font-size: 0.82rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.02em;
+    transition: background 0.3s, transform 0.3s !important;
+  }
+  .btn-nav:hover {
+    background: var(--forest-light) !important;
+    transform: translateY(-1px);
+  }
+
+  /* Leaf SVG decoration */
+  .leaf-deco {
+    position: absolute;
+    opacity: 0.06;
+    pointer-events: none;
+  }
+
+  /* Hero */
+  .hero {
+    padding: 160px 0 100px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(74, 124, 89, 0.1);
+    color: var(--leaf);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+    border: 1px solid rgba(74, 124, 89, 0.15);
+  }
+  .hero-tag::before {
+    content: '🌿';
+    font-size: 0.85rem;
+  }
+  .hero h1 {
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    line-height: 1.05;
+    margin-bottom: 28px;
+    max-width: 750px;
+    color: var(--forest-deep);
+    font-weight: 700;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--leaf);
+  }
+  .hero .subhead {
+    font-size: 1.1rem;
+    max-width: 520px;
+    margin-bottom: 44px;
+    line-height: 1.75;
+    color: var(--bark);
+    font-weight: 300;
+  }
+  .cta-group {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 72px;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--forest);
+    color: var(--cream);
+    padding: 16px 36px;
+    text-decoration: none;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    border-radius: 100px;
+    letter-spacing: 0.02em;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 20px rgba(26, 60, 42, 0.2);
+  }
+  .btn-primary:hover {
+    background: var(--forest-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(26, 60, 42, 0.3);
+  }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--forest);
+    padding: 16px 28px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    border-radius: 100px;
+    border: 1px solid rgba(26, 60, 42, 0.2);
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .btn-secondary:hover {
+    background: rgba(26, 60, 42, 0.05);
+    border-color: rgba(26, 60, 42, 0.35);
+  }
+
+  /* Hero Screenshot */
+  .hero-screenshot {
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow:
+      0 4px 6px rgba(0,0,0,0.02),
+      0 20px 50px rgba(26, 60, 42, 0.08),
+      0 40px 80px rgba(26, 60, 42, 0.04);
+    border: 1px solid rgba(26, 60, 42, 0.06);
+    background: var(--cream);
+  }
+  .screenshot-mockup {
+    display: flex;
+    flex-direction: column;
+    min-height: 380px;
+  }
+  .mockup-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(26, 60, 42, 0.06);
+    background: rgba(245, 240, 232, 0.8);
+    font-size: 0.72rem;
+    color: var(--sage);
+    letter-spacing: 0.05em;
+  }
+  .mockup-topbar-left {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .mockup-topbar-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--sand);
+  }
+  .mockup-body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 180px 1fr 240px;
+  }
+  .mock-sidebar {
+    border-right: 1px solid rgba(26, 60, 42, 0.06);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .mock-sidebar-item {
+    height: 8px;
+    border-radius: 100px;
+    background: var(--cream-warm);
+  }
+  .mock-sidebar-item.active {
+    background: var(--sage-light);
+  }
+  .mock-main {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .mock-line {
+    height: 8px;
+    border-radius: 100px;
+    background: var(--cream-warm);
+  }
+  .mock-line.title {
+    height: 12px;
+    background: rgba(26, 60, 42, 0.1);
+    width: 50%;
+  }
+  .mock-line.highlight {
+    background: rgba(74, 124, 89, 0.12);
+    border-left: 3px solid var(--sage);
+    border-radius: 0 100px 100px 0;
+  }
+  .mock-right {
+    border-left: 1px solid rgba(26, 60, 42, 0.06);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .mock-action {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(245, 240, 232, 0.5);
+    border: 1px solid rgba(26, 60, 42, 0.04);
+  }
+  .mock-action-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .mock-action-line {
+    height: 6px;
+    border-radius: 100px;
+    background: var(--cream-warm);
+    flex: 1;
+  }
+
+  /* Marquee */
+  .marquee-section {
+    overflow: hidden;
+    background: var(--forest-deep);
+    color: var(--sage-light);
+    padding: 18px 0;
+    position: relative;
+  }
+  .marquee-section::before,
+  .marquee-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 120px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .marquee-section::before {
+    left: 0;
+    background: linear-gradient(to right, var(--forest-deep), transparent);
+  }
+  .marquee-section::after {
+    right: 0;
+    background: linear-gradient(to left, var(--forest-deep), transparent);
+  }
+  .marquee-track {
+    display: flex;
+    gap: 48px;
+    animation: marquee 25s linear infinite;
+    white-space: nowrap;
+  }
+  .marquee-item {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+  .marquee-sep {
+    opacity: 0.3;
+    font-size: 0.6rem;
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* Features */
+  .features {
+    padding: 100px 0;
+    position: relative;
+  }
+  .features-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  .features-header h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--forest-deep);
+    margin-bottom: 12px;
+  }
+  .features-header p {
+    color: var(--bark);
+    font-weight: 300;
+    font-size: 1rem;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .feature-card {
+    padding: 44px 32px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(26, 60, 42, 0.06);
+    position: relative;
+    transition: transform 0.4s, box-shadow 0.4s;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--sage), var(--leaf-light));
+    border-radius: 24px 24px 0 0;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(26, 60, 42, 0.08);
+  }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    background: rgba(74, 124, 89, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    font-size: 1.3rem;
+  }
+  .feature-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+    color: var(--forest-deep);
+  }
+  .feature-card p {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--bark);
+    font-weight: 300;
+  }
+
+  /* Zigzag */
+  .zigzag {
+    padding: 40px 0 100px;
+  }
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    margin-bottom: 80px;
+  }
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-copy { order: 2; }
+  .zigzag-copy h2 {
+    font-size: 2.2rem;
+    margin-bottom: 18px;
+    line-height: 1.15;
+    color: var(--forest-deep);
+  }
+  .zigzag-copy p {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--bark);
+    margin-bottom: 28px;
+    font-weight: 300;
+  }
+  .zigzag-visual {
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(74, 124, 89, 0.06), rgba(168, 197, 171, 0.1));
+    min-height: 340px;
+    padding: 36px;
+    border: 1px solid rgba(26, 60, 42, 0.06);
+  }
+  .zigzag-visual-inner {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .conn-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(26, 60, 42, 0.06);
+    transition: transform 0.3s;
+  }
+  .conn-row:hover { transform: translateX(4px); }
+  .conn-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--cream);
+  }
+  .conn-line {
+    height: 6px;
+    border-radius: 100px;
+    background: var(--cream-warm);
+    flex: 1;
+  }
+  .conn-badge {
+    font-size: 0.65rem;
+    padding: 4px 12px;
+    background: rgba(74, 124, 89, 0.12);
+    color: var(--leaf);
+    font-weight: 500;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* Testimonial */
+  .testimonial {
+    padding: 100px 0;
+    background: var(--forest-deep);
+    color: var(--cream);
+    position: relative;
+    overflow: hidden;
+  }
+  .testimonial .organic-shape-1 {
+    background: var(--leaf);
+    opacity: 0.08;
+    top: -50px;
+    right: 10%;
+  }
+  .testimonial .organic-shape-2 {
+    background: var(--sage);
+    opacity: 0.06;
+    bottom: -30px;
+    left: 5%;
+  }
+  .testimonial-inner {
+    max-width: 750px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .testimonial blockquote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+    line-height: 1.35;
+    margin-bottom: 36px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--sage-light);
+  }
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  .author-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid rgba(168, 197, 171, 0.3);
+    background: rgba(122, 158, 126, 0.15);
+  }
+  .author-info { text-align: left; }
+  .author-info .name {
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--cream);
+    letter-spacing: 0.02em;
+  }
+  .author-info .role {
+    font-size: 0.78rem;
+    color: var(--sage);
+    font-weight: 300;
+  }
+
+  /* Pricing */
+  .pricing {
+    padding: 100px 0;
+    position: relative;
+  }
+  .pricing-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .pricing-header h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--forest-deep);
+    margin-bottom: 12px;
+  }
+  .pricing-header p {
+    font-size: 1rem;
+    color: var(--bark);
+    font-weight: 300;
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .pricing-card {
+    padding: 40px 32px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(26, 60, 42, 0.06);
+    text-align: center;
+    position: relative;
+    transition: transform 0.4s, box-shadow 0.4s;
+  }
+  .pricing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(26, 60, 42, 0.08);
+  }
+  .pricing-card.featured {
+    background: var(--forest);
+    color: var(--cream);
+    border-color: transparent;
+    box-shadow: 0 8px 32px rgba(26, 60, 42, 0.15);
+  }
+  .pricing-card.featured:hover {
+    box-shadow: 0 16px 48px rgba(26, 60, 42, 0.25);
+  }
+  .pricing-card.featured::before {
+    content: 'MOST POPULAR';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--leaf);
+    color: var(--cream);
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 5px 16px;
+    border-radius: 100px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .pricing-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .pricing-card .price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+    line-height: 1;
+  }
+  .pricing-card .price span {
+    font-size: 1.2rem;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+  }
+  .pricing-card .period {
+    font-size: 0.78rem;
+    margin-bottom: 28px;
+    opacity: 0.6;
+    letter-spacing: 0.05em;
+  }
+  .pricing-card ul {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 32px;
+  }
+  .pricing-card li {
+    padding: 10px 0;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgba(26, 60, 42, 0.06);
+    font-weight: 300;
+  }
+  .pricing-card.featured li {
+    border-bottom-color: rgba(245, 240, 232, 0.1);
+  }
+  .pricing-card li::before {
+    content: '✦';
+    color: var(--leaf);
+    font-size: 0.7rem;
+  }
+  .pricing-card.featured li::before {
+    color: var(--sage-light);
+  }
+  .btn-pricing {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.85rem;
+    text-align: center;
+    border-radius: 100px;
+    letter-spacing: 0.02em;
+    border: 1px solid rgba(26, 60, 42, 0.15);
+    color: var(--forest);
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.3s, border-color 0.3s, transform 0.3s;
+  }
+  .btn-pricing:hover {
+    background: rgba(26, 60, 42, 0.04);
+    border-color: rgba(26, 60, 42, 0.3);
+    transform: translateY(-1px);
+  }
+  .btn-pricing.filled {
+    background: var(--leaf);
+    border-color: var(--leaf);
+    color: var(--cream);
+  }
+  .btn-pricing.filled:hover {
+    background: var(--leaf-light);
+    border-color: var(--leaf-light);
+  }
+
+  /* Final CTA */
+  .final-cta {
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .final-cta-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--forest-deep), var(--forest), var(--forest-light));
+    z-index: 0;
+  }
+  .final-cta .container {
+    position: relative;
+    z-index: 1;
+  }
+  .final-cta h2 {
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    line-height: 1.1;
+    margin-bottom: 20px;
+    color: var(--cream);
+    font-weight: 700;
+  }
+  .final-cta h2 em {
+    font-style: italic;
+    color: var(--sage-light);
+  }
+  .final-cta p {
+    font-size: 1rem;
+    color: var(--sage);
+    margin-bottom: 40px;
+    font-weight: 300;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .btn-cta-final {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--cream);
+    color: var(--forest-deep);
+    padding: 16px 40px;
+    text-decoration: none;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: 100px;
+    letter-spacing: 0.02em;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+  }
+  .btn-cta-final:hover {
+    background: var(--cream-warm);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  /* Footer */
+  footer {
+    padding: 28px 0;
+    text-align: center;
+    border-top: 1px solid rgba(26, 60, 42, 0.06);
+    font-size: 0.78rem;
+    color: var(--sage);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .features-grid,
+    .pricing-grid { grid-template-columns: 1fr; }
+    .zigzag-row { grid-template-columns: 1fr; gap: 32px; }
+    .zigzag-row.reverse .zigzag-copy { order: 0; }
+    .mockup-body { grid-template-columns: 1fr; }
+    .mock-sidebar, .mock-right { display: none; }
+    .nav-links { display: none; }
+    .container { padding: 0 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="container">
+    <a href="#" class="logo">Meet<span>.</span></a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="btn-nav">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="organic-shape organic-shape-1"></div>
+  <div class="organic-shape organic-shape-2"></div>
+  <div class="organic-shape organic-shape-3"></div>
+  <div class="container">
+    <div class="hero-tag reveal">AI Meeting Notes</div>
+    <h1 class="reveal">Meetings that grow<br>instead of <em>wilt</em></h1>
+    <p class="subhead reveal">AI notes that turn transcripts into action items. Syncs to Notion, Linear, Slack — so nothing falls through the cracks.</p>
+    <div class="cta-group reveal">
+      <a href="#" class="btn-primary">Connect calendar — free 14 days</a>
+      <a href="#features" class="btn-secondary">See how it works ↓</a>
+    </div>
+    <div class="hero-screenshot reveal">
+      <div class="screenshot-mockup">
+        <div class="mockup-topbar">
+          <div class="mockup-topbar-left">
+            <div class="mockup-topbar-dot"></div>
+            <div class="mockup-topbar-dot"></div>
+            <div class="mockup-topbar-dot"></div>
+          </div>
+          <span>meet://meetings/today</span>
+        </div>
+        <div class="mockup-body">
+          <div class="mock-sidebar">
+            <div class="mock-sidebar-item active" style="width:80%"></div>
+            <div class="mock-sidebar-item" style="width:65%"></div>
+            <div class="mock-sidebar-item" style="width:90%"></div>
+            <div class="mock-sidebar-item" style="width:50%"></div>
+            <div class="mock-sidebar-item" style="width:75%"></div>
+          </div>
+          <div class="mock-main">
+            <div class="mock-line title"></div>
+            <div class="mock-line" style="width:100%"></div>
+            <div class="mock-line" style="width:85%"></div>
+            <div class="mock-line" style="width:95%"></div>
+            <div class="mock-line" style="width:70%"></div>
+            <div class="mock-line highlight" style="width:100%"></div>
+            <div class="mock-line highlight" style="width:80%"></div>
+          </div>
+          <div class="mock-right">
+            <div class="mock-action">
+              <div class="mock-action-dot" style="background:var(--leaf)"></div>
+              <div class="mock-action-line"></div>
+            </div>
+            <div class="mock-action">
+              <div class="mock-action-dot" style="background:var(--sage)"></div>
+              <div class="mock-action-line"></div>
+            </div>
+            <div class="mock-action">
+              <div class="mock-action-dot" style="background:var(--moss)"></div>
+              <div class="mock-action-line"></div>
+            </div>
+            <div class="mock-action">
+              <div class="mock-action-dot" style="background:var(--sprout)"></div>
+              <div class="mock-action-line"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Marquee -->
+<section class="marquee-section">
+  <div class="marquee-track">
+    <span class="marquee-item">Vercel</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Stripe</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Notion</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Linear</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Figma</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Raycast</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Vercel</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Stripe</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Notion</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Linear</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Figma</span>
+    <span class="marquee-sep">✦</span>
+    <span class="marquee-item">Raycast</span>
+    <span class="marquee-sep">✦</span>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header reveal">
+      <h2>Three roots, one system</h2>
+      <p>Everything your meetings need to stay alive after they end</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon">🌱</div>
+        <h3>Transcribe</h3>
+        <p>Every word captured. Speaker-labeled. Searchable. Your meetings become a permanent record you can actually find things in.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">🍃</div>
+        <h3>Summarize</h3>
+        <p>AI distills 60 minutes into 3 bullet points and 5 action items. Skip the replay. Get the signal.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">🌿</div>
+        <h3>Sync</h3>
+        <p>Pushes to your tools. Notion pages, Linear tickets, Slack threads. One click. Every tool updated.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Zigzag -->
+<section class="zigzag">
+  <div class="container">
+    <div class="zigzag-row">
+      <div class="zigzag-copy reveal">
+        <h2>One click.<br>Every tool updated.</h2>
+        <p>Connect your workspace tools once. Meet pushes the right content to the right place — meeting notes to Notion, bugs to Linear, decisions to Slack. No copy-paste. No "I'll get back to you."</p>
+        <a href="#" class="btn-secondary">View integrations →</a>
+      </div>
+      <div class="zigzag-visual reveal">
+        <div class="zigzag-visual-inner">
+          <div class="conn-row">
+            <div class="conn-icon" style="background:#000;">N</div>
+            <div class="conn-line"></div>
+            <span class="conn-badge">Connected</span>
+          </div>
+          <div class="conn-row">
+            <div class="conn-icon" style="background:#5E6AD2;">L</div>
+            <div class="conn-line"></div>
+            <span class="conn-badge">Connected</span>
+          </div>
+          <div class="conn-row">
+            <div class="conn-icon" style="background:#4A154B;">S</div>
+            <div class="conn-line"></div>
+            <span class="conn-badge">Connected</span>
+          </div>
+          <div class="conn-row">
+            <div class="conn-icon" style="background:var(--leaf);">G</div>
+            <div class="conn-line"></div>
+            <span class="conn-badge">Connected</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="zigzag-row reverse">
+      <div class="zigzag-copy reveal">
+        <h2>Notes that<br>actually live somewhere useful</h2>
+        <p>Every meeting generates a polished Notion page automatically. Headings, tables, timestamps — formatted like a human wrote them. Your team finds the context they need without asking.</p>
+      </div>
+      <div class="zigzag-visual reveal">
+        <div class="zigzag-visual-inner">
+          <div class="mock-line title" style="width:45%;"></div>
+          <div class="mock-line" style="width:100%;"></div>
+          <div class="mock-line" style="width:80%;"></div>
+          <div class="mock-line" style="width:90%;"></div>
+          <div class="mock-line highlight" style="width:70%;"></div>
+          <div class="mock-line highlight" style="width:85%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonial -->
+<section class="testimonial">
+  <div class="organic-shape organic-shape-1"></div>
+  <div class="organic-shape organic-shape-2"></div>
+  <div class="container">
+    <div class="testimonial-inner reveal">
+      <blockquote>"We went from 4 hours of note-taking per week to zero. Meet just works."</blockquote>
+      <div class="testimonial-author">
+        <div class="author-avatar"></div>
+        <div class="author-info">
+          <div class="name">Sarah Chen</div>
+          <div class="role">VP of Product · Linear</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="pricing-header reveal">
+      <h2>Pricing</h2>
+      <p>Start free. Grow when you're ready.</p>
+    </div>
+  </div>
+  <div class="pricing-grid">
+    <div class="pricing-card reveal">
+      <h3>Free</h3>
+      <div class="price">$0<span>/mo</span></div>
+      <div class="period">10 meetings / month</div>
+      <ul>
+        <li>AI transcription</li>
+        <li>Basic summaries</li>
+        <li>1 integration</li>
+      </ul>
+      <a href="#" class="btn-pricing">Get started</a>
+    </div>
+    <div class="pricing-card featured reveal">
+      <h3>Pro</h3>
+      <div class="price">$12<span>/mo</span></div>
+      <div class="period">Unlimited meetings</div>
+      <ul>
+        <li>Everything in Free</li>
+        <li>AI summaries & action items</li>
+        <li>Unlimited integrations</li>
+        <li>Search across all meetings</li>
+      </ul>
+      <a href="#" class="btn-pricing filled">Start free trial</a>
+    </div>
+    <div class="pricing-card reveal">
+      <h3>Team</h3>
+      <div class="price">$29<span>/mo</span></div>
+      <div class="period">Per seat, min 5</div>
+      <ul>
+        <li>Everything in Pro</li>
+        <li>Shared workspace</li>
+        <li>Admin controls</li>
+        <li>SSO & audit logs</li>
+      </ul>
+      <a href="#" class="btn-pricing">Contact sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<section class="final-cta">
+  <div class="final-cta-bg"></div>
+  <div class="container">
+    <h2 class="reveal">Stop taking notes.<br><em>Start growing</em> things.</h2>
+    <p class="reveal">Your calendar already knows about your meetings. Let Meet handle the rest.</p>
+    <a href="#" class="btn-cta-final reveal">Start free — no credit card →</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <p>© 2024 Meet. Built for people who value their time.</p>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

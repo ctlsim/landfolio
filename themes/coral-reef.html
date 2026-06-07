@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #001F3F;
+    --bg2: #002B52;
+    --bg3: #003D6F;
+    --surface: rgba(0, 61, 111, 0.5);
+    --surface-border: rgba(0, 206, 209, 0.15);
+    --turquoise: #00CED1;
+    --turquoise-light: #40E0D0;
+    --turquoise-glow: rgba(0, 206, 209, 0.4);
+    --coral: #FF6B6B;
+    --coral-hot: #FF5252;
+    --coral-glow: rgba(255, 107, 107, 0.4);
+    --tropical-yellow: #FFD93D;
+    --tropical-yellow-glow: rgba(255, 217, 61, 0.3);
+    --sea-green: #2ECC71;
+    --sea-green-glow: rgba(46, 204, 113, 0.3);
+    --hot-pink: #FF1493;
+    --hot-pink-glow: rgba(255, 20, 147, 0.3);
+    --orange: #FF8C42;
+    --orange-glow: rgba(255, 140, 66, 0.3);
+    --deep-ocean: #006994;
+    --aqua: #7FFFD4;
+    --white: #F0F8FF;
+    --text: #D4EAF7;
+    --text-dim: #7BA3C4;
+    --text-muted: #3A6B8C;
+    --radius: 16px;
+    --radius-md: 12px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Underwater gradient bg */
+  .ocean-bg {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(ellipse at 20% 80%, rgba(0, 206, 209, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(255, 107, 107, 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(0, 105, 148, 0.1) 0%, transparent 60%),
+      linear-gradient(180deg, #001220 0%, var(--bg) 30%, var(--bg2) 70%, #001A33 100%);
+  }
+
+  /* Light rays */
+  .light-rays {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0;
+    background:
+      linear-gradient(170deg, rgba(0, 206, 209, 0.04) 0%, transparent 40%),
+      linear-gradient(190deg, rgba(255, 217, 61, 0.03) 0%, transparent 35%),
+      linear-gradient(160deg, rgba(46, 204, 113, 0.02) 0%, transparent 45%);
+    animation: rays-shift 12s ease-in-out infinite alternate;
+  }
+
+  @keyframes rays-shift {
+    0% { opacity: 0.6; }
+    100% { opacity: 1; }
+  }
+
+  /* Bubble particles */
+  .bubbles-container {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0;
+    overflow: hidden;
+  }
+
+  .bubble {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.25), rgba(0,206,209,0.08));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: bubble-rise linear infinite;
+  }
+
+  @keyframes bubble-rise {
+    0% { transform: translateY(100vh) translateX(0) scale(1); opacity: 0; }
+    10% { opacity: 0.7; }
+    90% { opacity: 0.5; }
+    100% { transform: translateY(-10vh) translateX(30px) scale(0.6); opacity: 0; }
+  }
+
+  /* Coral reef shapes */
+  .coral-shape {
+    position: fixed;
+    pointer-events: none; z-index: 0;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.15;
+  }
+
+  .coral-1 {
+    width: 400px; height: 400px;
+    bottom: -100px; left: -100px;
+    background: var(--coral);
+  }
+
+  .coral-2 {
+    width: 300px; height: 300px;
+    top: 20%; right: -80px;
+    background: var(--turquoise);
+  }
+
+  .coral-3 {
+    width: 250px; height: 250px;
+    bottom: 30%; left: 30%;
+    background: var(--tropical-yellow);
+  }
+
+  /* Typography */
+  h1, h2, h3, h4 {
+    font-family: 'Fredoka One', cursive;
+    color: var(--white);
+    line-height: 1.15;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ============ NAV ============ */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 16px 0;
+    background: rgba(0, 31, 63, 0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--surface-border);
+  }
+
+  .nav-inner {
+    max-width: 1100px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .logo {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.5rem;
+    color: var(--turquoise);
+    text-decoration: none;
+    text-shadow: 0 0 20px var(--turquoise-glow);
+  }
+
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a {
+    color: var(--text-dim); text-decoration: none; font-size: 0.85rem;
+    font-weight: 500; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--turquoise); }
+
+  .nav-cta {
+    background: linear-gradient(135deg, var(--coral), var(--orange));
+    color: #fff !important;
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 20px var(--coral-glow);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .nav-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px var(--coral-glow);
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    position: relative;
+  }
+
+  .hero-content { max-width: 750px; }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 16px 6px 8px;
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: 50px;
+    font-size: 0.78rem;
+    color: var(--turquoise-light);
+    margin-bottom: 32px;
+    backdrop-filter: blur(10px);
+  }
+
+  .hero-badge-dot {
+    width: 8px; height: 8px;
+    background: var(--sea-green);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--sea-green-glow);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+  }
+
+  .hero h1 .gradient-text {
+    background: linear-gradient(135deg, var(--turquoise), var(--turquoise-light), var(--aqua));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 30px var(--turquoise-glow));
+  }
+
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--text-dim);
+    max-width: 550px;
+    margin: 0 auto 40px;
+    line-height: 1.8;
+  }
+
+  .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--coral), var(--coral-hot));
+    color: #fff;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    border: none; border-radius: 50px;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 8px 30px var(--coral-glow);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px var(--coral-glow);
+  }
+
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 32px;
+    background: var(--surface);
+    color: var(--turquoise-light);
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    border: 1px solid var(--surface-border);
+    border-radius: 50px;
+    cursor: pointer;
+    text-decoration: none;
+    backdrop-filter: blur(10px);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .btn-secondary:hover {
+    border-color: var(--turquoise);
+    transform: translateY(-3px);
+  }
+
+  /* Hero illustration */
+  .hero-visual {
+    margin-top: 60px;
+    position: relative;
+  }
+
+  .hero-mockup {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px var(--turquoise-glow);
+  }
+
+  .mockup-topbar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 16px;
+    background: rgba(0, 31, 63, 0.6);
+    border-bottom: 1px solid var(--surface-border);
+  }
+
+  .mockup-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .mockup-dot:nth-child(1) { background: var(--coral); }
+  .mockup-dot:nth-child(2) { background: var(--tropical-yellow); }
+  .mockup-dot:nth-child(3) { background: var(--sea-green); }
+
+  .mockup-body {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 20px;
+    min-height: 280px;
+  }
+
+  .mockup-sidebar {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+
+  .mockup-sidebar-item {
+    height: 12px;
+    background: rgba(0, 206, 209, 0.08);
+    border-radius: 6px;
+  }
+  .mockup-sidebar-item.active {
+    background: linear-gradient(90deg, var(--turquoise), var(--turquoise-light));
+    box-shadow: 0 0 10px var(--turquoise-glow);
+  }
+
+  .mockup-main { display: flex; flex-direction: column; gap: 12px; }
+
+  .mockup-line {
+    height: 10px;
+    background: rgba(0, 206, 209, 0.06);
+    border-radius: 5px;
+  }
+  .mockup-line.title {
+    background: linear-gradient(90deg, var(--turquoise), transparent);
+    height: 14px;
+    width: 60%;
+  }
+
+  .mockup-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .mockup-card {
+    height: 60px;
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-md);
+  }
+
+  /* Floating fish decoration */
+  .fish-deco {
+    position: absolute;
+    font-size: 2rem;
+    animation: fish-swim 8s ease-in-out infinite;
+    opacity: 0.4;
+  }
+  .fish-1 { top: 10%; right: 5%; animation-delay: 0s; }
+  .fish-2 { bottom: 20%; left: 3%; animation-delay: -3s; font-size: 1.5rem; }
+  .fish-3 { top: 40%; right: 10%; animation-delay: -5s; font-size: 1.2rem; }
+
+  @keyframes fish-swim {
+    0%, 100% { transform: translateX(0) translateY(0) rotate(0deg); }
+    25% { transform: translateX(-15px) translateY(-10px) rotate(-5deg); }
+    50% { transform: translateX(5px) translateY(5px) rotate(3deg); }
+    75% { transform: translateX(-8px) translateY(-5px) rotate(-2deg); }
+  }
+
+  /* ============ LOGOS ============ */
+  .logos-section {
+    padding: 60px 0;
+    text-align: center;
+    border-top: 1px solid var(--surface-border);
+    border-bottom: 1px solid var(--surface-border);
+    background: rgba(0, 31, 63, 0.3);
+  }
+
+  .logos-section p {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+    font-weight: 600;
+  }
+
+  .logos-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    opacity: 0.4;
+  }
+
+  .logo-item {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    color: var(--text-dim);
+  }
+
+  /* ============ FEATURES ============ */
+  .features-section {
+    padding: 100px 0;
+  }
+
+  .section-label {
+    display: inline-block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--turquoise);
+    font-weight: 600;
+    margin-bottom: 12px;
+    padding: 4px 12px;
+    background: rgba(0, 206, 209, 0.08);
+    border-radius: 50px;
+    border: 1px solid rgba(0, 206, 209, 0.15);
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+
+  .section-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    max-width: 550px;
+    margin-bottom: 60px;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  }
+  .feature-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--turquoise);
+    box-shadow: 0 12px 40px rgba(0, 206, 209, 0.1);
+  }
+
+  .feature-icon {
+    width: 52px; height: 52px;
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+
+  .fi-turquoise { background: rgba(0, 206, 209, 0.12); }
+  .fi-coral { background: rgba(255, 107, 107, 0.12); }
+  .fi-yellow { background: rgba(255, 217, 61, 0.12); }
+  .fi-green { background: rgba(46, 204, 113, 0.12); }
+  .fi-pink { background: rgba(255, 20, 147, 0.12); }
+  .fi-orange { background: rgba(255, 140, 66, 0.12); }
+
+  .feature-card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 10px;
+    color: var(--white);
+  }
+
+  .feature-card p {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  /* ============ ZIGZAG ============ */
+  .zigzag-section {
+    padding: 100px 0;
+  }
+
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    margin-bottom: 80px;
+  }
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-visual { order: -1; }
+
+  .zigzag-content h3 {
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+  }
+
+  .zigzag-content p {
+    color: var(--text-dim);
+    margin-bottom: 20px;
+    line-height: 1.8;
+  }
+
+  .zigzag-list { list-style: none; }
+  .zigzag-list li {
+    padding: 6px 0;
+    color: var(--text);
+    font-size: 0.92rem;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .zigzag-list li::before {
+    content: '🐠';
+    font-size: 0.9rem;
+  }
+
+  .zigzag-visual {
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    backdrop-filter: blur(10px);
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .zigzag-mockup-inner {
+    width: 100%;
+  }
+
+  .zm-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .zm-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.9rem;
+    color: var(--turquoise-light);
+  }
+
+  .zm-badge {
+    padding: 3px 10px;
+    background: rgba(46, 204, 113, 0.12);
+    color: var(--sea-green);
+    border-radius: 50px;
+    font-size: 0.65rem;
+    font-weight: 600;
+  }
+
+  .zm-bars { display: flex; flex-direction: column; gap: 12px; }
+
+  .zm-bar-row {
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .zm-bar-label {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    width: 60px;
+    text-align: right;
+  }
+
+  .zm-bar-track {
+    flex: 1;
+    height: 8px;
+    background: rgba(0, 206, 209, 0.06);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .zm-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease;
+  }
+
+  .bf-turquoise { background: linear-gradient(90deg, var(--turquoise), var(--turquoise-light)); }
+  .bf-coral { background: linear-gradient(90deg, var(--coral), var(--orange)); }
+  .bf-green { background: linear-gradient(90deg, var(--sea-green), var(--aqua)); }
+  .bf-yellow { background: linear-gradient(90deg, var(--tropical-yellow), var(--orange)); }
+  .bf-pink { background: linear-gradient(90deg, var(--hot-pink), var(--coral)); }
+
+  /* ============ TESTIMONIAL ============ */
+  .testimonial-section {
+    padding: 100px 0;
+    text-align: center;
+  }
+
+  .testimonial-card {
+    max-width: 700px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-xl);
+    padding: 48px;
+    backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .testimonial-card::before {
+    content: '"';
+    position: absolute;
+    top: -10px; left: 24px;
+    font-size: 8rem;
+    font-family: 'Fredoka One', cursive;
+    color: var(--turquoise);
+    opacity: 0.08;
+    line-height: 1;
+  }
+
+  .testimonial-text {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: 28px;
+    font-style: italic;
+    position: relative;
+    z-index: 1;
+  }
+
+  .testimonial-author {
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+  }
+
+  .testimonial-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--turquoise), var(--coral));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+  }
+
+  .testimonial-name {
+    font-weight: 600;
+    color: var(--white);
+    font-size: 0.95rem;
+  }
+
+  .testimonial-role {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+
+  .stars {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    letter-spacing: 4px;
+  }
+
+  /* ============ PRICING ============ */
+  .pricing-section {
+    padding: 100px 0;
+  }
+
+  .pricing-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 950px;
+    margin: 0 auto;
+  }
+
+  .pricing-card {
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-lg);
+    padding: 36px;
+    backdrop-filter: blur(10px);
+    text-align: center;
+    transition: transform 0.3s, border-color 0.3s;
+    position: relative;
+  }
+  .pricing-card:hover {
+    transform: translateY(-6px);
+  }
+
+  .pricing-card.featured {
+    border-color: var(--turquoise);
+    box-shadow: 0 0 40px rgba(0, 206, 209, 0.15);
+  }
+
+  .pricing-card.featured::before {
+    content: 'POPULAR';
+    position: absolute;
+    top: -12px; left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 16px;
+    background: linear-gradient(135deg, var(--turquoise), var(--turquoise-light));
+    color: var(--bg);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    border-radius: 50px;
+  }
+
+  .pricing-tier {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    color: var(--turquoise-light);
+    margin-bottom: 8px;
+  }
+
+  .pricing-price {
+    font-family: 'Fredoka One', cursive;
+    font-size: 3rem;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .pricing-price span {
+    font-size: 1rem;
+    color: var(--text-dim);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+  }
+
+  .pricing-desc {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+  }
+
+  .pricing-features {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 28px;
+  }
+
+  .pricing-features li {
+    padding: 6px 0;
+    font-size: 0.85rem;
+    color: var(--text);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .pricing-features li::before {
+    content: '✓';
+    color: var(--sea-green);
+    font-weight: 700;
+  }
+
+  .pricing-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border-radius: 50px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.9rem;
+    text-decoration: none;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .pricing-btn-primary {
+    background: linear-gradient(135deg, var(--coral), var(--orange));
+    color: #fff;
+    box-shadow: 0 4px 20px var(--coral-glow);
+  }
+  .pricing-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px var(--coral-glow);
+  }
+
+  .pricing-btn-secondary {
+    background: var(--surface);
+    color: var(--turquoise-light);
+    border: 1px solid var(--surface-border);
+  }
+  .pricing-btn-secondary:hover {
+    border-color: var(--turquoise);
+    transform: translateY(-2px);
+  }
+
+  /* ============ FINAL CTA ============ */
+  .final-cta {
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+  }
+
+  .cta-box {
+    background: linear-gradient(135deg, rgba(0, 206, 209, 0.08), rgba(255, 107, 107, 0.06));
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-xl);
+    padding: 64px 48px;
+    backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-box::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle at 30% 40%, rgba(0, 206, 209, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(255, 107, 107, 0.04) 0%, transparent 50%);
+    animation: cta-glow 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes cta-glow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(10deg); }
+  }
+
+  .cta-box h2 {
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-box p {
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    margin-bottom: 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-box .btn-primary {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    padding: 48px 0;
+    border-top: 1px solid var(--surface-border);
+    text-align: center;
+  }
+
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .footer-brand {
+    font-family: 'Fredoka One', cursive;
+    color: var(--turquoise);
+    font-size: 1.1rem;
+  }
+
+  .footer-links {
+    display: flex; gap: 24px;
+  }
+
+  .footer-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.82rem;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--turquoise); }
+
+  .footer-copy {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 768px) {
+    .features-grid,
+    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
+
+    .zigzag-row {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+
+    .mockup-body { grid-template-columns: 1fr; }
+    .mockup-sidebar { display: none; }
+
+    .nav-links { display: none; }
+
+    .footer-inner {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .cta-box { padding: 40px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ocean-bg"></div>
+<div class="light-rays"></div>
+<div class="bubbles-container" id="bubbles"></div>
+<div class="coral-shape coral-1"></div>
+<div class="coral-shape coral-2"></div>
+<div class="coral-shape coral-3"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">🐚 Meet</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how">How it Works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="nav-cta">Get Started</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Now in public beta — v2.0
+    </div>
+    <h1>Dive into meetings<br>that <span class="gradient-text">actually matter</span></h1>
+    <p>Meet cuts through the noise. AI-powered scheduling, smart agendas, and automatic follow-ups so your team stays above water.</p>
+    <div class="hero-buttons">
+      <a href="#" class="btn-primary">Start Free Trial →</a>
+      <a href="#" class="btn-secondary">▶ Watch Demo</a>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-mockup">
+        <div class="mockup-topbar">
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-sidebar">
+            <div class="mockup-sidebar-item active"></div>
+            <div class="mockup-sidebar-item"></div>
+            <div class="mockup-sidebar-item"></div>
+            <div class="mockup-sidebar-item"></div>
+            <div class="mockup-sidebar-item"></div>
+          </div>
+          <div class="mockup-main">
+            <div class="mockup-line title"></div>
+            <div class="mockup-line" style="width:90%"></div>
+            <div class="mockup-line" style="width:75%"></div>
+            <div class="mockup-cards">
+              <div class="mockup-card"></div>
+              <div class="mockup-card"></div>
+              <div class="mockup-card"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fish-deco fish-1">🐠</div>
+      <div class="fish-deco fish-2">🐟</div>
+      <div class="fish-deco fish-3">🐡</div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<section class="logos-section">
+  <div class="container">
+    <p>Trusted by teams at</p>
+    <div class="logos-row">
+      <span class="logo-item">Stripe</span>
+      <span class="logo-item">Vercel</span>
+      <span class="logo-item">Linear</span>
+      <span class="logo-item">Notion</span>
+      <span class="logo-item">Figma</span>
+      <span class="logo-item">Loom</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section" id="features">
+  <div class="container">
+    <span class="section-label">Features</span>
+    <h2 class="section-title">Everything your team needs<br>to stay current</h2>
+    <p class="section-subtitle">Six tools that work together like a thriving reef — each one essential, all of them beautiful.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon fi-turquoise">📅</div>
+        <h3>Smart Scheduling</h3>
+        <p>AI finds the perfect time slot across time zones. No more email ping-pong.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-coral">📋</div>
+        <h3>Auto Agendas</h3>
+        <p>Generate structured agendas from your project context. Every meeting starts focused.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-yellow">🎯</div>
+        <h3>Action Items</h3>
+        <p>Extract tasks automatically. Assign owners and deadlines in one click.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-green">📊</div>
+        <h3>Meeting Analytics</h3>
+        <p>Track meeting efficiency. See which meetings drive results and which drain energy.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-pink">🔗</div>
+        <h3>Integrations</h3>
+        <p>Connect with Slack, Jira, GitHub, and 50+ tools your team already uses.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon fi-orange">🛡️</div>
+        <h3>Enterprise Ready</h3>
+        <p>SSO, audit logs, SOC 2 compliance. Built for teams that take security seriously.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZIGZAG -->
+<section class="zigzag-section" id="how">
+  <div class="container">
+    <div class="zigzag-row">
+      <div class="zigzag-content">
+        <span class="section-label">How it works</span>
+        <h3>Set up in minutes,<br>save hours every week</h3>
+        <p>Connect your calendar, invite your team, and let Meet handle the rest. No complex configuration needed.</p>
+        <ul class="zigzag-list">
+          <li>Connect Google or Outlook calendar</li>
+          <li>Set team availability preferences</li>
+          <li>AI suggests optimal meeting times</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <div class="zigzag-mockup-inner">
+          <div class="zm-header">
+            <span class="zm-title">Weekly Efficiency</span>
+            <span class="zm-badge">↑ 34%</span>
+          </div>
+          <div class="zm-bars">
+            <div class="zm-bar-row">
+              <span class="zm-bar-label">Monday</span>
+              <div class="zm-bar-track"><div class="zm-bar-fill bf-turquoise" style="width:85%"></div></div>
+            </div>
+            <div class="zm-bar-row">
+              <span class="zm-bar-label">Tuesday</span>
+              <div class="zm-bar-track"><div class="zm-bar-fill bf-coral" style="width:72%"></div></div>
+            </div>
+            <div class="zm-bar-row">
+              <span class="zm-bar-label">Wednesday</span>
+              <div class="zm-bar-track"><div class="zm-bar-fill bf-green" style="width:91%"></div></div>
+            </div>
+            <div class="zm-bar-row">
+              <span class="zm-bar-label">Thursday</span>
+              <div class="zm-bar-track"><div class="zm-bar-fill bf-yellow" style="width:68%"></div></div>
+            </div>
+            <div class="zm-bar-row">
+              <span class="zm-bar-label">Friday</span>
+              <div class="zm-bar-track"><div class="zm-bar-fill bf-pink" style="width:79%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="zigzag-row reverse">
+      <div class="zigzag-content">
+        <span class="section-label">Follow-ups</span>
+        <h3>Never lose a decision<br>to the void again</h3>
+        <p>Every meeting generates a summary with action items, decisions, and next steps — sent automatically to the right people.</p>
+        <ul class="zigzag-list">
+          <li>AI-generated meeting summaries</li>
+          <li>Auto-assigned action items</li>
+          <li>Slack notifications for deadlines</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <div class="zigzag-mockup-inner">
+          <div class="zm-header">
+            <span class="zm-title">Action Items</span>
+            <span class="zm-badge">5 pending</span>
+          </div>
+          <div class="zm-bars">
+            <div class="zm-bar-row">
+              <span class="zm-bar-label">Design</span>
+              <div class="zm-bar-track"><div class="zm-bar-fill bf-turquoise" style="width:100%"></div></div>
+            </div>
+            <div class="zm-bar-row">
+              <span class="zm-bar-label">Backend</span>
+              <div class="zm-bar-track"><div class="zm-bar-fill bf-coral" style="width:60%"></div></div>
+            </div>
+            <div class="zm-bar-row">
+              <span class="zm-bar-label">Testing</span>
+              <div class="zm-bar-track"><div class="zm-bar-fill bf-green" style="width:45%"></div></div>
+            </div>
+            <div class="zm-bar-row">
+              <span class="zm-bar-label">Docs</span>
+              <div class="zm-bar-track"><div class="zm-bar-fill bf-yellow" style="width:80%"></div></div>
+            </div>
+            <div class="zm-bar-row">
+              <span class="zm-bar-label">Deploy</span>
+              <div class="zm-bar-track"><div class="zm-bar-fill bf-pink" style="width:25%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial-section">
+  <div class="container">
+    <span class="section-label">Testimonials</span>
+    <h2 class="section-title" style="margin-bottom: 48px;">Loved by teams everywhere</h2>
+    <div class="testimonial-card">
+      <div class="stars">⭐⭐⭐⭐⭐</div>
+      <p class="testimonial-text">"Meet transformed how our distributed team collaborates. We went from 15 hours of meetings per person per week to 7 — and we're more aligned than ever."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">🐙</div>
+        <div>
+          <div class="testimonial-name">Sarah Chen</div>
+          <div class="testimonial-role">VP of Engineering, TechFlow</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="container">
+    <div class="pricing-header">
+      <span class="section-label">Pricing</span>
+      <h2 class="section-title">Simple, transparent pricing</h2>
+      <p class="section-subtitle" style="margin-left:auto;margin-right:auto;">Start free. Scale when you're ready. No surprises.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-tier">Free</div>
+        <div class="pricing-price">$0 <span>/mo</span></div>
+        <div class="pricing-desc">For individuals and small teams getting started</div>
+        <ul class="pricing-features">
+          <li>Up to 5 team members</li>
+          <li>10 meetings per month</li>
+          <li>Basic scheduling</li>
+          <li>Email summaries</li>
+        </ul>
+        <a href="#" class="pricing-btn pricing-btn-secondary">Get Started</a>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="pricing-tier">Pro</div>
+        <div class="pricing-price">$12 <span>/mo</span></div>
+        <div class="pricing-desc">For growing teams that need more power</div>
+        <ul class="pricing-features">
+          <li>Up to 50 team members</li>
+          <li>Unlimited meetings</li>
+          <li>AI agendas & summaries</li>
+          <li>Slack & Jira integrations</li>
+          <li>Meeting analytics</li>
+        </ul>
+        <a href="#" class="pricing-btn pricing-btn-primary">Start Free Trial</a>
+      </div>
+
+      <div class="pricing-card">
+        <div class="pricing-tier">Enterprise</div>
+        <div class="pricing-price">Custom</div>
+        <div class="pricing-desc">For organizations with advanced needs</div>
+        <ul class="pricing-features">
+          <li>Unlimited members</li>
+          <li>SSO & SAML</li>
+          <li>Custom integrations</li>
+          <li>Dedicated support</li>
+          <li>SOC 2 compliance</li>
+        </ul>
+        <a href="#" class="pricing-btn pricing-btn-secondary">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="container">
+    <div class="cta-box">
+      <h2>Ready to make meetings<br>worth your time?</h2>
+      <p>Join 10,000+ teams who've already dived in. Free for up to 5 members.</p>
+      <a href="#" class="btn-primary">Start Your Free Trial →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <span class="footer-brand">🐚 Meet</span>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Docs</a>
+        <a href="#">Support</a>
+      </div>
+      <span class="footer-copy">© 2024 Meet. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Bubble particles
+  const bubblesContainer = document.getElementById('bubbles');
+  const bubbleCount = 25;
+
+  for (let i = 0; i < bubbleCount; i++) {
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    const size = Math.random() * 20 + 4;
+    bubble.style.width = size + 'px';
+    bubble.style.height = size + 'px';
+    bubble.style.left = Math.random() * 100 + '%';
+    bubble.style.animationDuration = (Math.random() * 12 + 8) + 's';
+    bubble.style.animationDelay = (Math.random() * 10) + 's';
+    bubblesContainer.appendChild(bubble);
+  }
+</script>
+</body>
+</html>

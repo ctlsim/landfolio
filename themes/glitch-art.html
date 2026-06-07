@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050505;
+    --dark: #0a0a0a;
+    --dark-grey: #111111;
+    --grey: #1a1a1a;
+    --mid-grey: #2a2a2a;
+    --light-grey: #888;
+    --white: #f0f0f0;
+    --dim: #999;
+    --r: #ff0040;
+    --g: #00ff84;
+    --b: #00d4ff;
+    --m: #ff00ff;
+    --font-display: 'Anton', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-mono);
+    background: var(--black);
+    color: var(--white);
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Scanlines */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.15) 2px,
+      rgba(0,0,0,0.15) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* Noise overlay */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1.05;
+  }
+
+  section { position: relative; z-index: 1; }
+
+  a { color: var(--b); text-decoration: none; transition: all 0.15s; }
+  a:hover { color: var(--g); text-shadow: 2px 0 var(--r), -2px 0 var(--b); }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ===== GLITCH TEXT ===== */
+  .glitch {
+    position: relative;
+    display: inline-block;
+  }
+
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .glitch::before {
+    color: var(--r);
+    animation: glitch-1 3s infinite linear alternate-reverse;
+    clip-path: inset(0 0 80% 0);
+    transform: translate(-2px);
+  }
+
+  .glitch::after {
+    color: var(--b);
+    animation: glitch-2 2.5s infinite linear alternate-reverse;
+    clip-path: inset(80% 0 0 0);
+    transform: translate(2px);
+  }
+
+  @keyframes glitch-1 {
+    0% { clip-path: inset(20% 0 60% 0); transform: translate(-3px, 0); }
+    10% { clip-path: inset(10% 0 70% 0); transform: translate(3px, 0); }
+    20% { clip-path: inset(50% 0 20% 0); transform: translate(-2px, 0); }
+    30% { clip-path: inset(30% 0 40% 0); transform: translate(2px, 0); }
+    40% { clip-path: inset(60% 0 10% 0); transform: translate(-4px, 0); }
+    50% { clip-path: inset(5% 0 80% 0); transform: translate(1px, 0); }
+    60% { clip-path: inset(40% 0 30% 0); transform: translate(-3px, 0); }
+    70% { clip-path: inset(70% 0 5% 0); transform: translate(4px, 0); }
+    80% { clip-path: inset(15% 0 55% 0); transform: translate(-1px, 0); }
+    90% { clip-path: inset(45% 0 25% 0); transform: translate(3px, 0); }
+    100% { clip-path: inset(25% 0 45% 0); transform: translate(-2px, 0); }
+  }
+
+  @keyframes glitch-2 {
+    0% { clip-path: inset(60% 0 10% 0); transform: translate(3px, 0); }
+    10% { clip-path: inset(40% 0 30% 0); transform: translate(-2px, 0); }
+    20% { clip-path: inset(15% 0 65% 0); transform: translate(4px, 0); }
+    30% { clip-path: inset(70% 0 5% 0); transform: translate(-1px, 0); }
+    40% { clip-path: inset(25% 0 50% 0); transform: translate(2px, 0); }
+    50% { clip-path: inset(55% 0 15% 0); transform: translate(-3px, 0); }
+    60% { clip-path: inset(5% 0 75% 0); transform: translate(1px, 0); }
+    70% { clip-path: inset(35% 0 35% 0); transform: translate(-4px, 0); }
+    80% { clip-path: inset(50% 0 20% 0); transform: translate(3px, 0); }
+    90% { clip-path: inset(80% 0 0% 0); transform: translate(-2px, 0); }
+    100% { clip-path: inset(20% 0 50% 0); transform: translate(4px, 0); }
+  }
+
+  /* Glitch small — for smaller text */
+  .glitch-sm::before,
+  .glitch-sm::after {
+    animation-duration: 4s;
+  }
+
+  /* ===== GLITCH LINE ===== */
+  .glitch-line {
+    width: 100%;
+    height: 2px;
+    background: var(--mid-grey);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glitch-line::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, var(--r), var(--g), var(--b), transparent);
+    animation: glitch-sweep 4s linear infinite;
+  }
+
+  @keyframes glitch-sweep {
+    0% { left: -40%; }
+    100% { left: 140%; }
+  }
+
+  /* ===== GLITCH CARD ===== */
+  .g-card {
+    background: var(--dark-grey);
+    border: 1px solid var(--mid-grey);
+    position: relative;
+    transition: all 0.15s;
+  }
+
+  .g-card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px;
+    width: 20px; height: 20px;
+    border-top: 2px solid var(--r);
+    border-left: 2px solid var(--r);
+  }
+
+  .g-card::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; right: -1px;
+    width: 20px; height: 20px;
+    border-bottom: 2px solid var(--b);
+    border-right: 2px solid var(--b);
+  }
+
+  .g-card:hover {
+    border-color: var(--g);
+    box-shadow:
+      0 0 20px rgba(0,255,132,0.1),
+      inset 0 0 20px rgba(0,255,132,0.02);
+  }
+
+  .g-card:hover::before {
+    border-color: var(--g);
+  }
+
+  /* ===== PIXEL GRID BG ===== */
+  .pixel-grid {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.03;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  /* ===== RANDOM GLITCH BARS ===== */
+  .glitch-bars {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .g-bar {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    opacity: 0;
+    animation: bar-glitch 8s infinite;
+  }
+
+  .g-bar:nth-child(1) { top: 15%; background: var(--r); animation-delay: 0s; }
+  .g-bar:nth-child(2) { top: 35%; background: var(--g); animation-delay: 2s; }
+  .g-bar:nth-child(3) { top: 55%; background: var(--b); animation-delay: 4s; }
+  .g-bar:nth-child(4) { top: 75%; background: var(--m); animation-delay: 6s; }
+  .g-bar:nth-child(5) { top: 90%; background: var(--r); animation-delay: 1s; }
+
+  @keyframes bar-glitch {
+    0%, 94%, 100% { opacity: 0; transform: translateX(0); }
+    95% { opacity: 0.6; transform: translateX(-10px); }
+    96% { opacity: 0; }
+    97% { opacity: 0.4; transform: translateX(5px); }
+    98% { opacity: 0; }
+  }
+
+  /* ===== NAVIGATION ===== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(5,5,5,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--mid-grey);
+    padding: 12px 0;
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    color: var(--white);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .logo span {
+    color: var(--r);
+    animation: logo-flicker 5s infinite;
+  }
+
+  @keyframes logo-flicker {
+    0%, 96%, 100% { opacity: 1; }
+    97% { opacity: 0.2; }
+    98% { opacity: 1; }
+    99% { opacity: 0.4; }
+  }
+
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .nav-cta {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 10px 24px;
+    background: transparent;
+    color: var(--g);
+    border: 1px solid var(--g);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    transition: all 0.15s;
+  }
+
+  .nav-cta:hover {
+    background: var(--g);
+    color: var(--black);
+    box-shadow: 0 0 20px rgba(0,255,132,0.3);
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 100px 0 80px;
+    text-align: center;
+    position: relative;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(255,0,64,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 6px 18px;
+    border: 1px solid var(--mid-grey);
+    margin-bottom: 36px;
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    background: var(--dark-grey);
+  }
+
+  .hero-badge .dot {
+    width: 6px; height: 6px;
+    background: var(--g);
+    animation: blink 1.5s infinite;
+  }
+
+  @keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  .hero h1 {
+    font-size: clamp(3rem, 8vw, 6rem);
+    margin-bottom: 24px;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .hero h1 .accent-r { color: var(--r); }
+  .hero h1 .accent-g { color: var(--g); }
+  .hero h1 .accent-b { color: var(--b); }
+
+  .hero-sub {
+    font-family: var(--font-mono);
+    font-size: clamp(0.85rem, 1.5vw, 1rem);
+    color: var(--dim);
+    max-width: 540px;
+    margin: 0 auto 44px;
+    line-height: 1.7;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 72px;
+  }
+
+  .btn-primary {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 14px 36px;
+    background: var(--r);
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    transition: all 0.15s;
+    position: relative;
+  }
+
+  .btn-primary:hover {
+    background: #ff2060;
+    box-shadow:
+      4px 4px 0 var(--b),
+      0 0 30px rgba(255,0,64,0.3);
+    transform: translate(-2px, -2px);
+  }
+
+  .btn-secondary {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 400;
+    padding: 14px 32px;
+    background: transparent;
+    color: var(--dim);
+    border: 1px solid var(--mid-grey);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: all 0.15s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--b);
+    color: var(--b);
+  }
+
+  /* Hero visual — terminal-style */
+  .hero-visual {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .terminal {
+    background: var(--dark-grey);
+    border: 1px solid var(--mid-grey);
+    padding: 0;
+    position: relative;
+    font-family: var(--font-mono);
+  }
+
+  .terminal::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px;
+    width: 16px; height: 16px;
+    border-top: 2px solid var(--r);
+    border-left: 2px solid var(--r);
+  }
+
+  .terminal::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; right: -1px;
+    width: 16px; height: 16px;
+    border-bottom: 2px solid var(--b);
+    border-right: 2px solid var(--b);
+  }
+
+  .terminal-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--mid-grey);
+    background: var(--grey);
+  }
+
+  .terminal-dot {
+    width: 8px; height: 8px;
+    border: 1px solid;
+  }
+
+  .terminal-dot.r { border-color: var(--r); }
+  .terminal-dot.g { border-color: var(--g); }
+  .terminal-dot.b { border-color: var(--b); }
+
+  .terminal-title {
+    font-size: 0.7rem;
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-left: 8px;
+  }
+
+  .terminal-body {
+    padding: 20px 16px;
+  }
+
+  .t-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 0.8rem;
+    color: var(--dim);
+  }
+
+  .t-prompt {
+    color: var(--g);
+    font-weight: 700;
+  }
+
+  .t-cmd { color: var(--white); }
+  .t-flag { color: var(--b); }
+  .t-val { color: var(--r); }
+  .t-comment { color: var(--light-grey); font-style: italic; }
+
+  .t-success { color: var(--g); }
+  .t-warn { color: var(--r); }
+
+  .t-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 14px;
+    background: var(--g);
+    animation: blink 1s infinite;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+
+  /* ===== LOGOS ===== */
+  .logos {
+    padding: 60px 0;
+    border-top: 1px solid var(--mid-grey);
+    border-bottom: 1px solid var(--mid-grey);
+    background: var(--dark-grey);
+  }
+
+  .logos-label {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--light-grey);
+    margin-bottom: 32px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .logos-grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    opacity: 0.35;
+  }
+
+  .logo-item {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ===== FEATURES ===== */
+  .features {
+    padding: 100px 0;
+  }
+
+  .section-label {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    color: var(--g);
+  }
+
+  .section-title {
+    text-align: center;
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 64px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--white);
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .feature-card {
+    background: var(--dark-grey);
+    border: 1px solid var(--mid-grey);
+    padding: 28px;
+    position: relative;
+    transition: all 0.15s;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px;
+    width: 16px; height: 16px;
+    border-top: 2px solid var(--r);
+    border-left: 2px solid var(--r);
+    transition: border-color 0.15s;
+  }
+
+  .feature-card::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; right: -1px;
+    width: 16px; height: 16px;
+    border-bottom: 2px solid var(--b);
+    border-right: 2px solid var(--b);
+    transition: border-color 0.15s;
+  }
+
+  .feature-card:hover {
+    border-color: var(--g);
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 rgba(0,255,132,0.3);
+  }
+
+  .feature-card:hover::before { border-color: var(--g); }
+
+  .feature-icon {
+    font-size: 1.4rem;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px; height: 44px;
+    background: var(--grey);
+    border: 1px solid var(--mid-grey);
+  }
+
+  .feature-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--white);
+  }
+
+  .feature-card p {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--dim);
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag {
+    padding: 100px 0;
+    background: var(--dark-grey);
+    border-top: 1px solid var(--mid-grey);
+    border-bottom: 1px solid var(--mid-grey);
+  }
+
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    margin-bottom: 80px;
+  }
+
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-visual { order: -1; }
+
+  .zigzag-text h3 {
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--white);
+  }
+
+  .zigzag-text h3 .step-num {
+    color: var(--r);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .zigzag-text p {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--dim);
+    margin-bottom: 24px;
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+  }
+
+  .zigzag-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .zigzag-list li {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--dim);
+    padding-left: 20px;
+    position: relative;
+    letter-spacing: 0.02em;
+  }
+
+  .zigzag-list li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 0.8rem;
+    color: var(--g);
+    font-weight: 700;
+  }
+
+  .zigzag-visual {
+    background: var(--dark);
+    border: 1px solid var(--mid-grey);
+    padding: 28px;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+  }
+
+  .zigzag-visual::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px;
+    width: 14px; height: 14px;
+    border-top: 2px solid var(--g);
+    border-left: 2px solid var(--g);
+  }
+
+  .zigzag-visual::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; right: -1px;
+    width: 14px; height: 14px;
+    border-bottom: 2px solid var(--r);
+    border-right: 2px solid var(--r);
+  }
+
+  .visual-title {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  .visual-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--mid-grey);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--dim);
+  }
+
+  .visual-item:last-child { border-bottom: none; }
+
+  .visual-label {
+    font-weight: 700;
+    color: var(--white);
+    min-width: 40px;
+  }
+
+  .visual-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--mid-grey);
+    overflow: hidden;
+  }
+
+  .visual-bar-fill {
+    height: 100%;
+    background: var(--g);
+    box-shadow: 0 0 8px rgba(0,255,132,0.4);
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial {
+    padding: 100px 0;
+  }
+
+  .testimonial-card {
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 48px;
+    position: relative;
+    background: var(--dark-grey);
+    border: 1px solid var(--mid-grey);
+  }
+
+  .testimonial-card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--r), var(--g), var(--b));
+  }
+
+  .testimonial-card .quote-mark {
+    font-family: var(--font-display);
+    font-size: 4rem;
+    line-height: 1;
+    color: var(--r);
+    margin-bottom: 8px;
+  }
+
+  .testimonial-text {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 28px;
+    color: var(--white);
+    letter-spacing: 0.01em;
+  }
+
+  .testimonial-author {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .testimonial-role {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--dim);
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .stars {
+    color: var(--g);
+    font-size: 1rem;
+    margin-bottom: 20px;
+    letter-spacing: 6px;
+  }
+
+  /* ===== PRICING ===== */
+  .pricing {
+    padding: 100px 0;
+    background: var(--dark-grey);
+    border-top: 1px solid var(--mid-grey);
+    border-bottom: 1px solid var(--mid-grey);
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .price-card {
+    background: var(--dark);
+    border: 1px solid var(--mid-grey);
+    padding: 32px;
+    text-align: center;
+    transition: all 0.15s;
+    position: relative;
+  }
+
+  .price-card.featured {
+    border-color: var(--r);
+    box-shadow: 0 0 30px rgba(255,0,64,0.1);
+  }
+
+  .price-card.featured::before {
+    content: '[FEATURED]';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    background: var(--r);
+    color: var(--white);
+    padding: 4px 14px;
+    text-transform: uppercase;
+  }
+
+  .price-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 rgba(0,212,255,0.3);
+    border-color: var(--b);
+  }
+
+  .price-tier {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--dim);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .price-amount {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    margin-bottom: 4px;
+    color: var(--white);
+  }
+
+  .price-amount span {
+    font-size: 1rem;
+    color: var(--dim);
+  }
+
+  .price-period {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--light-grey);
+    margin-bottom: 24px;
+    letter-spacing: 0.05em;
+  }
+
+  .price-features {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 24px;
+  }
+
+  .price-features li {
+    padding: 6px 0;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--dim);
+    padding-left: 20px;
+    position: relative;
+    letter-spacing: 0.02em;
+  }
+
+  .price-features li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    font-size: 0.78rem;
+    color: var(--g);
+    font-weight: 700;
+  }
+
+  .price-btn {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 12px 24px;
+    width: 100%;
+    border: 1px solid var(--mid-grey);
+    background: transparent;
+    color: var(--dim);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    transition: all 0.15s;
+  }
+
+  .price-btn:hover {
+    border-color: var(--g);
+    color: var(--g);
+    box-shadow: 0 0 15px rgba(0,255,132,0.2);
+  }
+
+  .price-card.featured .price-btn {
+    background: var(--r);
+    color: var(--white);
+    border-color: var(--r);
+  }
+
+  .price-card.featured .price-btn:hover {
+    background: #ff2060;
+    box-shadow: 0 0 20px rgba(255,0,64,0.4);
+  }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    padding: 120px 0;
+    text-align: center;
+    position: relative;
+  }
+
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 300px;
+    background: radial-gradient(ellipse, rgba(0,212,255,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .final-cta h2 {
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--white);
+  }
+
+  .final-cta p {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--dim);
+    margin-bottom: 36px;
+    max-width: 460px;
+    margin-left: auto;
+    margin-right: auto;
+    letter-spacing: 0.02em;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 32px 0;
+    border-top: 1px solid var(--mid-grey);
+    text-align: center;
+    background: var(--dark-grey);
+  }
+
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .footer-brand {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+  }
+
+  .footer-links a {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--light-grey);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .footer-copy {
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--light-grey);
+    letter-spacing: 0.05em;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .zigzag-row {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+
+    .nav-links { display: none; }
+
+    .footer-inner {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .pricing-grid {
+      grid-template-columns: 1fr;
+      max-width: 360px;
+    }
+
+    .glitch-bars { display: none; }
+  }
+
+  /* ===== SCROLL REVEAL ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===== RGB SPLIT HOVER ===== */
+  .rgb-split {
+    position: relative;
+    display: inline-block;
+  }
+
+  .rgb-split:hover {
+    animation: rgb-shift 0.3s steps(3) infinite;
+  }
+
+  @keyframes rgb-shift {
+    0% { text-shadow: -2px 0 var(--r), 2px 0 var(--b); }
+    33% { text-shadow: 2px 0 var(--r), -2px 0 var(--b); }
+    66% { text-shadow: -1px 1px var(--r), 1px -1px var(--b); }
+    100% { text-shadow: 2px -1px var(--r), -2px 1px var(--b); }
+  }
+
+  /* ===== CORRUPTED TEXT BLOCK ===== */
+  .corrupt-block {
+    position: relative;
+    display: inline-block;
+  }
+
+  .corrupt-block::after {
+    content: attr(data-corrupt);
+    position: absolute;
+    top: 0;
+    left: 2px;
+    color: var(--r);
+    opacity: 0;
+    clip-path: inset(0 0 0 0);
+    animation: corrupt-flicker 6s infinite;
+  }
+
+  @keyframes corrupt-flicker {
+    0%, 92%, 100% { opacity: 0; }
+    93% { opacity: 0.7; transform: translate(-2px, 1px); }
+    94% { opacity: 0; }
+    95% { opacity: 0.5; transform: translate(3px, -1px); }
+    96% { opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Pixel Grid Background -->
+  <div class="pixel-grid"></div>
+
+  <!-- Glitch Bars -->
+  <div class="glitch-bars">
+    <div class="g-bar"></div>
+    <div class="g-bar"></div>
+    <div class="g-bar"></div>
+    <div class="g-bar"></div>
+    <div class="g-bar"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container nav-inner">
+      <div class="logo">Meet<span>.</span></div>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how">How it Works</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+      </ul>
+      <button class="nav-cta">Get Started</button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge reveal"><span class="dot"></span> Less meeting. More doing.</div>
+      <h1 class="reveal">
+        <span class="glitch" data-text="Meetings that">Meetings that</span><br>
+        <span class="accent-r glitch" data-text="don't waste">don't waste</span><br>
+        <span class="glitch" data-text="your week">your week</span>
+      </h1>
+      <p class="hero-sub reveal">Schedule smarter. Meet shorter. Get more done. The calendar tool that actually respects your time.</p>
+      <div class="hero-actions reveal">
+        <button class="btn-primary">Start Free Trial</button>
+        <button class="btn-secondary">Watch Demo &rarr;</button>
+      </div>
+      <div class="hero-visual reveal">
+        <div class="terminal">
+          <div class="terminal-header">
+            <span class="terminal-dot r"></span>
+            <span class="terminal-dot g"></span>
+            <span class="terminal-dot b"></span>
+            <span class="terminal-title">meet-cli — schedule</span>
+          </div>
+          <div class="terminal-body">
+            <div class="t-line">
+              <span class="t-prompt">$</span>
+              <span class="t-cmd">meet</span>
+              <span class="t-flag"> analyze</span>
+              <span class="t-val"> --week</span>
+            </div>
+            <div class="t-line">
+              <span class="t-comment">// scanning calendar...</span>
+            </div>
+            <div class="t-line">
+              <span class="t-success">✓</span>
+              <span>34 meetings found</span>
+              <span class="t-comment">// 12 redundant</span>
+            </div>
+            <div class="t-line">
+              <span class="t-warn">!</span>
+              <span>4 meetings could be emails</span>
+            </div>
+            <div class="t-line">
+              <span class="t-success">✓</span>
+              <span>6.2h saved this week</span>
+              <span class="t-comment">// +23% vs last week</span>
+            </div>
+            <div class="t-line">
+              <span class="t-prompt">$</span>
+              <span class="t-cursor"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Logos -->
+  <section class="logos">
+    <div class="container">
+      <div class="glitch-line" style="margin-bottom: 48px;"></div>
+      <p class="logos-label reveal">TRUSTED BY TEAMS AT</p>
+      <div class="logos-grid reveal">
+        <div class="logo-item">Stripe</div>
+        <div class="logo-item">Vercel</div>
+        <div class="logo-item">Linear</div>
+        <div class="logo-item">Notion</div>
+        <div class="logo-item">Figma</div>
+        <div class="logo-item">GitHub</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="container">
+      <p class="section-label reveal">// A SPECTRUM OF FEATURES</p>
+      <h2 class="section-title reveal">Why teams love Meet</h2>
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon">📋</div>
+          <h3>Auto-Agendas</h3>
+          <p>Every meeting gets a smart agenda pulled from your projects, emails, and last week's notes.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">⏱️</div>
+          <h3>Timeboxing</h3>
+          <p>Meetings auto-end when time's up. No more "let's just wrap this up" that drags 20 minutes.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">🧠</div>
+          <h3>Smart Reschedule</h3>
+          <p>AI detects when a meeting could be an email. Suggests cancel or shorten before you book.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">📝</div>
+          <h3>Live Notes</h3>
+          <p>Transcript + action items captured automatically. Shared with attendees the moment you finish.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">🔔</div>
+          <h3>Focus Guard</h3>
+          <p>Blocks double-booking. Protects deep work slots. Enforces meeting-free Fridays.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">📊</div>
+          <h3>Meeting Analytics</h3>
+          <p>See where your week goes. Average duration, attendance rate, and productivity score.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Zigzag -->
+  <section class="zigzag" id="how">
+    <div class="container">
+      <p class="section-label reveal">// HOW IT WORKS</p>
+      <h2 class="section-title reveal">Three steps to better meetings</h2>
+
+      <div class="zigzag-row reveal">
+        <div class="zigzag-text">
+          <h3><span class="step-num">[STEP_01]</span>Connect your calendar</h3>
+          <p>One-click sync with Google Calendar, Outlook, or Apple Calendar. We read your schedule — never write without permission.</p>
+          <ul class="zigzag-list">
+            <li>Google Workspace</li>
+            <li>Microsoft 365</li>
+            <li>Apple Calendar</li>
+            <li>Custom iCal feeds</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <div class="visual-title">Calendar Sync</div>
+          <div class="visual-item">
+            <span class="visual-label">Mon</span>
+            <div class="visual-bar"><div class="visual-bar-fill" style="width: 75%"></div></div>
+            <span style="font-size:0.75rem; color:var(--light-grey);">3 · 2h</span>
+          </div>
+          <div class="visual-item">
+            <span class="visual-label">Tue</span>
+            <div class="visual-bar"><div class="visual-bar-fill" style="width: 30%"></div></div>
+            <span style="font-size:0.75rem; color:var(--light-grey);">1 · 45m</span>
+          </div>
+          <div class="visual-item">
+            <span class="visual-label">Wed</span>
+            <div class="visual-bar"><div class="visual-bar-fill" style="width: 90%"></div></div>
+            <span style="font-size:0.75rem; color:var(--light-grey);">4 · 3h</span>
+          </div>
+          <div class="visual-item">
+            <span class="visual-label">Thu</span>
+            <div class="visual-bar"><div class="visual-bar-fill" style="width: 40%"></div></div>
+            <span style="font-size:0.75rem; color:var(--light-grey);">2 · 1h</span>
+          </div>
+          <div class="visual-item" style="color: var(--g); font-weight: 700;">
+            <span class="visual-label">Fri</span>
+            <div class="visual-bar"><div class="visual-bar-fill" style="width: 0%;"></div></div>
+            <span style="font-size:0.75rem;">Free!</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="zigzag-row reverse reveal">
+        <div class="zigzag-text">
+          <h3><span class="step-num">[STEP_02]</span>Set your rules</h3>
+          <p>Define meeting policies that protect your team's focus. Auto-enforced, no nagging required.</p>
+          <ul class="zigzag-list">
+            <li>Max 30-min default meetings</li>
+            <li>No meetings after 4pm</li>
+            <li>Require agenda to book</li>
+            <li>Auto-decline if &gt;3 back-to-back</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <div class="visual-title">Team Rules</div>
+          <div class="visual-item">
+            <span style="color: var(--g); font-weight: 700;">></span>
+            <span>Max 30 min meetings</span>
+          </div>
+          <div class="visual-item">
+            <span style="color: var(--g); font-weight: 700;">></span>
+            <span>No meetings after 4pm</span>
+          </div>
+          <div class="visual-item">
+            <span style="color: var(--g); font-weight: 700;">></span>
+            <span>Agenda required</span>
+          </div>
+          <div class="visual-item">
+            <span style="color: var(--g); font-weight: 700;">></span>
+            <span>Friday meeting-free</span>
+          </div>
+          <div class="visual-item">
+            <span style="color: var(--g); font-weight: 700;">></span>
+            <span>Standup max 15 min</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="zigzag-row reveal">
+        <div class="zigzag-text">
+          <h3><span class="step-num">[STEP_03]</span>Watch hours return</h3>
+          <p>Teams save an average of 6.2 hours per person per week. That's 250 hours a year per person.</p>
+          <ul class="zigzag-list">
+            <li>6.2 hrs/week saved on average</li>
+            <li>40% fewer meetings after month 1</li>
+            <li>92% team satisfaction rate</li>
+            <li>Zero setup maintenance</li>
+          </ul>
+        </div>
+        <div class="zigzag-visual">
+          <div class="visual-title">Your Impact</div>
+          <div style="text-align: center; padding: 24px 0;">
+            <div style="font-family: var(--font-display); font-size: 3.5rem; font-weight: 700; color: var(--r); text-transform: uppercase;">
+              6.2h
+            </div>
+            <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--dim); letter-spacing: 0.05em;">saved per week</div>
+            <div class="glitch-line" style="margin: 20px auto; width: 60px;"></div>
+            <div style="font-family: var(--font-display); font-size: 2rem; color: var(--g); text-transform: uppercase;">-40%</div>
+            <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--dim); letter-spacing: 0.05em;">fewer meetings</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonial -->
+  <section class="testimonial">
+    <div class="container">
+      <div class="testimonial-card reveal">
+        <div class="quote-mark">"</div>
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">We went from 34 meetings a week to 18. Our team actually has time to do their jobs now. Meet paid for itself in the first month.</p>
+        <div class="testimonial-author">Jessica Park</div>
+        <div class="testimonial-role">VP of Engineering, TechCorp</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <p class="section-label reveal">// PRICING</p>
+      <h2 class="section-title reveal">Pick your plan</h2>
+      <div class="pricing-grid">
+        <div class="price-card reveal">
+          <div class="price-tier">Free</div>
+          <div class="price-amount">$0<span>/mo</span></div>
+          <div class="price-period">Up to 5 people</div>
+          <ul class="price-features">
+            <li>Calendar sync</li>
+            <li>Auto-agendas</li>
+            <li>Basic timeboxing</li>
+            <li>Weekly reports</li>
+          </ul>
+          <button class="price-btn">Get Started</button>
+        </div>
+        <div class="price-card featured reveal">
+          <div class="price-tier">Team</div>
+          <div class="price-amount">$12<span>/mo</span></div>
+          <div class="price-period">Per person, unlimited team</div>
+          <ul class="price-features">
+            <li>Everything in Free</li>
+            <li>Smart reschedule</li>
+            <li>Live notes &amp; transcripts</li>
+            <li>Focus Guard policies</li>
+            <li>Analytics dashboard</li>
+          </ul>
+          <button class="price-btn">Start Free Trial</button>
+        </div>
+        <div class="price-card reveal">
+          <div class="price-tier">Enterprise</div>
+          <div class="price-amount">$29<span>/mo</span></div>
+          <div class="price-period">Per person, annual billing</div>
+          <ul class="price-features">
+            <li>Everything in Team</li>
+            <li>SSO &amp; SCIM</li>
+            <li>Custom policies</li>
+            <li>Admin console</li>
+            <li>Dedicated support</li>
+          </ul>
+          <button class="price-btn">Contact Sales</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta">
+    <div class="container">
+      <h2 class="reveal">Ready to reclaim<br><span style="color: var(--r);">your week?</span></h2>
+      <p class="reveal">Join 12,000+ teams who save 6 hours every week with Meet.</p>
+      <div class="reveal">
+        <button class="btn-primary">Start Free — No Card Needed</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">Meet<span style="color: var(--r);">.</span></div>
+        <ul class="footer-links">
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Twitter</a></li>
+        </ul>
+        <div class="footer-copy">&copy; 2024 Meet Inc. All rights reserved.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    reveals.forEach(el => observer.observe(el));
+
+    // Random glitch effect on hero text
+    const glitchElements = document.querySelectorAll('.glitch');
+    setInterval(() => {
+      const el = glitchElements[Math.floor(Math.random() * glitchElements.length)];
+      if (el) {
+        el.style.animation = 'none';
+        el.offsetHeight; // trigger reflow
+        el.style.animation = '';
+      }
+    }, 3000);
+  </script>
+</body>
+</html>

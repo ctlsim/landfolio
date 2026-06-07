@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #E8003A;
+    --yellow: #FFD600;
+    --blue: #0047AB;
+    --cyan: #00BCD4;
+    --black: #0A0A0A;
+    --white: #FFFDF7;
+    --pink: #FF2D7B;
+    --orange: #FF6B00;
+    --green: #00C853;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Bangers', cursive;
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+
+  /* Halftone dot overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background-image: radial-gradient(circle, rgba(0,0,0,0.04) 1px, transparent 1px);
+    background-size: 8px 8px;
+  }
+
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 32px; }
+
+  /* ===== NAV ===== */
+  nav {
+    padding: 20px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 4px solid var(--black);
+    background: var(--white);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Bangers', cursive;
+    font-size: 2rem;
+    color: var(--red);
+    text-decoration: none;
+    text-shadow: 2px 2px 0 var(--yellow);
+    letter-spacing: 0.06em;
+  }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a {
+    font-family: 'Lato', sans-serif;
+    font-weight: 900;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--black);
+    letter-spacing: 0.05em;
+    transition: color 0.15s;
+  }
+  .nav-links a:hover { color: var(--red); }
+  .nav-cta {
+    background: var(--red) !important;
+    color: var(--white) !important;
+    padding: 10px 22px;
+    border: 3px solid var(--black);
+    box-shadow: 3px 3px 0 var(--black);
+    text-transform: uppercase !important;
+    font-family: 'Bangers', cursive !important;
+    font-size: 1rem !important;
+    letter-spacing: 0.06em;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .nav-cta:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--black);
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 80px 0 100px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(255,214,0,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: var(--yellow);
+    color: var(--black);
+    font-family: 'Bangers', cursive;
+    font-size: 0.95rem;
+    padding: 6px 18px;
+    border: 3px solid var(--black);
+    box-shadow: 3px 3px 0 var(--black);
+    letter-spacing: 0.08em;
+    margin-bottom: 28px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    color: var(--black);
+    margin-bottom: 24px;
+    text-shadow: 4px 4px 0 var(--yellow);
+    line-height: 1;
+  }
+  .hero h1 span {
+    color: var(--red);
+    text-shadow: 4px 4px 0 var(--cyan);
+  }
+  .hero p {
+    font-size: 1.25rem;
+    max-width: 580px;
+    margin: 0 auto 40px;
+    color: #333;
+    font-weight: 400;
+  }
+  .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--red);
+    color: var(--white);
+    padding: 16px 36px;
+    border: 3px solid var(--black);
+    font-family: 'Bangers', cursive;
+    font-size: 1.2rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow: 4px 4px 0 var(--black);
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    display: inline-block;
+  }
+  .btn-primary:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--black);
+  }
+  .btn-secondary {
+    background: var(--white);
+    color: var(--black);
+    padding: 16px 36px;
+    border: 3px solid var(--black);
+    font-family: 'Bangers', cursive;
+    font-size: 1.2rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow: 4px 4px 0 var(--black);
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    display: inline-block;
+  }
+  .btn-secondary:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--black);
+  }
+
+  /* Warhol portrait grid in hero */
+  .hero-portraits {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    max-width: 420px;
+    margin: 50px auto 0;
+    border: 4px solid var(--black);
+    box-shadow: 6px 6px 0 var(--black);
+  }
+  .portrait-cell {
+    aspect-ratio: 1;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .portrait-cell::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(0,0,0,0.15) 1.5px, transparent 1.5px);
+    background-size: 4px 4px;
+    pointer-events: none;
+  }
+  .portrait-cell:nth-child(1) { background: var(--red); }
+  .portrait-cell:nth-child(2) { background: var(--yellow); }
+  .portrait-cell:nth-child(3) { background: var(--cyan); }
+  .portrait-cell:nth-child(4) { background: var(--blue); }
+  .portrait-cell:nth-child(5) { background: var(--pink); }
+  .portrait-cell:nth-child(6) { background: var(--orange); }
+  .portrait-cell:nth-child(7) { background: var(--green); }
+  .portrait-cell:nth-child(8) { background: var(--black); color: var(--yellow); }
+  .portrait-icon {
+    font-size: 2.2rem;
+    filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.3));
+    z-index: 1;
+  }
+
+  /* ===== LOGOS ===== */
+  .logos {
+    padding: 60px 0;
+    border-top: 4px solid var(--black);
+    border-bottom: 4px solid var(--black);
+    background: var(--yellow);
+    position: relative;
+  }
+  .logos::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(0,0,0,0.06) 2px, transparent 2px);
+    background-size: 10px 10px;
+    pointer-events: none;
+  }
+  .logos-label {
+    text-align: center;
+    font-family: 'Bangers', cursive;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    color: var(--black);
+    opacity: 0.6;
+  }
+  .logos-grid {
+    display: flex; justify-content: center; align-items: center; gap: 48px; flex-wrap: wrap;
+  }
+  .logo-item {
+    font-family: 'Bangers', cursive;
+    font-size: 1.5rem;
+    color: var(--black);
+    opacity: 0.5;
+    letter-spacing: 0.05em;
+    transition: opacity 0.2s;
+  }
+  .logo-item:hover { opacity: 1; }
+
+  /* ===== FEATURES ===== */
+  .features {
+    padding: 100px 0;
+    position: relative;
+  }
+  .section-label {
+    font-family: 'Bangers', cursive;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 12px;
+    color: var(--red);
+  }
+  .section-title {
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    text-align: center;
+    margin-bottom: 60px;
+    text-shadow: 3px 3px 0 var(--yellow);
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .feature-card {
+    padding: 36px 28px;
+    border: 4px solid var(--black);
+    box-shadow: 6px 6px 0 var(--black);
+    position: relative;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .feature-card:hover {
+    transform: translate(3px, 3px);
+    box-shadow: 3px 3px 0 var(--black);
+  }
+  .feature-card:nth-child(1) { background: var(--red); color: var(--white); }
+  .feature-card:nth-child(2) { background: var(--yellow); }
+  .feature-card:nth-child(3) { background: var(--cyan); }
+  .feature-card:nth-child(4) { background: var(--blue); color: var(--white); }
+  .feature-card:nth-child(5) { background: var(--pink); color: var(--white); }
+  .feature-card:nth-child(6) { background: var(--white); }
+  .feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .feature-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    letter-spacing: 0.04em;
+  }
+  .feature-card p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    opacity: 0.9;
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag {
+    padding: 100px 0;
+    background: var(--black);
+    color: var(--white);
+    position: relative;
+  }
+  .zigzag::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 12px 12px;
+    pointer-events: none;
+  }
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    margin-bottom: 80px;
+  }
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-visual { order: -1; }
+  .zigzag-text h2 {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    margin-bottom: 16px;
+    text-shadow: 2px 2px 0 var(--red);
+    color: var(--white);
+  }
+  .zigzag-text p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    opacity: 0.85;
+  }
+  .zigzag-visual {
+    border: 4px solid var(--white);
+    box-shadow: 6px 6px 0 var(--red);
+    padding: 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .zigzag-visual::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1.5px, transparent 1.5px);
+    background-size: 6px 6px;
+    pointer-events: none;
+  }
+  .zigzag-visual:nth-child(1) { background: var(--blue); }
+  .visual-placeholder {
+    font-size: 4rem;
+    filter: drop-shadow(3px 3px 0 rgba(0,0,0,0.3));
+  }
+  .visual-label {
+    font-family: 'Bangers', cursive;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 12px;
+    opacity: 0.7;
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial {
+    padding: 100px 0;
+    background: var(--red);
+    color: var(--white);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .testimonial::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.06) 2px, transparent 2px);
+    background-size: 10px 10px;
+    pointer-events: none;
+  }
+  .testimonial-quote {
+    font-family: 'Bangers', cursive;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    max-width: 800px;
+    margin: 0 auto 32px;
+    line-height: 1.3;
+    text-shadow: 3px 3px 0 var(--black);
+    letter-spacing: 0.03em;
+  }
+  .testimonial-quote::before { content: '"'; font-size: 1.2em; color: var(--yellow); }
+  .testimonial-quote::after { content: '"'; font-size: 1.2em; color: var(--yellow); }
+  .testimonial-author {
+    font-family: 'Lato', sans-serif;
+    font-weight: 900;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .testimonial-role {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-top: 4px;
+  }
+
+  /* ===== PRICING ===== */
+  .pricing {
+    padding: 100px 0;
+    position: relative;
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+  }
+  .price-card {
+    border: 4px solid var(--black);
+    padding: 40px 28px;
+    text-align: center;
+    box-shadow: 6px 6px 0 var(--black);
+    position: relative;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .price-card:hover {
+    transform: translate(3px, 3px);
+    box-shadow: 3px 3px 0 var(--black);
+  }
+  .price-card:nth-child(1) { background: var(--white); }
+  .price-card:nth-child(2) {
+    background: var(--yellow);
+    transform: scale(1.05);
+    box-shadow: 8px 8px 0 var(--black);
+    z-index: 2;
+  }
+  .price-card:nth-child(2):hover {
+    transform: scale(1.05) translate(3px, 3px);
+    box-shadow: 5px 5px 0 var(--black);
+  }
+  .price-card:nth-child(3) { background: var(--cyan); }
+  .price-badge {
+    position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
+    background: var(--red);
+    color: var(--white);
+    font-family: 'Bangers', cursive;
+    font-size: 0.85rem;
+    padding: 4px 20px;
+    border: 3px solid var(--black);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    box-shadow: 2px 2px 0 var(--black);
+  }
+  .price-name {
+    font-family: 'Bangers', cursive;
+    font-size: 1.5rem;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .price-amount {
+    font-family: 'Bangers', cursive;
+    font-size: 3.5rem;
+    margin-bottom: 4px;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+  }
+  .price-period {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+  }
+  .price-features {
+    list-style: none;
+    margin-bottom: 28px;
+    text-align: left;
+  }
+  .price-features li {
+    padding: 8px 0;
+    font-size: 0.9rem;
+    font-weight: 700;
+    border-bottom: 2px solid rgba(0,0,0,0.1);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .price-features li::before {
+    content: '★';
+    color: var(--red);
+    font-size: 1rem;
+  }
+  .price-card:nth-child(2) .price-features li::before { color: var(--black); }
+  .price-btn {
+    display: inline-block;
+    width: 100%;
+    padding: 14px 20px;
+    border: 3px solid var(--black);
+    font-family: 'Bangers', cursive;
+    font-size: 1.1rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    box-shadow: 3px 3px 0 var(--black);
+  }
+  .price-btn:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--black);
+  }
+  .price-card:nth-child(1) .price-btn { background: var(--white); color: var(--black); }
+  .price-card:nth-child(2) .price-btn { background: var(--red); color: var(--white); }
+  .price-card:nth-child(3) .price-btn { background: var(--white); color: var(--black); }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    padding: 100px 0;
+    text-align: center;
+    background: var(--yellow);
+    position: relative;
+    border-top: 4px solid var(--black);
+    border-bottom: 4px solid var(--black);
+  }
+  .final-cta::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(0,0,0,0.05) 2px, transparent 2px);
+    background-size: 10px 10px;
+    pointer-events: none;
+  }
+  .final-cta h2 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    margin-bottom: 20px;
+    text-shadow: 4px 4px 0 var(--black);
+    color: var(--black);
+  }
+  .final-cta p {
+    font-size: 1.2rem;
+    max-width: 500px;
+    margin: 0 auto 36px;
+    font-weight: 700;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 60px 0 40px;
+    background: var(--black);
+    color: var(--white);
+    border-top: 4px solid var(--red);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+  .footer-brand {
+    font-family: 'Bangers', cursive;
+    font-size: 1.8rem;
+    color: var(--red);
+    text-shadow: 2px 2px 0 var(--yellow);
+    margin-bottom: 12px;
+  }
+  .footer-desc {
+    font-size: 0.9rem;
+    opacity: 0.6;
+    line-height: 1.6;
+  }
+  .footer-col h4 {
+    font-size: 1rem;
+    margin-bottom: 16px;
+    color: var(--yellow);
+    letter-spacing: 0.08em;
+  }
+  .footer-col a {
+    display: block;
+    color: var(--white);
+    text-decoration: none;
+    font-size: 0.85rem;
+    opacity: 0.6;
+    padding: 4px 0;
+    transition: opacity 0.15s;
+  }
+  .footer-col a:hover { opacity: 1; }
+  .footer-bottom {
+    border-top: 2px solid rgba(255,255,255,0.1);
+    padding-top: 24px;
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0.4;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* ===== COMIC BURSTS ===== */
+  .burst {
+    position: absolute;
+    font-family: 'Bangers', cursive;
+    font-size: 1.2rem;
+    padding: 8px 16px;
+    border: 3px solid var(--black);
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .features-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
+    .price-card:nth-child(2) { transform: scale(1); }
+    .price-card:nth-child(2):hover { transform: translate(3px, 3px); }
+    .zigzag-row { grid-template-columns: 1fr; gap: 32px; }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .hero-portraits { max-width: 280px; }
+    .nav-links { display: none; }
+    .logos-grid { gap: 24px; }
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes pop {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  .hero-portraits .portrait-cell {
+    animation: pop 3s ease-in-out infinite;
+  }
+  .hero-portraits .portrait-cell:nth-child(2) { animation-delay: 0.3s; }
+  .hero-portraits .portrait-cell:nth-child(3) { animation-delay: 0.6s; }
+  .hero-portraits .portrait-cell:nth-child(4) { animation-delay: 0.9s; }
+  .hero-portraits .portrait-cell:nth-child(5) { animation-delay: 1.2s; }
+  .hero-portraits .portrait-cell:nth-child(6) { animation-delay: 1.5s; }
+  .hero-portraits .portrait-cell:nth-child(7) { animation-delay: 1.8s; }
+  .hero-portraits .portrait-cell:nth-child(8) { animation-delay: 2.1s; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<div class="container">
+  <nav>
+    <a href="#" class="nav-logo">MEET</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="nav-cta">Get Started</a>
+    </div>
+  </nav>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">★ Now in Beta</div>
+    <h1>Meetings<br>That <span>Pop!</span></h1>
+    <p>Schedule smarter. Meet shorter. Live louder. The scheduling tool that actually respects your time.</p>
+    <div class="hero-buttons">
+      <a href="#" class="btn-primary">Start Free →</a>
+      <a href="#" class="btn-secondary">Watch Demo</a>
+    </div>
+    <div class="hero-portraits">
+      <div class="portrait-cell"><span class="portrait-icon">👤</span></div>
+      <div class="portrait-cell"><span class="portrait-icon">👤</span></div>
+      <div class="portrait-cell"><span class="portrait-icon">👤</span></div>
+      <div class="portrait-cell"><span class="portrait-icon">👤</span></div>
+      <div class="portrait-cell"><span class="portrait-icon">👤</span></div>
+      <div class="portrait-cell"><span class="portrait-icon">👤</span></div>
+      <div class="portrait-cell"><span class="portrait-icon">👤</span></div>
+      <div class="portrait-cell"><span class="portrait-icon">👤</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<section class="logos">
+  <div class="container">
+    <div class="logos-label">Trusted by bold teams everywhere</div>
+    <div class="logos-grid">
+      <div class="logo-item">▲ TRIANGLE</div>
+      <div class="logo-item">● CIRCLE</div>
+      <div class="logo-item">■ SQUARE</div>
+      <div class="logo-item">★ STAR</div>
+      <div class="logo-item">◆ DIAMOND</div>
+      <div class="logo-item">✦ SPARK</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-label">Why Meet?</div>
+    <h2 class="section-title">Features That Scream</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">⚡</span>
+        <h3>Instant Scheduling</h3>
+        <p>One click. Done. No back-and-forth emails that go on forever.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🎯</span>
+        <h3>Smart Time Slots</h3>
+        <p>AI finds the perfect time for everyone. Like magic, but real.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📅</span>
+        <h3>Calendar Sync</h3>
+        <p>Google, Outlook, Apple — all synced. Zero conflicts. Zero drama.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔔</span>
+        <h3>Reminders That Work</h3>
+        <p>Push, email, SMS — your way. Nobody shows up late again.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🎨</span>
+        <h3>Beautiful Pages</h3>
+        <p>Custom scheduling pages that look amazing. Your brand, your rules.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📊</span>
+        <h3>Analytics</h3>
+        <p>See where time goes. Cut waste. Reclaim your week.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZIGZAG -->
+<section class="zigzag">
+  <div class="container">
+    <div class="section-label" style="color: var(--yellow);">How it works</div>
+    <div class="zigzag-row">
+      <div class="zigzag-text">
+        <h2>Share Your Link</h2>
+        <p>One beautiful scheduling page. Share it anywhere — email, Slack, SMS. Everyone sees your availability instantly. No more "what about Tuesday?"</p>
+      </div>
+      <div class="zigzag-visual" style="background: var(--yellow); color: var(--black);">
+        <div class="visual-placeholder">🔗</div>
+        <div class="visual-label">One Link. Done.</div>
+      </div>
+    </div>
+    <div class="zigzag-row reverse">
+      <div class="zigzag-text">
+        <h2>They Pick a Time</h2>
+        <p>Your team or clients book directly. No coordination needed. The system handles time zones, conflicts, and preferences automatically.</p>
+      </div>
+      <div class="zigzag-visual" style="background: var(--cyan);">
+        <div class="visual-placeholder">📋</div>
+        <div class="visual-label">Auto-Sorted</div>
+      </div>
+    </div>
+    <div class="zigzag-row">
+      <div class="zigzag-text">
+        <h2>Everyone's Informed</h2>
+        <p>Calendar invites sent. Reminders queued. Location details shared. The meeting just happens — no extra work from you.</p>
+      </div>
+      <div class="zigzag-visual" style="background: var(--pink);">
+        <div class="visual-placeholder">✅</div>
+        <div class="visual-label">Zero Friction</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial">
+  <div class="container">
+    <div class="section-label" style="color: var(--yellow); opacity: 0.8;">What people say</div>
+    <div class="testimonial-quote">We cut our meeting scheduling time by 80%. This tool is absolutely electric!</div>
+    <div class="testimonial-author">Alex Rivera</div>
+    <div class="testimonial-role">Head of Operations, Bold Agency</div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title">Pick Your Vibe</h2>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-name">Solo</div>
+        <div class="price-amount">$0</div>
+        <div class="price-period">Free forever</div>
+        <ul class="price-features">
+          <li>5 meetings / month</li>
+          <li>1 scheduling page</li>
+          <li>Email reminders</li>
+          <li>Basic analytics</li>
+        </ul>
+        <a href="#" class="price-btn">Start Free</a>
+      </div>
+      <div class="price-card">
+        <div class="price-badge">★ Most Popular</div>
+        <div class="price-name">Team</div>
+        <div class="price-amount">$12</div>
+        <div class="price-period">Per user / month</div>
+        <ul class="price-features">
+          <li>Unlimited meetings</li>
+          <li>Custom pages</li>
+          <li>All reminders</li>
+          <li>Full analytics</li>
+          <li>Team management</li>
+        </ul>
+        <a href="#" class="price-btn">Go Team</a>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Enterprise</div>
+        <div class="price-amount">$39</div>
+        <div class="price-period">Per user / month</div>
+        <ul class="price-features">
+          <li>Everything in Team</li>
+          <li>SSO / SAML</li>
+          <li>API access</li>
+          <li>Dedicated support</li>
+          <li>Custom integrations</li>
+        </ul>
+        <a href="#" class="price-btn">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="container">
+    <h2>Ready To<br>Make It Pop?</h2>
+    <p>Join 50,000+ teams who stopped wasting time on scheduling.</p>
+    <a href="#" class="btn-primary">Get Started Free →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">MEET</div>
+        <p class="footer-desc">The scheduling tool that respects your time. Built for teams who move fast.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Integrations</a>
+        <a href="#">Changelog</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Blog</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Security</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Meet. All rights reserved.</div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1A1612;
+    --bg-light: #221E18;
+    --bg-card: #2A2420;
+    --bg-card-solid: #2E2822;
+    --text: #E8DDD0;
+    --text-dim: #A89888;
+    --text-muted: #6B5E52;
+    --rust: #C45E20;
+    --rust-light: #D4783A;
+    --rust-dark: #8B3A10;
+    --rust-glow: rgba(196, 94, 32, 0.15);
+    --verdigris: #2A8B7A;
+    --verdigris-light: #3AAFA0;
+    --verdigris-dark: #1D6B5E;
+    --verdigris-glow: rgba(42, 139, 122, 0.12);
+    --copper: #B87333;
+    --copper-light: #D4945A;
+    --bronze: #6B4E2E;
+    --iron: #3D3530;
+    --oxide: #4A3828;
+    --patina: #1E5A4A;
+    --ash: #8A7E72;
+    --border: rgba(196, 94, 32, 0.12);
+    --border-verdigris: rgba(42, 139, 122, 0.15);
+    --radius: 2px;
+    --radius-lg: 4px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Oswald', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 300;
+    font-size: 16px;
+    letter-spacing: 0.02em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Oswald', sans-serif;
+    line-height: 1.1;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .serif-accent {
+    font-family: 'Instrument Serif', serif;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+  }
+
+  /* ============ RUST TEXTURE OVERLAY ============ */
+  .rust-overlay {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(196, 94, 32, 0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(42, 139, 122, 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(139, 58, 16, 0.04) 0%, transparent 70%);
+  }
+
+  /* Corroded texture via noise */
+  .noise-overlay {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 1;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+
+  /* Verdigris drips */
+  .verdigris-drip {
+    position: fixed;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--verdigris), transparent);
+    opacity: 0.15;
+    z-index: 0;
+    pointer-events: none;
+    animation: drip 20s ease-in-out infinite;
+  }
+
+  .verdigris-drip:nth-child(1) { left: 10%; top: 0; height: 120px; animation-delay: 0s; }
+  .verdigris-drip:nth-child(2) { left: 25%; top: 0; height: 80px; animation-delay: 5s; }
+  .verdigris-drip:nth-child(3) { left: 55%; top: 0; height: 150px; animation-delay: 10s; }
+  .verdigris-drip:nth-child(4) { left: 75%; top: 0; height: 100px; animation-delay: 7s; }
+  .verdigris-drip:nth-child(5) { left: 90%; top: 0; height: 60px; animation-delay: 12s; }
+
+  @keyframes drip {
+    0%, 100% { opacity: 0.08; transform: scaleY(1); }
+    50% { opacity: 0.20; transform: scaleY(1.2); }
+  }
+
+  /* ============ LAYOUT ============ */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 2;
+  }
+
+  section {
+    padding: 100px 0;
+    position: relative;
+  }
+
+  /* ============ NAV ============ */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 0;
+    background: rgba(26, 22, 18, 0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  nav .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--rust);
+    text-decoration: none;
+  }
+
+  .logo span {
+    color: var(--verdigris-light);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--rust-light); }
+
+  /* ============ BUTTONS ============ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: var(--radius);
+  }
+
+  .btn-primary {
+    background: var(--rust);
+    color: var(--text);
+    border: 1px solid var(--rust-dark);
+    position: relative;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(196,94,32,0.3), transparent);
+    pointer-events: none;
+  }
+
+  .btn-primary:hover {
+    background: var(--rust-light);
+    box-shadow: 0 0 30px rgba(196, 94, 32, 0.3);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--iron);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--verdigris);
+    color: var(--verdigris-light);
+  }
+
+  .btn-outline-rust {
+    background: transparent;
+    color: var(--rust);
+    border: 1px solid var(--rust-dark);
+  }
+
+  .btn-outline-rust:hover {
+    background: var(--rust-glow);
+    border-color: var(--rust);
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    padding-top: 180px;
+    padding-bottom: 120px;
+    text-align: center;
+    position: relative;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: var(--rust-glow);
+    border: 1px solid rgba(196, 94, 32, 0.2);
+    border-radius: var(--radius);
+    font-size: 0.72rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--rust-light);
+    margin-bottom: 40px;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--rust);
+    border-radius: 1px;
+  }
+
+  .hero h1 {
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--text);
+  }
+
+  .hero h1 .accent-rust {
+    color: var(--rust);
+    position: relative;
+  }
+
+  .hero h1 .accent-verdigris {
+    color: var(--verdigris-light);
+  }
+
+  .hero h1 .serif-line {
+    display: block;
+    font-family: 'Instrument Serif', serif;
+    font-size: 0.45em;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--text-dim);
+    margin-top: 8px;
+  }
+
+  .hero-subtitle {
+    font-size: 1.15rem;
+    color: var(--text-dim);
+    max-width: 580px;
+    margin: 0 auto 48px;
+    font-weight: 300;
+    line-height: 1.8;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 64px;
+  }
+
+  /* Hero visual — corroded metal plate */
+  .hero-visual {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    aspect-ratio: 16/9;
+    background: var(--bg-card);
+    border: 1px solid var(--iron);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .hero-visual::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(135deg, var(--rust-glow) 0%, transparent 40%),
+      linear-gradient(225deg, var(--verdigris-glow) 0%, transparent 40%);
+    opacity: 0.5;
+  }
+
+  /* Rivet decorations */
+  .rivet {
+    position: absolute;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, var(--copper-light), var(--bronze));
+    border: 1px solid var(--iron);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+  }
+
+  .rivet::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+  }
+
+  .rivet:nth-child(1) { top: 12px; left: 12px; }
+  .rivet:nth-child(2) { top: 12px; right: 12px; }
+  .rivet:nth-child(3) { bottom: 12px; left: 12px; }
+  .rivet:nth-child(4) { bottom: 12px; right: 12px; }
+
+  .hero-visual-content {
+    position: absolute; inset: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .mock-schedule {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    width: 100%;
+  }
+
+  .mock-slot {
+    padding: 16px;
+    background: rgba(42, 36, 32, 0.8);
+    border: 1px solid var(--iron);
+    border-radius: var(--radius);
+  }
+
+  .mock-slot.active {
+    border-color: var(--rust-dark);
+    background: var(--rust-glow);
+  }
+
+  .mock-slot .time {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+
+  .mock-slot .title {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .mock-slot .people {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+
+  /* ============ LOGOS ============ */
+  .logos-section {
+    padding: 60px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logos-label {
+    text-align: center;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+  }
+
+  .logos-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    opacity: 0.4;
+  }
+
+  .logo-item {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+  }
+
+  /* ============ FEATURES ============ */
+  .features-section {
+    padding: 120px 0;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .section-tag {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--rust);
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  .section-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    max-width: 500px;
+    margin: 0 auto;
+    font-weight: 300;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .feature-card {
+    padding: 40px 32px;
+    background: var(--bg-card);
+    border: 1px solid var(--iron);
+    border-radius: var(--radius);
+    position: relative;
+    transition: all 0.3s;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--rust), var(--verdigris));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .feature-card:hover {
+    border-color: var(--rust-dark);
+    transform: translateY(-2px);
+  }
+
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 48px; height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    font-size: 1.5rem;
+    background: var(--rust-glow);
+    border: 1px solid rgba(196, 94, 32, 0.15);
+    border-radius: var(--radius);
+  }
+
+  .feature-card h3 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 12px;
+    letter-spacing: 0.06em;
+  }
+
+  .feature-card p {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* ============ ZIGZAG ============ */
+  .zigzag-section {
+    padding: 120px 0;
+  }
+
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    margin-bottom: 120px;
+  }
+
+  .zigzag-row:last-child { margin-bottom: 0; }
+
+  .zigzag-row.reverse .zigzag-content { order: 2; }
+  .zigzag-row.reverse .zigzag-visual { order: 1; }
+
+  .zigzag-content .section-tag { text-align: left; }
+
+  .zigzag-content h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  .zigzag-content p {
+    font-size: 1rem;
+    color: var(--text-dim);
+    line-height: 1.8;
+    margin-bottom: 24px;
+    font-weight: 300;
+  }
+
+  .zigzag-visual {
+    aspect-ratio: 4/3;
+    background: var(--bg-card);
+    border: 1px solid var(--iron);
+    border-radius: var(--radius);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .zigzag-visual::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--rust-glow), transparent 60%);
+    opacity: 0.3;
+  }
+
+  .visual-inner {
+    position: absolute; inset: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .stat-bar {
+    height: 8px;
+    background: var(--iron);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+
+  .stat-bar-fill {
+    height: 100%;
+    border-radius: 1px;
+    background: linear-gradient(90deg, var(--rust), var(--rust-light));
+  }
+
+  .stat-bar-fill.verdigris {
+    background: linear-gradient(90deg, var(--verdigris-dark), var(--verdigris-light));
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+
+  /* ============ TESTIMONIAL ============ */
+  .testimonial-section {
+    padding: 120px 0;
+    background: var(--bg-light);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .testimonial-card {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .testimonial-quote {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-style: italic;
+    line-height: 1.6;
+    margin-bottom: 40px;
+    color: var(--text);
+    position: relative;
+  }
+
+  .testimonial-quote::before {
+    content: '"';
+    font-size: 4rem;
+    color: var(--rust);
+    opacity: 0.3;
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Instrument Serif', serif;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .testimonial-avatar {
+    width: 48px; height: 48px;
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, var(--rust-dark), var(--verdigris-dark));
+    border: 1px solid var(--iron);
+  }
+
+  .testimonial-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .testimonial-role {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+
+  /* ============ PRICING ============ */
+  .pricing-section {
+    padding: 120px 0;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+  }
+
+  .pricing-card {
+    padding: 40px 32px;
+    background: var(--bg-card);
+    border: 1px solid var(--iron);
+    border-radius: var(--radius);
+    text-align: center;
+    position: relative;
+    transition: all 0.3s;
+  }
+
+  .pricing-card.featured {
+    border-color: var(--rust-dark);
+    background: linear-gradient(180deg, var(--rust-glow), var(--bg-card));
+  }
+
+  .pricing-card.featured::before {
+    content: 'POPULAR';
+    position: absolute;
+    top: -1px; left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 16px;
+    background: var(--rust);
+    color: var(--text);
+    font-size: 0.65rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    border-radius: 0 0 var(--radius) var(--radius);
+  }
+
+  .pricing-tier {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .pricing-amount {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .pricing-amount .currency {
+    font-size: 1.2rem;
+    vertical-align: super;
+    color: var(--text-dim);
+  }
+
+  .pricing-period {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+  }
+
+  .pricing-features {
+    list-style: none;
+    margin-bottom: 32px;
+    text-align: left;
+  }
+
+  .pricing-features li {
+    padding: 10px 0;
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    border-bottom: 1px solid rgba(61, 53, 48, 0.5);
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .pricing-features li::before {
+    content: '▸';
+    color: var(--rust);
+    font-size: 0.7rem;
+  }
+
+  /* ============ FINAL CTA ============ */
+  .cta-section {
+    padding: 120px 0;
+    text-align: center;
+    position: relative;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at center, var(--rust-glow) 0%, transparent 60%);
+    opacity: 0.3;
+  }
+
+  .cta-section h2 {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .cta-section p {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    max-width: 500px;
+    margin: 0 auto 40px;
+    font-weight: 300;
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    padding: 60px 0;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: color 0.3s;
+  }
+
+  .footer-links a:hover { color: var(--rust); }
+
+  .footer-copy {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+
+  /* ============ ANIMATIONS ============ */
+  @keyframes rustPulse {
+    0%, 100% { opacity: 0.08; }
+    50% { opacity: 0.15; }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 768px) {
+    .features-grid,
+    .pricing-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .zigzag-row {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .zigzag-row.reverse .zigzag-content { order: 1; }
+    .zigzag-row.reverse .zigzag-visual { order: 2; }
+
+    .nav-links { display: none; }
+
+    .mock-schedule {
+      grid-template-columns: 1fr;
+    }
+
+    section { padding: 80px 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="rust-overlay"></div>
+<div class="noise-overlay"></div>
+<div class="verdigris-drip"></div>
+<div class="verdigris-drip"></div>
+<div class="verdigris-drip"></div>
+<div class="verdigris-drip"></div>
+<div class="verdigris-drip"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <a href="#" class="logo">meet<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#cta" class="btn btn-primary" style="padding:8px 20px;">Get Started</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge fade-in">Now in Public Beta</div>
+    <h1 class="fade-in">
+      <span class="accent-rust">Meetings</span> That
+      <span class="accent-verdigris">Don't</span>
+      Waste Your Week
+      <span class="serif-line">Schedule smarter. Ship faster.</span>
+    </h1>
+    <p class="hero-subtitle fade-in">
+      AI-powered meeting scheduler that finds the perfect time for everyone.
+      No more back-and-forth emails. No more calendar Tetris.
+    </p>
+    <div class="hero-actions fade-in">
+      <a href="#" class="btn btn-primary">Start Free Trial</a>
+      <a href="#" class="btn btn-secondary">Watch Demo</a>
+    </div>
+    <div class="hero-visual fade-in">
+      <div class="rivet"></div>
+      <div class="rivet"></div>
+      <div class="rivet"></div>
+      <div class="rivet"></div>
+      <div class="hero-visual-content">
+        <div class="mock-schedule">
+          <div class="mock-slot active">
+            <div class="time">09:00 AM</div>
+            <div class="title">Standup</div>
+            <div class="people">5 attendees</div>
+          </div>
+          <div class="mock-slot">
+            <div class="time">11:00 AM</div>
+            <div class="title">Design Review</div>
+            <div class="people">3 attendees</div>
+          </div>
+          <div class="mock-slot active">
+            <div class="time">02:00 PM</div>
+            <div class="title">Sprint Plan</div>
+            <div class="people">8 attendees</div>
+          </div>
+          <div class="mock-slot">
+            <div class="time">03:30 PM</div>
+            <div class="title">1:1 Sync</div>
+            <div class="people">2 attendees</div>
+          </div>
+          <div class="mock-slot active">
+            <div class="time">04:30 PM</div>
+            <div class="title">Retrospective</div>
+            <div class="people">6 attendees</div>
+          </div>
+          <div class="mock-slot">
+            <div class="time">05:00 PM</div>
+            <div class="title">Open Slot</div>
+            <div class="people">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<section class="logos-section">
+  <div class="container">
+    <div class="logos-label">Trusted by teams at</div>
+    <div class="logos-grid">
+      <div class="logo-item">Vercel</div>
+      <div class="logo-item">Linear</div>
+      <div class="logo-item">Notion</div>
+      <div class="logo-item">Figma</div>
+      <div class="logo-item">Stripe</div>
+      <div class="logo-item">GitHub</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section" id="features">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-tag">Features</span>
+      <h2 class="section-title">Built for Teams That Ship</h2>
+      <p class="section-subtitle">Every feature forged to eliminate scheduling friction</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-in">
+        <div class="feature-icon">⚡</div>
+        <h3>Smart Scheduling</h3>
+        <p>AI analyzes calendars, timezones, and priorities to find optimal meeting slots automatically.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🔒</div>
+        <h3>Privacy First</h3>
+        <p>End-to-end encrypted calendar data. Your schedule stays yours. Zero third-party access.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🔗</div>
+        <h3>Integrations</h3>
+        <p>Slack, Google Calendar, Outlook, Teams — connect everything in one click.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">📊</div>
+        <h3>Analytics</h3>
+        <p>Track meeting efficiency, identify bottlenecks, and optimize team availability.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🌍</div>
+        <h3>Timezone Aware</h3>
+        <p>Automatic timezone detection and conversion. Global teams, zero confusion.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">⚙️</div>
+        <h3>Custom Rules</h3>
+        <p>Set availability rules, buffer times, and recurring patterns. Total control.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZIGZAG -->
+<section class="zigzag-section" id="how">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-tag">How It Works</span>
+      <h2 class="section-title">Three Steps. Zero Friction.</h2>
+    </div>
+
+    <div class="zigzag-row fade-in">
+      <div class="zigzag-content">
+        <span class="section-tag">Step 01</span>
+        <h2>Connect Your Calendar</h2>
+        <p>One-click integration with Google Calendar, Outlook, or Apple Calendar. We read availability — nothing else.</p>
+        <a href="#" class="btn btn-outline-rust">Learn More</a>
+      </div>
+      <div class="zigzag-visual">
+        <div class="visual-inner">
+          <div class="stat-label">Calendar Sync</div>
+          <div class="stat-bar"><div class="stat-bar-fill" style="width:95%"></div></div>
+          <div class="stat-label">Availability Scan</div>
+          <div class="stat-bar"><div class="stat-bar-fill verdigris" style="width:80%"></div></div>
+          <div class="stat-label">Conflict Resolution</div>
+          <div class="stat-bar"><div class="stat-bar-fill" style="width:60%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="zigzag-row reverse fade-in">
+      <div class="zigzag-content">
+        <span class="section-tag">Step 02</span>
+        <h2>AI Finds the Slot</h2>
+        <p>Our engine cross-references every attendee's schedule, preferences, and timezone to surface the perfect window.</p>
+        <a href="#" class="btn btn-outline-rust">See the Engine</a>
+      </div>
+      <div class="zigzag-visual">
+        <div class="visual-inner">
+          <div class="stat-label">Team A — NYC</div>
+          <div class="stat-bar"><div class="stat-bar-fill" style="width:70%"></div></div>
+          <div class="stat-label">Team B — London</div>
+          <div class="stat-bar"><div class="stat-bar-fill verdigris" style="width:55%"></div></div>
+          <div class="stat-label">Team C — Tokyo</div>
+          <div class="stat-bar"><div class="stat-bar-fill" style="width:40%"></div></div>
+          <div class="stat-label">Optimal Window</div>
+          <div class="stat-bar"><div class="stat-bar-fill verdigris" style="width:90%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="zigzag-row fade-in">
+      <div class="zigzag-content">
+        <span class="section-tag">Step 03</span>
+        <h2>Meeting Locked In</h2>
+        <p>Invitations sent. Reminders set. Calendar updated. Your team shows up — on time, every time.</p>
+        <a href="#" class="btn btn-outline-rust">View Templates</a>
+      </div>
+      <div class="zigzag-visual">
+        <div class="visual-inner">
+          <div class="stat-label">Invitations Sent</div>
+          <div class="stat-bar"><div class="stat-bar-fill" style="width:100%"></div></div>
+          <div class="stat-label">Acceptance Rate</div>
+          <div class="stat-bar"><div class="stat-bar-fill verdigris" style="width:92%"></div></div>
+          <div class="stat-label">Show Rate</div>
+          <div class="stat-bar"><div class="stat-bar-fill" style="width:88%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial-section">
+  <div class="container">
+    <div class="testimonial-card fade-in">
+      <blockquote class="testimonial-quote">
+        Meet cut our scheduling time from 45 minutes to under 30 seconds.
+        Our team actually enjoys planning meetings now — which sounds like a miracle.
+      </blockquote>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar"></div>
+        <div>
+          <div class="testimonial-name">Sarah Chen</div>
+          <div class="testimonial-role">VP of Engineering, TechCorp</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="container">
+    <div class="section-header fade-in">
+      <span class="section-tag">Pricing</span>
+      <h2 class="section-title">Simple. Transparent.</h2>
+      <p class="section-subtitle">No hidden fees. Cancel anytime.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card fade-in">
+        <div class="pricing-tier">Starter</div>
+        <div class="pricing-amount"><span class="currency">$</span>0</div>
+        <div class="pricing-period">Free forever</div>
+        <ul class="pricing-features">
+          <li>Up to 5 team members</li>
+          <li>10 meetings per month</li>
+          <li>Basic integrations</li>
+          <li>Email support</li>
+        </ul>
+        <a href="#" class="btn btn-secondary" style="width:100%;justify-content:center;">Get Started</a>
+      </div>
+      <div class="pricing-card featured fade-in">
+        <div class="pricing-tier">Pro</div>
+        <div class="pricing-amount"><span class="currency">$</span>12</div>
+        <div class="pricing-period">Per user / month</div>
+        <ul class="pricing-features">
+          <li>Unlimited team members</li>
+          <li>Unlimited meetings</li>
+          <li>AI scheduling engine</li>
+          <li>Priority support</li>
+          <li>Advanced analytics</li>
+        </ul>
+        <a href="#" class="btn btn-primary" style="width:100%;justify-content:center;">Start Free Trial</a>
+      </div>
+      <div class="pricing-card fade-in">
+        <div class="pricing-tier">Enterprise</div>
+        <div class="pricing-amount"><span class="currency">$</span>29</div>
+        <div class="pricing-period">Per user / month</div>
+        <ul class="pricing-features">
+          <li>Everything in Pro</li>
+          <li>SSO & SAML</li>
+          <li>Dedicated account manager</li>
+          <li>Custom integrations</li>
+          <li>SLA guarantee</li>
+        </ul>
+        <a href="#" class="btn btn-secondary" style="width:100%;justify-content:center;">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-section" id="cta">
+  <div class="container fade-in">
+    <span class="section-tag">Ready?</span>
+    <h2>Stop Wasting Time<br><span class="serif-accent" style="color:var(--rust);">Start Shipping</span></h2>
+    <p>Join 10,000+ teams who schedule smarter with Meet. Free for up to 5 members.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn btn-primary">Start Free Trial</a>
+      <a href="#" class="btn btn-secondary">Talk to Sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Docs</a>
+      <a href="#">Blog</a>
+      <a href="#">Twitter</a>
+    </div>
+    <p class="footer-copy">© 2024 Meet. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

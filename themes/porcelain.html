@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --porcelain-white: #FEFEFE;
+    --porcelain-ivory: #FAF8F5;
+    --porcelain-cream: #F5F0EA;
+    --porcelain-warm: #EDE6DC;
+    --blue-deep: #2B4C7E;
+    --blue-mid: #3A6DA5;
+    --blue-soft: #5B8DB8;
+    --blue-pale: #A3C4E0;
+    --blue-whisper: #D4E4F2;
+    --blue-frost: #ECF2F8;
+    --text-primary: #2C2C2C;
+    --text-secondary: #6B6560;
+    --text-tertiary: #9B9590;
+    --text-quaternary: #C4BFB9;
+    --border: #E8E2DA;
+    --border-light: #F0EBE5;
+    --shadow-sm: 0 1px 3px rgba(43,76,126,0.04);
+    --shadow-md: 0 2px 12px rgba(43,76,126,0.06);
+    --shadow-lg: 0 4px 24px rgba(43,76,126,0.08);
+    --shadow-xl: 0 8px 40px rgba(43,76,126,0.10);
+    --radius: 8px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+    --radius-full: 100px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--porcelain-ivory);
+    color: var(--text-primary);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Cormorant', serif;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--text-primary);
+  }
+
+  h1 { font-size: clamp(3rem, 6vw, 4.5rem); font-weight: 600; letter-spacing: -0.01em; }
+  h2 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.01em; }
+  h3 { font-size: clamp(1.35rem, 2vw, 1.65rem); font-weight: 500; }
+  h4 { font-size: 1.05rem; font-weight: 500; }
+
+  p { color: var(--text-secondary); }
+
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 32px; }
+
+  /* ===== PORCELAIN PATTERN OVERLAY ===== */
+  .porcelain-pattern {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    opacity: 0.025;
+    background-image:
+      url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 0C40 22.09 22.09 40 0 40C22.09 40 40 57.91 40 80C40 57.91 57.91 40 80 40C57.91 40 40 22.09 40 0Z' fill='%232B4C7E'/%3E%3C/svg%3E");
+    background-size: 80px 80px;
+  }
+
+  /* ===== DECORATIVE BLUE BRUSH STROKE ===== */
+  .brush-stroke {
+    position: absolute; width: 120%; left: -10%;
+    height: 1px; opacity: 0.08;
+    background: linear-gradient(90deg, transparent, var(--blue-mid), transparent);
+  }
+
+  /* ===== KOBAN (CIRCULAR SEAL) DECORATION ===== */
+  .koban {
+    width: 48px; height: 48px;
+    border: 1.5px solid var(--blue-pale);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant', serif;
+    font-size: 0.7rem; color: var(--blue-soft);
+    letter-spacing: 0.05em;
+    opacity: 0.5;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    padding: 24px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border-light);
+    position: sticky; top: 0;
+    background: rgba(250,248,245,0.9);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Cormorant', serif;
+    font-size: 1.5rem; font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0.02em;
+  }
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a {
+    font-size: 0.85rem; color: var(--text-tertiary);
+    text-decoration: none; font-weight: 400;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--blue-mid); }
+  .nav-cta {
+    font-size: 0.82rem !important; font-weight: 500 !important;
+    color: var(--porcelain-white) !important;
+    background: var(--blue-deep); padding: 10px 28px;
+    border-radius: var(--radius-full);
+    transition: background 0.3s, transform 0.2s;
+  }
+  .nav-cta:hover { background: var(--blue-mid); transform: translateY(-1px); }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 160px 0 120px;
+    text-align: center;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: 60px; left: 50%;
+    transform: translateX(-50%);
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, transparent, var(--blue-pale));
+    opacity: 0.4;
+  }
+  .hero-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem; font-weight: 500;
+    color: var(--blue-soft); letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 24px;
+  }
+  .hero h1 {
+    max-width: 740px; margin: 0 auto 28px;
+    font-weight: 600;
+  }
+  .hero-sub {
+    font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+    max-width: 520px; margin: 0 auto 48px;
+    line-height: 1.7; color: var(--text-secondary);
+    font-weight: 300;
+  }
+  .hero-actions {
+    display: flex; gap: 16px; justify-content: center; align-items: center;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; font-weight: 500;
+    color: var(--porcelain-white); background: var(--blue-deep);
+    padding: 15px 36px; border-radius: var(--radius-full);
+    text-decoration: none; border: none; cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+  }
+  .btn-primary:hover { background: var(--blue-mid); transform: translateY(-1px); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; font-weight: 400;
+    color: var(--blue-deep); background: transparent;
+    padding: 15px 36px; border-radius: var(--radius-full);
+    text-decoration: none;
+    border: 1px solid var(--blue-whisper);
+    cursor: pointer;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .btn-secondary:hover {
+    border-color: var(--blue-pale);
+    background: var(--blue-frost);
+  }
+
+  .hero-visual {
+    margin-top: 80px;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-light);
+    position: relative;
+  }
+  .hero-visual::after {
+    content: '';
+    position: absolute; inset: -1px;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--blue-whisper);
+    opacity: 0.4; pointer-events: none;
+  }
+  .hero-mockup {
+    width: 100%; aspect-ratio: 16/9;
+    background: var(--porcelain-white);
+    display: flex; flex-direction: column;
+  }
+  .mockup-bar {
+    height: 38px; background: var(--porcelain-cream);
+    border-bottom: 1px solid var(--border-light);
+    display: flex; align-items: center; padding: 0 16px; gap: 8px;
+  }
+  .mockup-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--border);
+  }
+  .mockup-body {
+    flex: 1; display: flex; padding: 24px; gap: 20px;
+  }
+  .mockup-sidebar {
+    width: 180px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .mockup-sidebar-item {
+    height: 8px; background: var(--porcelain-cream); border-radius: 4px;
+  }
+  .mockup-sidebar-item.active {
+    background: var(--blue-whisper); width: 80%;
+  }
+  .mockup-main {
+    flex: 1; display: flex; flex-direction: column; gap: 14px;
+  }
+  .mockup-card {
+    flex: 1; background: var(--porcelain-white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+    padding: 18px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .mockup-card-line {
+    height: 7px; background: var(--porcelain-cream); border-radius: 4px;
+  }
+  .mockup-card-line.short { width: 55%; }
+  .mockup-card-line.medium { width: 75%; }
+  .mockup-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  }
+
+  /* ===== LOGOS ===== */
+  .logos {
+    padding: 80px 0;
+    border-top: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--border-light);
+    position: relative;
+  }
+  .logos-label {
+    text-align: center; font-size: 0.75rem;
+    color: var(--text-quaternary); font-weight: 400;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 36px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .logos-row {
+    display: flex; justify-content: center; align-items: center;
+    gap: 56px; flex-wrap: wrap;
+  }
+  .logo-item {
+    font-family: 'Cormorant', serif;
+    font-size: 1.15rem; font-weight: 500;
+    color: var(--text-quaternary);
+    transition: color 0.3s;
+  }
+  .logo-item:hover { color: var(--blue-soft); }
+
+  /* ===== FEATURES ===== */
+  .features {
+    padding: 140px 0;
+  }
+  .section-header {
+    text-align: center; margin-bottom: 80px;
+    position: relative;
+  }
+  .section-header::before {
+    content: '';
+    display: block; width: 32px; height: 1px;
+    background: var(--blue-pale); margin: 0 auto 24px;
+    opacity: 0.5;
+  }
+  .section-header h2 { margin-bottom: 16px; }
+  .section-header p {
+    max-width: 500px; margin: 0 auto;
+    font-size: 1.05rem; line-height: 1.7;
+    font-weight: 300;
+  }
+  .features-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  .feature-card {
+    padding: 36px 28px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-light);
+    transition: box-shadow 0.4s, border-color 0.4s, transform 0.3s;
+    background: var(--porcelain-white);
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--blue-pale), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .feature-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--blue-whisper);
+    transform: translateY(-2px);
+  }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: var(--blue-frost);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; margin-bottom: 22px;
+  }
+  .feature-card h3 { margin-bottom: 10px; font-size: 1.15rem; }
+  .feature-card p { font-size: 0.9rem; line-height: 1.65; color: var(--text-tertiary); font-weight: 300; }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag { padding: 0 0 140px; }
+  .zigzag-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center;
+    padding: 80px 0;
+  }
+  .zigzag-row + .zigzag-row {
+    border-top: 1px solid var(--border-light);
+  }
+  .zigzag-row.reverse .zigzag-visual { order: -1; }
+  .zigzag-content h3 { margin-bottom: 16px; }
+  .zigzag-content p { font-size: 0.95rem; line-height: 1.75; margin-bottom: 24px; font-weight: 300; }
+  .zigzag-link {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem; font-weight: 500; color: var(--blue-deep);
+    text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    transition: gap 0.2s;
+  }
+  .zigzag-link:hover { gap: 10px; }
+  .zigzag-visual {
+    aspect-ratio: 4/3; border-radius: var(--radius-lg);
+    background: var(--porcelain-white);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .zigzag-visual::after {
+    content: '';
+    position: absolute; bottom: 16px; right: 16px;
+    width: 24px; height: 24px;
+    border: 1px solid var(--blue-whisper);
+    border-radius: 50%;
+    opacity: 0.4;
+  }
+  .zigzag-visual-inner {
+    width: 80%; height: 70%; display: flex; flex-direction: column; gap: 12px; padding: 20px;
+  }
+  .zigzag-visual-line {
+    height: 8px; background: var(--porcelain-cream); border-radius: 4px;
+  }
+  .zigzag-visual-line:nth-child(1) { width: 45%; background: var(--blue-frost); }
+  .zigzag-visual-line:nth-child(2) { width: 100%; }
+  .zigzag-visual-line:nth-child(3) { width: 85%; }
+  .zigzag-visual-line:nth-child(4) { width: 65%; }
+  .zigzag-visual-line:nth-child(5) { width: 90%; }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial {
+    padding: 140px 0;
+    text-align: center;
+    background: var(--porcelain-white);
+    border-top: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--border-light);
+    position: relative;
+  }
+  .testimonial::before {
+    content: '';
+    position: absolute; top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 40px; height: 1px;
+    background: var(--blue-pale);
+    opacity: 0.4;
+  }
+  .testimonial-quote {
+    font-family: 'Cormorant', serif;
+    font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+    max-width: 680px; margin: 0 auto 40px;
+    line-height: 1.55; font-weight: 400;
+    color: var(--text-primary);
+    font-style: italic;
+  }
+  .testimonial-author {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; font-weight: 500; color: var(--text-primary);
+  }
+  .testimonial-role {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; color: var(--text-tertiary); margin-top: 4px;
+    font-weight: 300;
+  }
+  .testimonial-seal {
+    margin: 0 auto 32px;
+    width: 52px; height: 52px;
+    border: 1.5px solid var(--blue-whisper);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant', serif;
+    font-size: 1.4rem; color: var(--blue-pale);
+  }
+
+  /* ===== PRICING ===== */
+  .pricing {
+    padding: 140px 0;
+  }
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 24px; max-width: 960px; margin: 0 auto;
+  }
+  .pricing-card {
+    padding: 40px 32px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-light);
+    text-align: center;
+    transition: box-shadow 0.3s, transform 0.3s;
+    background: var(--porcelain-white);
+    position: relative;
+  }
+  .pricing-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+  .pricing-card.featured {
+    border: 1.5px solid var(--blue-whisper);
+    box-shadow: var(--shadow-md);
+  }
+  .pricing-card.featured::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--blue-pale), var(--blue-soft), var(--blue-pale));
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+  .pricing-badge {
+    display: inline-block; font-family: 'DM Sans', sans-serif;
+    font-size: 0.68rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--blue-soft); margin-bottom: 16px;
+    padding: 4px 14px; border-radius: var(--radius-full);
+    background: var(--blue-frost);
+    border: 1px solid var(--blue-whisper);
+  }
+  .pricing-card h3 { margin-bottom: 8px; font-size: 1.2rem; }
+  .pricing-amount {
+    font-family: 'Cormorant', serif;
+    font-size: 2.75rem; font-weight: 600;
+    margin: 20px 0 4px; color: var(--text-primary);
+  }
+  .pricing-amount span { font-size: 1rem; font-weight: 300; color: var(--text-tertiary); }
+  .pricing-desc {
+    font-size: 0.85rem; color: var(--text-tertiary); margin-bottom: 28px;
+    font-weight: 300;
+  }
+  .pricing-features {
+    list-style: none; text-align: left; margin-bottom: 32px;
+  }
+  .pricing-features li {
+    font-size: 0.85rem; color: var(--text-secondary);
+    padding: 8px 0; display: flex; align-items: center; gap: 10px;
+    font-weight: 300;
+  }
+  .pricing-features li::before {
+    content: "";
+    display: block; width: 5px; height: 5px;
+    border-radius: 50%; background: var(--blue-pale);
+    flex-shrink: 0;
+  }
+  .pricing-btn {
+    display: block; width: 100%; padding: 14px;
+    border-radius: var(--radius-full); font-size: 0.88rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500; text-decoration: none; text-align: center;
+    transition: background 0.3s, transform 0.2s; cursor: pointer;
+  }
+  .pricing-btn-outline {
+    color: var(--blue-deep); background: transparent;
+    border: 1px solid var(--border);
+  }
+  .pricing-btn-outline:hover {
+    border-color: var(--blue-whisper);
+    background: var(--blue-frost);
+  }
+  .pricing-btn-primary {
+    color: var(--porcelain-white); background: var(--blue-deep); border: none;
+  }
+  .pricing-btn-primary:hover {
+    background: var(--blue-mid);
+    transform: translateY(-1px);
+  }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    padding: 140px 0;
+    text-align: center;
+    background: var(--porcelain-white);
+    border-top: 1px solid var(--border-light);
+    position: relative;
+  }
+  .final-cta::before {
+    content: '';
+    position: absolute; top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 1px; height: 32px;
+    background: linear-gradient(to bottom, var(--blue-pale), transparent);
+    opacity: 0.3;
+  }
+  .final-cta h2 { margin-bottom: 20px; }
+  .final-cta p {
+    max-width: 460px; margin: 0 auto 40px;
+    font-size: 1.05rem; line-height: 1.7; font-weight: 300;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 48px 0;
+    border-top: 1px solid var(--border-light);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-copy {
+    font-size: 0.78rem; color: var(--text-quaternary);
+    font-weight: 300;
+  }
+  .footer-links { display: flex; gap: 28px; }
+  .footer-links a {
+    font-size: 0.78rem; color: var(--text-tertiary);
+    text-decoration: none; font-weight: 300;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--blue-mid); }
+
+  /* ===== WAVE DIVIDER ===== */
+  .wave-divider {
+    width: 100%; height: 24px; margin: 0;
+    opacity: 0.06;
+  }
+
+  /* ===== ANIMATIONS ===== */
+  .fade-in {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .fade-in.visible {
+    opacity: 1; transform: translateY(0);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .features-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+    .zigzag-row { grid-template-columns: 1fr; gap: 40px; }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .hero { padding: 100px 0 80px; }
+    .hero-actions { flex-direction: column; }
+    .mockup-grid { grid-template-columns: 1fr; }
+    .mockup-sidebar { display: none; }
+    nav { padding: 16px 0; }
+    .nav-links { gap: 20px; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+  }
+
+  @media (max-width: 600px) {
+    .container { padding: 0 20px; }
+    h1 { font-size: 2.4rem; }
+    .logos-row { gap: 28px; }
+    .hero-visual { margin-top: 48px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="porcelain-pattern"></div>
+
+<div class="container">
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Meet</div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="nav-cta">Get Started</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">Now in public beta</div>
+    <h1>Meetings that respect your time</h1>
+    <p class="hero-sub">Schedule, run, and follow up — all in one clean workspace. No clutter. No noise. Just meetings that work.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Start free trial</a>
+      <a href="#" class="btn-secondary">Watch demo</a>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-mockup">
+        <div class="mockup-bar">
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-sidebar">
+            <div class="mockup-sidebar-item active"></div>
+            <div class="mockup-sidebar-item"></div>
+            <div class="mockup-sidebar-item"></div>
+            <div class="mockup-sidebar-item"></div>
+          </div>
+          <div class="mockup-main">
+            <div class="mockup-grid">
+              <div class="mockup-card">
+                <div class="mockup-card-line short"></div>
+                <div class="mockup-card-line"></div>
+                <div class="mockup-card-line medium"></div>
+              </div>
+              <div class="mockup-card">
+                <div class="mockup-card-line short"></div>
+                <div class="mockup-card-line"></div>
+                <div class="mockup-card-line medium"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- LOGOS -->
+<section class="logos">
+  <div class="container">
+    <div class="logos-label">Trusted by teams at</div>
+    <div class="logos-row">
+      <div class="logo-item">Vercel</div>
+      <div class="logo-item">Linear</div>
+      <div class="logo-item">Notion</div>
+      <div class="logo-item">Figma</div>
+      <div class="logo-item">Stripe</div>
+      <div class="logo-item">Raycast</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-header fade-in">
+      <h2>Everything you need. Nothing you don't.</h2>
+      <p>Five tools that replace your entire meeting stack.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-in">
+        <div class="feature-icon">📅</div>
+        <h3>Smart Scheduling</h3>
+        <p>AI reads your calendar and finds the perfect slot. No more back-and-forth emails.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">📝</div>
+        <h3>Auto Agendas</h3>
+        <p>Every meeting gets a structured agenda, generated from your project context.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">⏱️</div>
+        <h3>Time Boxes</h3>
+        <p>Hard stops enforced gently. Meetings end on time, every time.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🎙️</div>
+        <h3>Live Transcripts</h3>
+        <p>Real-time transcription with action items extracted automatically.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">📊</div>
+        <h3>Meeting Analytics</h3>
+        <p>See where your team's time actually goes. Cut waste, keep what works.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🔗</div>
+        <h3>Integrations</h3>
+        <p>Slack, Notion, GitHub, Jira — Meet connects to your existing tools.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZIGZAG -->
+<section class="zigzag">
+  <div class="container">
+    <div class="zigzag-row fade-in">
+      <div class="zigzag-content">
+        <h3>One click to schedule</h3>
+        <p>Share a link. Your teammates pick a time that works. Meet handles time zones, availability, and room booking automatically.</p>
+        <a href="#" class="zigzag-link">Learn more <span>→</span></a>
+      </div>
+      <div class="zigzag-visual">
+        <div class="zigzag-visual-inner">
+          <div class="zigzag-visual-line"></div>
+          <div class="zigzag-visual-line"></div>
+          <div class="zigzag-visual-line"></div>
+          <div class="zigzag-visual-line"></div>
+          <div class="zigzag-visual-line"></div>
+        </div>
+      </div>
+    </div>
+    <div class="zigzag-row reverse fade-in">
+      <div class="zigzag-content">
+        <h3>Follow-ups that actually happen</h3>
+        <p>Action items assigned during the meeting. Due dates set. Reminders sent. Nothing falls through the cracks.</p>
+        <a href="#" class="zigzag-link">See how it works <span>→</span></a>
+      </div>
+      <div class="zigzag-visual">
+        <div class="zigzag-visual-inner">
+          <div class="zigzag-visual-line"></div>
+          <div class="zigzag-visual-line"></div>
+          <div class="zigzag-visual-line"></div>
+          <div class="zigzag-visual-line"></div>
+          <div class="zigzag-visual-line"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial">
+  <div class="container">
+    <div class="testimonial-seal">✦</div>
+    <p class="testimonial-quote fade-in">We cut our meeting time by 40% in the first month. Meet made our weekly syncs actually useful instead of just another thing on the calendar.</p>
+    <div class="testimonial-author">Sarah Chen</div>
+    <div class="testimonial-role">Head of Operations, Linear</div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-header fade-in">
+      <h2>Simple pricing</h2>
+      <p>Start free. Upgrade when you need more.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card fade-in">
+        <h3>Free</h3>
+        <div class="pricing-amount">$0<span>/mo</span></div>
+        <p class="pricing-desc">For individuals and small teams</p>
+        <ul class="pricing-features">
+          <li>5 meetings per month</li>
+          <li>Basic scheduling</li>
+          <li>Email summaries</li>
+        </ul>
+        <a href="#" class="pricing-btn pricing-btn-outline">Get started</a>
+      </div>
+      <div class="pricing-card featured fade-in">
+        <div class="pricing-badge">Most popular</div>
+        <h3>Pro</h3>
+        <div class="pricing-amount">$12<span>/mo</span></div>
+        <p class="pricing-desc">For growing teams</p>
+        <ul class="pricing-features">
+          <li>Unlimited meetings</li>
+          <li>AI agendas & transcripts</li>
+          <li>Action item tracking</li>
+          <li>Analytics dashboard</li>
+        </ul>
+        <a href="#" class="pricing-btn pricing-btn-primary">Start free trial</a>
+      </div>
+      <div class="pricing-card fade-in">
+        <h3>Enterprise</h3>
+        <div class="pricing-amount">Custom</div>
+        <p class="pricing-desc">For large organizations</p>
+        <ul class="pricing-features">
+          <li>Everything in Pro</li>
+          <li>SSO & SAML</li>
+          <li>Dedicated support</li>
+          <li>Custom integrations</li>
+        </ul>
+        <a href="#" class="pricing-btn pricing-btn-outline">Contact sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="container">
+    <h2 class="fade-in">Ready to reclaim your week?</h2>
+    <p class="fade-in">Join thousands of teams who stopped wasting time in meetings.</p>
+    <a href="#" class="btn-primary fade-in">Start your free trial</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div class="container">
+  <footer>
+    <div class="footer-copy">&copy; 2024 Meet. All rights reserved.</div>
+    <div class="footer-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Twitter</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

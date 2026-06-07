@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --lime: #7CB342;
+    --lime-light: #AED581;
+    --lime-bright: #C6FF00;
+    --lime-dim: rgba(124,179,66,0.15);
+    --lime-glow: rgba(198,255,0,0.25);
+    --brown-deep: #3E2723;
+    --brown-dark: #5D4037;
+    --brown-mid: #8D6E63;
+    --brown-light: #BCAAA4;
+    --brown-faint: rgba(93,64,55,0.12);
+    --cream: #FFFDE7;
+    --cream-dark: #F5F0E1;
+    --sage: #8FA87A;
+    --sage-light: #C5D5BC;
+    --sprout: #66BB6A;
+    --text: #3E2723;
+    --text-dim: #6D4C41;
+    --text-faint: #A1887F;
+    --bg: #FFFDE7;
+    --white: #FFFFFF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  /* Floating leaf particles */
+  .leaves {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+  }
+  .leaf {
+    position: absolute;
+    font-size: var(--size, 14px);
+    opacity: 0;
+    animation: leafFall var(--dur, 12s) var(--delay, 0s) infinite linear;
+    color: var(--lime-light);
+  }
+  @keyframes leafFall {
+    0% { opacity: 0; transform: translateY(-20px) rotate(0deg) translateX(0); }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.6; }
+    100% { opacity: 0; transform: translateY(100vh) rotate(360deg) translateX(80px); }
+  }
+
+  /* Growing vine decoration */
+  .vine-bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cpath d='M0 100 Q50 60 100 100 T200 100' fill='none' stroke='%237CB342' stroke-width='2'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Outfit', sans-serif;
+    color: var(--text);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .handwritten {
+    font-family: 'Caveat', cursive;
+    font-weight: 600;
+  }
+
+  .container { max-width: 1180px; margin: 0 auto; padding: 0 40px; position: relative; z-index: 1; }
+
+  /* ===== NAV ===== */
+  nav {
+    padding: 24px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 2px solid var(--lime-dim);
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,253,231,0.92);
+    backdrop-filter: blur(20px);
+  }
+  .nav-logo {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.6rem; color: var(--text);
+    font-weight: 700;
+  }
+  .nav-logo span {
+    color: var(--lime);
+    font-family: 'Caveat', cursive;
+    font-size: 1.8rem;
+  }
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.88rem; font-weight: 500;
+    color: var(--text-dim); text-decoration: none;
+    transition: all 0.3s;
+  }
+  .nav-links a:hover { color: var(--lime); }
+  .nav-cta {
+    font-family: 'Outfit', sans-serif !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    color: var(--brown-deep) !important;
+    background: linear-gradient(135deg, var(--lime-light), var(--lime));
+    padding: 10px 28px; border: none;
+    border-radius: 50px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px var(--lime-dim);
+  }
+  .nav-cta:hover {
+    box-shadow: 0 6px 25px var(--lime-glow);
+    transform: translateY(-2px);
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 120px 0 100px;
+    text-align: center;
+    position: relative;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Caveat', cursive;
+    font-size: 1.1rem; font-weight: 600;
+    color: var(--lime); margin-bottom: 32px;
+    padding: 8px 24px;
+    border: 2px solid var(--lime-dim);
+    border-radius: 50px;
+    background: var(--white);
+  }
+  .hero-badge .sprout-icon {
+    display: inline-block;
+    animation: sproutGrow 3s infinite ease-in-out;
+  }
+  @keyframes sproutGrow {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(1.15) rotate(-5deg); }
+    75% { transform: scale(1.15) rotate(5deg); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.8rem, 6vw, 4.8rem);
+    max-width: 800px; margin: 0 auto 24px;
+    line-height: 1.1;
+    font-weight: 700;
+    color: var(--brown-deep);
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--lime);
+    position: relative;
+  }
+  .hero h1 em::after {
+    content: '';
+    position: absolute; bottom: 2px; left: 0; right: 0;
+    height: 8px;
+    background: var(--lime-glow);
+    border-radius: 4px;
+    z-index: -1;
+  }
+
+  .hero p {
+    font-size: 1.15rem; color: var(--text-dim);
+    max-width: 520px; margin: 0 auto 48px;
+    line-height: 1.8;
+    font-weight: 300;
+  }
+  .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem; font-weight: 600;
+    padding: 16px 48px;
+    background: linear-gradient(135deg, var(--lime), var(--lime-light));
+    color: var(--brown-deep); border: none; cursor: pointer;
+    border-radius: 50px;
+    transition: all 0.3s; text-decoration: none; display: inline-block;
+    box-shadow: 0 6px 25px var(--lime-dim);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 8px 35px var(--lime-glow);
+    transform: translateY(-3px);
+  }
+  .btn-secondary {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem; font-weight: 500;
+    padding: 16px 48px;
+    background: transparent;
+    color: var(--text);
+    border: 2px solid var(--brown-faint);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s; text-decoration: none; display: inline-block;
+  }
+  .btn-secondary:hover {
+    border-color: var(--lime);
+    color: var(--lime);
+    transform: translateY(-2px);
+  }
+
+  /* ===== LOGOS ===== */
+  .logos {
+    padding: 60px 0;
+    border-top: 2px dashed var(--lime-dim);
+    border-bottom: 2px dashed var(--lime-dim);
+  }
+  .logos-label {
+    text-align: center; font-family: 'Caveat', cursive;
+    font-size: 1.1rem; font-weight: 600;
+    color: var(--text-faint); margin-bottom: 32px;
+  }
+  .logos-row {
+    display: flex; justify-content: center; align-items: center;
+    gap: 48px; flex-wrap: wrap; opacity: 0.4;
+  }
+  .logo-item {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem; font-weight: 600; color: var(--text-dim);
+    letter-spacing: 0.02em;
+  }
+
+  /* ===== FEATURES ===== */
+  .features { padding: 100px 0 120px; }
+  .section-label {
+    font-family: 'Caveat', cursive;
+    font-size: 1.3rem; font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--lime);
+  }
+  .section-title {
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    margin-bottom: 16px;
+    line-height: 1.15;
+    font-weight: 700;
+    color: var(--brown-deep);
+  }
+  .section-subtitle {
+    font-size: 1.05rem; color: var(--text-dim); max-width: 480px;
+    line-height: 1.8; margin-bottom: 64px;
+    font-weight: 300;
+  }
+  .features-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .feature-card {
+    padding: 36px 28px;
+    background: var(--white);
+    border: 2px solid var(--lime-dim);
+    border-radius: 20px;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute; top: -50%; right: -50%;
+    width: 100%; height: 100%;
+    background: radial-gradient(circle, var(--lime-dim), transparent 70%);
+    transition: all 0.4s;
+    opacity: 0;
+  }
+  .feature-card:hover {
+    border-color: var(--lime-light);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px var(--lime-dim);
+  }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon {
+    width: 56px; height: 56px; margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--lime-dim), var(--sage-light));
+    position: relative;
+    z-index: 1;
+  }
+  .feature-card h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.15rem; margin-bottom: 10px;
+    font-weight: 600; color: var(--brown-deep);
+    position: relative; z-index: 1;
+  }
+  .feature-card p {
+    font-size: 0.92rem; color: var(--text-dim); line-height: 1.7;
+    font-weight: 300;
+    position: relative; z-index: 1;
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag { padding: 100px 0; }
+  .zigzag-row {
+    display: flex; align-items: center; gap: 80px;
+    margin-bottom: 100px;
+  }
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse { flex-direction: row-reverse; }
+  .zigzag-text { flex: 1; }
+  .zigzag-text .section-label { margin-bottom: 12px; }
+  .zigzag-text h2 {
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    margin-bottom: 16px; font-weight: 700;
+    color: var(--brown-deep);
+  }
+  .zigzag-text p {
+    font-size: 1rem; color: var(--text-dim); line-height: 1.8;
+    margin-bottom: 24px;
+  }
+  .zigzag-text ul {
+    list-style: none; padding: 0;
+  }
+  .zigzag-text ul li {
+    font-size: 0.95rem; color: var(--text-dim); padding: 8px 0;
+    padding-left: 28px; position: relative;
+    font-weight: 400;
+  }
+  .zigzag-text ul li::before {
+    content: '🌱';
+    position: absolute; left: 0;
+    font-size: 0.9rem; top: 8px;
+  }
+  .zigzag-visual {
+    flex: 1;
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, var(--white), var(--cream-dark));
+    border: 2px solid var(--lime-dim);
+    border-radius: 24px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .zigzag-visual svg {
+    width: 65%; height: 65%;
+    position: relative; z-index: 1;
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial {
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+  }
+  .testimonial::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 600px 400px at 50% 50%, var(--lime-dim), transparent);
+    pointer-events: none;
+    border-radius: 40px;
+  }
+  .quote-marks {
+    font-family: 'Caveat', cursive;
+    font-size: 5rem; color: var(--lime-light);
+    line-height: 1; margin-bottom: 16px;
+  }
+  .testimonial blockquote {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+    max-width: 700px; margin: 0 auto 40px;
+    line-height: 1.5; color: var(--brown-deep);
+    font-weight: 500;
+  }
+  .testimonial blockquote em {
+    font-style: normal;
+    color: var(--lime);
+  }
+  .testimonial-author {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem; color: var(--text-dim);
+    font-weight: 400;
+  }
+  .testimonial-author strong {
+    color: var(--text); font-weight: 600;
+  }
+
+  /* ===== PRICING ===== */
+  .pricing { padding: 100px 0 120px; }
+  .pricing-header { text-align: center; margin-bottom: 64px; }
+  .pricing-header .section-subtitle { margin: 0 auto; }
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    align-items: start;
+  }
+  .pricing-card {
+    padding: 40px 32px;
+    background: var(--white);
+    border: 2px solid var(--lime-dim);
+    border-radius: 24px;
+    transition: all 0.4s;
+    position: relative;
+  }
+  .pricing-card.featured {
+    border-color: var(--lime);
+    background: linear-gradient(180deg, var(--white), var(--cream));
+    box-shadow: 0 10px 40px var(--lime-dim);
+    transform: scale(1.03);
+  }
+  .pricing-card.featured::before {
+    content: '🌱 MOST POPULAR';
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    font-family: 'Caveat', cursive;
+    font-size: 1rem; font-weight: 600;
+    color: var(--lime);
+    background: var(--white);
+    padding: 4px 20px;
+    border-radius: 50px;
+    border: 2px solid var(--lime-dim);
+  }
+  .pricing-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px var(--lime-dim);
+  }
+  .pricing-card.featured:hover {
+    transform: scale(1.03) translateY(-6px);
+  }
+  .pricing-tier {
+    font-family: 'Caveat', cursive;
+    font-size: 1.2rem; font-weight: 600;
+    color: var(--lime); margin-bottom: 12px;
+  }
+  .pricing-price {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.8rem; font-weight: 700;
+    color: var(--brown-deep); margin-bottom: 4px;
+  }
+  .pricing-price span {
+    font-size: 1rem; font-weight: 400; color: var(--text-dim);
+  }
+  .pricing-desc {
+    font-size: 0.9rem; color: var(--text-dim); margin-bottom: 28px;
+    line-height: 1.6;
+  }
+  .pricing-features {
+    list-style: none; padding: 0; margin-bottom: 32px;
+  }
+  .pricing-features li {
+    font-size: 0.92rem; color: var(--text-dim);
+    padding: 10px 0; padding-left: 24px; position: relative;
+    border-bottom: 1px dashed var(--brown-faint);
+  }
+  .pricing-features li:last-child { border-bottom: none; }
+  .pricing-features li::before {
+    content: '🌿';
+    position: absolute; left: 0;
+    font-size: 0.75rem; top: 12px;
+  }
+  .pricing-btn {
+    display: block; width: 100%;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem; font-weight: 600;
+    padding: 14px; text-align: center;
+    border: 2px solid var(--lime-dim);
+    background: transparent; color: var(--text);
+    border-radius: 50px;
+    cursor: pointer; transition: all 0.3s;
+    text-decoration: none;
+  }
+  .pricing-btn:hover {
+    border-color: var(--lime);
+    color: var(--lime);
+    box-shadow: 0 6px 20px var(--lime-dim);
+  }
+  .pricing-card.featured .pricing-btn {
+    background: linear-gradient(135deg, var(--lime), var(--lime-light));
+    color: var(--brown-deep); border: none;
+    box-shadow: 0 6px 20px var(--lime-dim);
+  }
+  .pricing-card.featured .pricing-btn:hover {
+    box-shadow: 0 8px 30px var(--lime-glow);
+    transform: translateY(-2px);
+  }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+    background: linear-gradient(180deg, transparent, var(--lime-dim), transparent);
+    border-radius: 40px;
+    margin: 0 20px;
+  }
+  .final-cta h2 {
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    margin-bottom: 20px; font-weight: 700;
+    color: var(--brown-deep);
+  }
+  .final-cta h2 em {
+    font-style: normal;
+    color: var(--lime);
+  }
+  .final-cta p {
+    font-size: 1.1rem; color: var(--text-dim);
+    max-width: 480px; margin: 0 auto 40px;
+    line-height: 1.8;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 60px 0 40px;
+    border-top: 2px solid var(--lime-dim);
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
+    margin-bottom: 48px;
+  }
+  .footer-brand .nav-logo { margin-bottom: 12px; display: inline-block; }
+  .footer-brand p {
+    font-size: 0.88rem; color: var(--text-faint); line-height: 1.7;
+    max-width: 280px;
+  }
+  .footer-col h4 {
+    font-family: 'Caveat', cursive;
+    font-size: 1.15rem; font-weight: 600;
+    color: var(--lime); margin-bottom: 16px;
+  }
+  .footer-col a {
+    display: block; font-size: 0.88rem; color: var(--text-faint);
+    text-decoration: none; padding: 5px 0;
+    transition: color 0.3s;
+  }
+  .footer-col a:hover { color: var(--lime); }
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 32px;
+    border-top: 1px dashed var(--brown-faint);
+  }
+  .footer-bottom p {
+    font-size: 0.82rem; color: var(--text-faint);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .features-grid, .pricing-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+    .zigzag-row, .zigzag-row.reverse { flex-direction: column; gap: 40px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .nav-links { display: none; }
+    .pricing-card.featured { transform: scale(1); }
+    .pricing-card.featured:hover { transform: translateY(-6px); }
+  }
+  @media (max-width: 640px) {
+    .container { padding: 0 20px; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .hero-actions { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating leaves -->
+<div class="leaves" id="leaves"></div>
+<div class="vine-bg"></div>
+
+<!-- NAV -->
+<div class="container">
+  <nav>
+    <div class="nav-logo">M<span>eet</span></div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#testimonials">Reviews</a>
+      <a href="#" class="nav-cta">Get Started</a>
+    </div>
+  </nav>
+</div>
+
+<!-- HERO -->
+<div class="container">
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="sprout-icon">🌱</span> Now in Public Beta
+    </div>
+    <h1>Meetings That <em>Grow</em> With You</h1>
+    <p>AI-powered scheduling that reads your calendar, knows your focus hours, and books meetings that actually matter.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Start Free Trial</a>
+      <a href="#" class="btn-secondary">Watch Demo</a>
+    </div>
+  </section>
+</div>
+
+<!-- LOGOS -->
+<div class="container">
+  <section class="logos">
+    <div class="logos-label">Growing alongside teams at</div>
+    <div class="logos-row">
+      <div class="logo-item">Stripe</div>
+      <div class="logo-item">Vercel</div>
+      <div class="logo-item">Linear</div>
+      <div class="logo-item">Notion</div>
+      <div class="logo-item">Figma</div>
+    </div>
+  </section>
+</div>
+
+<!-- FEATURES -->
+<div class="container">
+  <section class="features" id="features">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">Everything You Need,<br>Nothing You Don't</h2>
+    <p class="section-subtitle">Built for teams who value their time. Every feature designed to eliminate meeting friction.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🌱</div>
+        <h3>Smart Scheduling</h3>
+        <p>AI analyzes availability across your org and finds the perfect slot. No more email ping-pong.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌿</div>
+        <h3>Focus Protection</h3>
+        <p>Deep work blocks auto-defend against scheduling conflicts. Your focus hours are sacred.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🍃</div>
+        <h3>Instant Summaries</h3>
+        <p>Every meeting gets an AI-generated summary with action items. Never miss a follow-up.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌻</div>
+        <h3>Timezone Magic</h3>
+        <p>Global teams? Find overlap automatically. Fair rotation so no one always meets at 6am.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌳</div>
+        <h3>Analytics Dashboard</h3>
+        <p>See where your team's time actually goes. Data-driven decisions about meeting culture.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌾</div>
+        <h3>Integrations</h3>
+        <p>Slack, Google, Notion, Jira — connects to everything. One click, fully synced.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ZIGZAG -->
+<div class="container">
+  <section class="zigzag">
+    <div class="zigzag-row">
+      <div class="zigzag-text">
+        <div class="section-label">How It Works</div>
+        <h2>Three Steps to<br>Meeting Nirvana</h2>
+        <p>Connect your calendar, set your preferences, and let Meet handle the rest.</p>
+        <ul>
+          <li>Connect your workspace in 30 seconds</li>
+          <li>Set focus hours and meeting preferences</li>
+          <li>Watch your calendar optimize itself</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <svg viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="20" width="160" height="110" rx="16" stroke="var(--lime-light)" stroke-width="2"/>
+          <line x1="20" y1="50" x2="180" y2="50" stroke="var(--lime-dim)" stroke-width="2"/>
+          <rect x="30" y="60" width="40" height="30" rx="8" fill="var(--lime-dim)" stroke="var(--lime-light)" stroke-width="1.5"/>
+          <rect x="80" y="60" width="40" height="30" rx="8" fill="var(--sage-light)" stroke="var(--sage)" stroke-width="1.5"/>
+          <rect x="130" y="60" width="40" height="30" rx="8" fill="rgba(198,255,0,0.15)" stroke="var(--lime)" stroke-width="1.5"/>
+          <rect x="30" y="100" width="140" height="16" rx="8" fill="var(--brown-faint)" stroke="var(--lime-dim)" stroke-width="1.5"/>
+        </svg>
+      </div>
+    </div>
+    <div class="zigzag-row reverse">
+      <div class="zigzag-text">
+        <div class="section-label">Why Teams Love It</div>
+        <h2>Reclaim 12 Hours<br>Per Week</h2>
+        <p>Our average user saves 12 hours monthly by eliminating scheduling overhead and cutting meetings by 40%.</p>
+        <ul>
+          <li>40% fewer meetings booked</li>
+          <li>Zero calendar conflicts</li>
+          <li>98% team satisfaction rate</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <svg viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="75" r="50" stroke="var(--lime-light)" stroke-width="2"/>
+          <circle cx="100" cy="75" r="35" stroke="var(--sage)" stroke-width="1.5"/>
+          <circle cx="100" cy="75" r="20" fill="var(--lime-dim)" stroke="var(--lime)" stroke-width="1.5"/>
+          <text x="100" y="82" text-anchor="middle" fill="var(--lime)" font-family="Caveat" font-size="22" font-weight="600">12h</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- TESTIMONIAL -->
+<div class="container">
+  <section class="testimonial" id="testimonials">
+    <div class="quote-marks">"</div>
+    <blockquote>Meet transformed how our team works. We went from <em>back-to-back meetings</em> to actually having time to do the work.</blockquote>
+    <div class="testimonial-author"><strong>Sarah Chen</strong> — VP of Engineering, Stripe</div>
+  </section>
+</div>
+
+<!-- PRICING -->
+<div class="container">
+  <section class="pricing" id="pricing">
+    <div class="pricing-header">
+      <div class="section-label">Pricing</div>
+      <h2 class="section-title">Simple, Transparent Pricing</h2>
+      <p class="section-subtitle">Start free. Scale when you're ready. No hidden fees, ever.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-tier">Seedling</div>
+        <div class="pricing-price">$0 <span>/month</span></div>
+        <div class="pricing-desc">Perfect for individuals and small teams getting started.</div>
+        <ul class="pricing-features">
+          <li>Up to 5 team members</li>
+          <li>Smart scheduling</li>
+          <li>Basic integrations</li>
+          <li>Weekly analytics</li>
+        </ul>
+        <a href="#" class="pricing-btn">Get Started</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-tier">Growing</div>
+        <div class="pricing-price">$12 <span>/user/month</span></div>
+        <div class="pricing-desc">For growing teams that need advanced automation.</div>
+        <ul class="pricing-features">
+          <li>Unlimited team members</li>
+          <li>AI meeting summaries</li>
+          <li>Focus protection</li>
+          <li>Advanced analytics</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#" class="pricing-btn">Start Free Trial</a>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-tier">Forest</div>
+        <div class="pricing-price">Custom</div>
+        <div class="pricing-desc">For organizations with complex scheduling needs.</div>
+        <ul class="pricing-features">
+          <li>Everything in Growing</li>
+          <li>SSO & SAML</li>
+          <li>Custom integrations</li>
+          <li>Dedicated account manager</li>
+          <li>SLA guarantee</li>
+        </ul>
+        <a href="#" class="pricing-btn">Contact Sales</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- FINAL CTA -->
+<div class="container">
+  <section class="final-cta">
+    <h2>Ready to <em>Grow</em> Your Team's Productivity?</h2>
+    <p>Join thousands of teams who stopped wasting hours on meeting logistics.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Start Free Trial</a>
+      <a href="#" class="btn-secondary">Talk to Sales</a>
+    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<div class="container">
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo">M<span>eet</span></div>
+        <p>AI-powered scheduling that respects your time. Built for teams who do important work.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Integrations</a>
+        <a href="#">Changelog</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Blog</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Security</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 Meet. All rights reserved.</p>
+    </div>
+  </footer>
+</div>
+
+<script>
+  // Generate floating leaf particles
+  const container = document.getElementById('leaves');
+  const leafEmojis = ['🍃', '🌿', '☘️', '🍀'];
+  for (let i = 0; i < 15; i++) {
+    const leaf = document.createElement('div');
+    leaf.className = 'leaf';
+    leaf.textContent = leafEmojis[Math.floor(Math.random() * leafEmojis.length)];
+    leaf.style.left = Math.random() * 100 + '%';
+    leaf.style.setProperty('--dur', (10 + Math.random() * 15) + 's');
+    leaf.style.setProperty('--delay', (Math.random() * 15) + 's');
+    leaf.style.setProperty('--size', (12 + Math.random() * 10) + 'px');
+    container.appendChild(leaf);
+  }
+</script>
+</body>
+</html>

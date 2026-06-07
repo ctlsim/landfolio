@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050505;
+    --black-soft: #0A0A0A;
+    --charcoal: #111111;
+    --dark-steel: #1A1A1A;
+    --metal-dark: #222222;
+    --metal: #2A2A2A;
+    --metal-light: #333333;
+    --gold: #C9A96E;
+    --gold-bright: #D4B87C;
+    --gold-dim: #A08050;
+    --gold-pale: #E8D5B0;
+    --gold-glow: rgba(201, 169, 110, 0.15);
+    --gold-glow-strong: rgba(201, 169, 110, 0.3);
+    --white: #F5F0E8;
+    --text: #E8E3DB;
+    --text-dim: #9A9590;
+    --text-muted: #5A5550;
+    --cream: #F0EBE3;
+    --radius: 2px;
+    --radius-md: 4px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--black);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 300;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  /* Brushed metal texture */
+  .metal-texture {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 1px,
+        rgba(255,255,255,0.008) 1px,
+        rgba(255,255,255,0.008) 2px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 1px,
+        rgba(255,255,255,0.004) 1px,
+        rgba(255,255,255,0.004) 2px
+      ),
+      linear-gradient(180deg, var(--black) 0%, var(--black-soft) 50%, var(--charcoal) 100%);
+  }
+
+  /* Gold ambient glow */
+  .gold-ambient {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(201, 169, 110, 0.03) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 80%, rgba(201, 169, 110, 0.02) 0%, transparent 50%);
+    animation: ambient-drift 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes ambient-drift {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+
+  /* Gold line accents */
+  .gold-line {
+    width: 40px; height: 1px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-dim));
+  }
+
+  .gold-line-wide {
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+    opacity: 0.3;
+  }
+
+  /* Container */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  section {
+    padding: 100px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 36px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.4s ease;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--black);
+    border: 1px solid var(--gold);
+  }
+
+  .btn-primary:hover {
+    background: var(--gold-bright);
+    box-shadow: 0 0 40px var(--gold-glow);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold-dim);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--gold);
+    background: var(--gold-glow);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--metal-light);
+  }
+
+  .btn-ghost:hover {
+    color: var(--gold);
+    border-color: var(--gold-dim);
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding-top: 60px;
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 30px;
+    font-weight: 500;
+  }
+
+  .hero h1 {
+    font-size: clamp(42px, 7vw, 80px);
+    font-weight: 400;
+    color: var(--white);
+    max-width: 800px;
+    margin-bottom: 24px;
+    letter-spacing: -0.03em;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--gold), var(--gold-pale), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--text-dim);
+    max-width: 480px;
+    margin-bottom: 50px;
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 80px;
+  }
+
+  /* Hero mockup */
+  .hero-mockup {
+    width: 100%;
+    max-width: 850px;
+    aspect-ratio: 16/10;
+    background: var(--charcoal);
+    border: 1px solid var(--metal-light);
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .mockup-bar {
+    height: 32px;
+    background: var(--dark-steel);
+    border-bottom: 1px solid var(--metal-light);
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    gap: 6px;
+  }
+
+  .mockup-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--metal-light);
+  }
+
+  .mockup-dot:first-child { background: var(--gold-dim); }
+
+  .mockup-body {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 20px;
+    height: calc(100% - 32px);
+  }
+
+  .mockup-sidebar {
+    background: var(--dark-steel);
+    border: 1px solid var(--metal-light);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+
+  .mockup-sidebar-line {
+    height: 8px;
+    background: var(--metal-light);
+    border-radius: 1px;
+    margin-bottom: 10px;
+  }
+
+  .mockup-sidebar-line:nth-child(1) { width: 60%; background: var(--gold-dim); }
+  .mockup-sidebar-line:nth-child(2) { width: 80%; }
+  .mockup-sidebar-line:nth-child(3) { width: 45%; }
+  .mockup-sidebar-line:nth-child(4) { width: 70%; }
+  .mockup-sidebar-line:nth-child(5) { width: 55%; }
+
+  .mockup-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .mockup-card {
+    background: var(--dark-steel);
+    border: 1px solid var(--metal-light);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+
+  .mockup-card-title {
+    height: 8px;
+    width: 50%;
+    background: var(--gold-dim);
+    margin-bottom: 10px;
+    border-radius: 1px;
+  }
+
+  .mockup-card-line {
+    height: 4px;
+    background: var(--metal);
+    border-radius: 1px;
+    margin-bottom: 6px;
+  }
+
+  .mockup-card-line:nth-child(2) { width: 90%; }
+  .mockup-card-line:nth-child(3) { width: 75%; }
+  .mockup-card-line:nth-child(4) { width: 60%; }
+
+  /* ============ LOGOS ============ */
+  .logos-section {
+    padding: 60px 0;
+    border-top: 1px solid rgba(201, 169, 110, 0.08);
+    border-bottom: 1px solid rgba(201, 169, 110, 0.08);
+  }
+
+  .logos-label {
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+  }
+
+  .logos-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    flex-wrap: wrap;
+    opacity: 0.4;
+  }
+
+  .logo-item {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+
+  /* ============ FEATURES ============ */
+  .features-header {
+    text-align: center;
+    margin-bottom: 70px;
+  }
+
+  .section-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .section-title {
+    font-size: clamp(28px, 4vw, 42px);
+    color: var(--white);
+    font-weight: 400;
+    margin-bottom: 16px;
+  }
+
+  .section-subtitle {
+    font-size: 15px;
+    color: var(--text-dim);
+    max-width: 500px;
+    margin: 0 auto;
+    font-weight: 300;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .feature-card {
+    background: var(--charcoal);
+    padding: 40px 32px;
+    border: 1px solid rgba(201, 169, 110, 0.06);
+    position: relative;
+    transition: all 0.5s ease;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .feature-card:hover::before {
+    opacity: 1;
+  }
+
+  .feature-card:hover {
+    background: var(--dark-steel);
+  }
+
+  .feature-icon {
+    width: 36px; height: 36px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: var(--gold);
+    border: 1px solid var(--gold-dim);
+    border-radius: var(--radius);
+  }
+
+  .feature-card h3 {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 10px;
+    letter-spacing: 0.02em;
+  }
+
+  .feature-card p {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* ============ ZIGZAG ============ */
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    margin-bottom: 100px;
+  }
+
+  .zigzag-row:last-child { margin-bottom: 0; }
+
+  .zigzag-row.reverse .zigzag-visual { order: 2; }
+  .zigzag-row.reverse .zigzag-content { order: 1; }
+
+  .zigzag-content .section-eyebrow { margin-bottom: 12px; }
+
+  .zigzag-content h3 {
+    font-size: 26px;
+    color: var(--white);
+    margin-bottom: 16px;
+    font-weight: 400;
+  }
+
+  .zigzag-content p {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.8;
+    margin-bottom: 24px;
+    font-weight: 300;
+  }
+
+  .zigzag-visual {
+    aspect-ratio: 4/3;
+    background: var(--charcoal);
+    border: 1px solid var(--metal-light);
+    border-radius: var(--radius);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .zigzag-visual::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  }
+
+  .visual-inner {
+    padding: 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .visual-bar {
+    height: 12px;
+    background: var(--metal);
+    border-radius: 1px;
+  }
+
+  .visual-bar.gold { background: linear-gradient(90deg, var(--gold-dim), var(--gold)); opacity: 0.6; }
+  .visual-bar.w70 { width: 70%; }
+  .visual-bar.w50 { width: 50%; }
+  .visual-bar.w85 { width: 85%; }
+  .visual-bar.w40 { width: 40%; }
+
+  .visual-block {
+    flex: 1;
+    background: var(--dark-steel);
+    border: 1px solid var(--metal-light);
+    border-radius: var(--radius);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .visual-mini {
+    background: var(--metal);
+    border-radius: 1px;
+  }
+
+  /* ============ TESTIMONIAL ============ */
+  .testimonial-section {
+    background: var(--charcoal);
+    border-top: 1px solid rgba(201, 169, 110, 0.08);
+    border-bottom: 1px solid rgba(201, 169, 110, 0.08);
+  }
+
+  .testimonial-card {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .testimonial-quote {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: clamp(20px, 3vw, 28px);
+    color: var(--white);
+    line-height: 1.5;
+    margin-bottom: 40px;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .testimonial-quote::before {
+    content: '"';
+    display: block;
+    font-size: 60px;
+    color: var(--gold-dim);
+    line-height: 1;
+    margin-bottom: 16px;
+    font-style: normal;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .testimonial-avatar {
+    width: 44px; height: 44px;
+    border-radius: var(--radius);
+    background: var(--metal);
+    border: 1px solid var(--gold-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    font-size: 16px;
+  }
+
+  .testimonial-name {
+    text-align: left;
+  }
+
+  .testimonial-name strong {
+    display: block;
+    font-size: 14px;
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  .testimonial-name span {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* ============ PRICING ============ */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .pricing-card {
+    background: var(--charcoal);
+    padding: 40px 32px;
+    border: 1px solid rgba(201, 169, 110, 0.06);
+    text-align: center;
+    position: relative;
+    transition: all 0.5s ease;
+  }
+
+  .pricing-card.featured {
+    background: var(--dark-steel);
+    border-color: var(--gold-dim);
+  }
+
+  .pricing-card.featured::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .pricing-tier {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+
+  .pricing-card.featured .pricing-tier { color: var(--gold); }
+
+  .pricing-amount {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 42px;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .pricing-amount span {
+    font-size: 16px;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+
+  .pricing-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 30px;
+    font-weight: 300;
+  }
+
+  .pricing-features {
+    list-style: none;
+    margin-bottom: 32px;
+    text-align: left;
+  }
+
+  .pricing-features li {
+    font-size: 13px;
+    color: var(--text-dim);
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    font-weight: 300;
+  }
+
+  .pricing-features li::before {
+    content: '—';
+    color: var(--gold-dim);
+    margin-right: 10px;
+  }
+
+  /* ============ FINAL CTA ============ */
+  .final-cta {
+    text-align: center;
+    padding: 120px 0;
+  }
+
+  .final-cta h2 {
+    font-size: clamp(30px, 4.5vw, 48px);
+    color: var(--white);
+    font-weight: 400;
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+  }
+
+  .final-cta h2 em {
+    font-style: normal;
+    color: var(--gold);
+  }
+
+  .final-cta p {
+    font-size: 15px;
+    color: var(--text-dim);
+    max-width: 440px;
+    margin: 0 auto 40px;
+    font-weight: 300;
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    padding: 60px 0;
+    border-top: 1px solid rgba(201, 169, 110, 0.08);
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+
+  .footer-brand h4 {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  .footer-brand p {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 240px;
+    font-weight: 300;
+  }
+
+  .footer-col h5 {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .footer-col a {
+    display: block;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 4px 0;
+    transition: color 0.3s ease;
+    font-weight: 300;
+  }
+
+  .footer-col a:hover { color: var(--gold); }
+
+  .footer-bottom {
+    padding-top: 30px;
+    border-top: 1px solid rgba(255,255,255,0.03);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-bottom p {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 768px) {
+    .container { padding: 0 24px; }
+    section { padding: 70px 0; }
+
+    .features-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .zigzag-row { grid-template-columns: 1fr; gap: 30px; }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .zigzag-row.reverse .zigzag-content { order: 0; }
+
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
+
+    .mockup-body { grid-template-columns: 1fr; }
+    .mockup-sidebar { display: none; }
+  }
+
+  /* Fade-in animation */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<div class="metal-texture"></div>
+<div class="gold-ambient"></div>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container">
+    <p class="hero-eyebrow">Engineered for clarity</p>
+    <h1>Meetings that <em>respect</em> your time</h1>
+    <p class="hero-sub">Precision scheduling. Intelligent agendas. Zero wasted minutes. Built for teams who value their most scarce resource.</p>
+    <div class="hero-buttons">
+      <a href="#" class="btn btn-primary">Start Free Trial</a>
+      <a href="#" class="btn btn-secondary">Request Demo</a>
+    </div>
+    <div class="hero-mockup">
+      <div class="mockup-bar">
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+      </div>
+      <div class="mockup-body">
+        <div class="mockup-sidebar">
+          <div class="mockup-sidebar-line"></div>
+          <div class="mockup-sidebar-line"></div>
+          <div class="mockup-sidebar-line"></div>
+          <div class="mockup-sidebar-line"></div>
+          <div class="mockup-sidebar-line"></div>
+        </div>
+        <div class="mockup-main">
+          <div class="mockup-card">
+            <div class="mockup-card-title"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+          </div>
+          <div class="mockup-card">
+            <div class="mockup-card-title"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+          </div>
+          <div class="mockup-card">
+            <div class="mockup-card-title"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+          </div>
+          <div class="mockup-card">
+            <div class="mockup-card-title"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+            <div class="mockup-card-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LOGOS ============ -->
+<section class="logos-section">
+  <div class="container">
+    <p class="logos-label">Trusted by precision-driven teams</p>
+    <div class="logos-grid">
+      <span class="logo-item">BULGARI</span>
+      <span class="logo-item">MERCEDES</span>
+      <span class="logo-item">ROLEX</span>
+      <span class="logo-item">TESLA</span>
+      <span class="logo-item">APPLE</span>
+      <span class="logo-item">BOSCH</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section class="features">
+  <div class="container">
+    <div class="features-header fade-in">
+      <p class="section-eyebrow">Capabilities</p>
+      <h2 class="section-title">Every detail considered</h2>
+      <p class="section-subtitle">Six pillars of meeting excellence, engineered without compromise.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-in">
+        <div class="feature-icon">◆</div>
+        <h3>Smart Scheduling</h3>
+        <p>AI-driven time slot optimization across time zones, preferences, and calendar constraints.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">◇</div>
+        <h3>Agenda Builder</h3>
+        <p>Structured agendas with timeboxing, owner assignment, and automatic agenda distribution.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">○</div>
+        <h3>Live Transcription</h3>
+        <p>Real-time speech-to-text with speaker identification and action item extraction.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">□</div>
+        <h3>Decision Log</h3>
+        <p>Every decision captured, timestamped, and linked to responsible owners automatically.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">△</div>
+        <h3>Analytics Dashboard</h3>
+        <p>Meeting efficiency metrics, time-spend analysis, and productivity trend tracking.</p>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">☆</div>
+        <h3>Integrations</h3>
+        <p>Seamless connection with Slack, Teams, Notion, Jira, and 200+ enterprise tools.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ZIGZAG ============ -->
+<section class="zigzag">
+  <div class="container">
+    <div class="zigzag-row fade-in">
+      <div class="zigzag-content">
+        <p class="section-eyebrow">Precision</p>
+        <h3>Calculated scheduling intelligence</h3>
+        <p>Our algorithm analyzes 47 data points per meeting — availability patterns, energy levels, topic complexity — to place every meeting at its optimal time.</p>
+        <a href="#" class="btn btn-ghost">Learn more</a>
+      </div>
+      <div class="zigzag-visual">
+        <div class="visual-inner">
+          <div class="visual-bar gold w70"></div>
+          <div class="visual-bar w85"></div>
+          <div class="visual-bar gold w50"></div>
+          <div class="visual-bar w40"></div>
+          <div class="visual-block">
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="zigzag-row reverse fade-in">
+      <div class="zigzag-content">
+        <p class="section-eyebrow">Clarity</p>
+        <h3>Post-meeting clarity, automatically</h3>
+        <p>Within minutes of your meeting ending, every participant receives a structured summary: decisions made, actions assigned, deadlines set, context preserved.</p>
+        <a href="#" class="btn btn-ghost">Learn more</a>
+      </div>
+      <div class="zigzag-visual">
+        <div class="visual-inner">
+          <div class="visual-bar w85"></div>
+          <div class="visual-bar gold w70"></div>
+          <div class="visual-bar w50"></div>
+          <div class="visual-bar gold w40"></div>
+          <div class="visual-block">
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+            <div class="visual-mini"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIAL ============ -->
+<section class="testimonial-section">
+  <div class="container">
+    <div class="testimonial-card fade-in">
+      <blockquote class="testimonial-quote">
+        We reclaimed 12,000 hours last quarter. Meet didn't just improve our meetings — it changed how our organization thinks about time.
+      </blockquote>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">VH</div>
+        <div class="testimonial-name">
+          <strong>Victoria Hartmann</strong>
+          <span>COO, Meridian Partners</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="pricing">
+  <div class="container">
+    <div class="features-header fade-in">
+      <p class="section-eyebrow">Investment</p>
+      <h2 class="section-title">Choose your tier</h2>
+      <p class="section-subtitle">Transparent pricing. No hidden fees. Cancel anytime.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card fade-in">
+        <p class="pricing-tier">Essential</p>
+        <p class="pricing-amount">$12 <span>/user/mo</span></p>
+        <p class="pricing-desc">For focused teams</p>
+        <ul class="pricing-features">
+          <li>Smart scheduling</li>
+          <li>Agenda builder</li>
+          <li>Basic transcription</li>
+          <li>Email summaries</li>
+          <li>5 integrations</li>
+        </ul>
+        <a href="#" class="btn btn-ghost">Select</a>
+      </div>
+      <div class="pricing-card featured fade-in">
+        <p class="pricing-tier">Professional</p>
+        <p class="pricing-amount">$29 <span>/user/mo</span></p>
+        <p class="pricing-desc">For growing organizations</p>
+        <ul class="pricing-features">
+          <li>Everything in Essential</li>
+          <li>Live transcription</li>
+          <li>Decision log</li>
+          <li>Analytics dashboard</li>
+          <li>50+ integrations</li>
+        </ul>
+        <a href="#" class="btn btn-primary">Select</a>
+      </div>
+      <div class="pricing-card fade-in">
+        <p class="pricing-tier">Enterprise</p>
+        <p class="pricing-amount">Custom</p>
+        <p class="pricing-desc">For large-scale operations</p>
+        <ul class="pricing-features">
+          <li>Everything in Professional</li>
+          <li>SSO & SAML</li>
+          <li>Dedicated support</li>
+          <li>Custom integrations</li>
+          <li>SLA guarantee</li>
+        </ul>
+        <a href="#" class="btn btn-ghost">Contact</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="final-cta">
+  <div class="container fade-in">
+    <h2>Time is your <em>only</em> non-renewable resource</h2>
+    <p>Stop wasting it on meetings that could have been emails. Start your free 14-day trial today.</p>
+    <div class="hero-buttons">
+      <a href="#" class="btn btn-primary">Start Free Trial</a>
+      <a href="#" class="btn btn-secondary">Talk to Sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h4>MEET</h4>
+        <p>Precision meeting intelligence for teams who refuse to waste time.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Product</h5>
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Integrations</a>
+        <a href="#">Changelog</a>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <a href="#">About</a>
+        <a href="#">Blog</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Security</a>
+        <a href="#">GDPR</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 Meet. All rights reserved.</p>
+      <p>Engineered with precision.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

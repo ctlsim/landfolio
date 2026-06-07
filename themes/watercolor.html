@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF8F5;
+    --bg-warm: #F5F0E8;
+    --text: #3D3535;
+    --text-light: #7A6E6E;
+    --text-faint: #B0A4A4;
+    --rose: #D4909A;
+    --rose-wash: #F0D0D4;
+    --rose-deep: #B8707A;
+    --lavender: #B8A4C8;
+    --lavender-wash: #DDD4E8;
+    --blue: #8BB0C8;
+    --blue-wash: #C8DDE8;
+    --sage: #A4BDA4;
+    --sage-wash: #D0DDD0;
+    --peach: #E8B8A0;
+    --peach-wash: #F0D8CC;
+    --yellow: #E8D4A0;
+    --yellow-wash: #F0E4C8;
+    --border: rgba(61,53,53,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Cormorant', serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 17px;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    line-height: 1.15;
+  }
+
+  /* Watercolor wash background */
+  .wash-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .wash-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.2;
+    animation: washFloat 30s ease-in-out infinite;
+  }
+
+  .wash-blob-1 {
+    width: 600px; height: 500px;
+    background: var(--rose-wash);
+    top: -10%; left: -5%;
+    animation-delay: 0s;
+  }
+  .wash-blob-2 {
+    width: 500px; height: 450px;
+    background: var(--blue-wash);
+    top: 15%; right: -10%;
+    animation-delay: -8s;
+  }
+  .wash-blob-3 {
+    width: 400px; height: 350px;
+    background: var(--lavender-wash);
+    top: 45%; left: 10%;
+    animation-delay: -16s;
+  }
+  .wash-blob-4 {
+    width: 350px; height: 400px;
+    background: var(--sage-wash);
+    bottom: 5%; right: 5%;
+    animation-delay: -22s;
+  }
+  .wash-blob-5 {
+    width: 300px; height: 300px;
+    background: var(--peach-wash);
+    top: 65%; left: -5%;
+    animation-delay: -12s;
+  }
+
+  @keyframes washFloat {
+    0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+    25% { transform: translate(30px, -20px) scale(1.08) rotate(3deg); }
+    50% { transform: translate(-20px, 30px) scale(0.95) rotate(-2deg); }
+    75% { transform: translate(15px, 15px) scale(1.03) rotate(1deg); }
+  }
+
+  /* Watercolor SVG texture overlay */
+  .watercolor-texture {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Nav */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 20px 0;
+    background: rgba(250, 248, 245, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  nav .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+
+  .logo span {
+    color: var(--rose);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 400;
+    transition: color 0.3s;
+    letter-spacing: 0.01em;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-cta {
+    background: var(--rose);
+    color: white !important;
+    padding: 10px 24px;
+    border-radius: 100px;
+    font-weight: 500 !important;
+    transition: background 0.3s, transform 0.2s !important;
+  }
+
+  .nav-cta:hover {
+    background: var(--rose-deep);
+    transform: translateY(-1px);
+  }
+
+  /* Hero */
+  .hero {
+    padding: 100px 0 80px;
+    text-align: center;
+    position: relative;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    background: var(--rose-wash);
+    border-radius: 100px;
+    font-size: 0.85rem;
+    color: var(--rose-deep);
+    margin-bottom: 32px;
+    font-weight: 500;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    font-weight: 500;
+    max-width: 800px;
+    margin: 0 auto 24px;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--rose);
+  }
+
+  .hero p {
+    font-size: 1.25rem;
+    color: var(--text-light);
+    max-width: 560px;
+    margin: 0 auto 40px;
+    font-weight: 300;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 36px;
+    background: var(--rose);
+    color: white;
+    text-decoration: none;
+    border-radius: 100px;
+    font-family: 'Cormorant', serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+  }
+
+  .btn-primary:hover {
+    background: var(--rose-deep);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(212, 144, 154, 0.3);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 36px;
+    background: transparent;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 100px;
+    font-family: 'Cormorant', serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: border-color 0.3s, background 0.3s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--rose-wash);
+    background: rgba(240, 208, 212, 0.15);
+  }
+
+  /* Watercolor SVG hero decoration */
+  .hero-wash-art {
+    margin-top: 60px;
+    position: relative;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-mockup {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--bg-warm), var(--bg));
+    border: 1px solid var(--border);
+    padding: 3px;
+    box-shadow:
+      0 20px 60px rgba(61, 53, 53, 0.06),
+      0 1px 3px rgba(61, 53, 53, 0.04);
+  }
+
+  .mockup-inner {
+    border-radius: 18px;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  .mockup-topbar {
+    display: flex;
+    gap: 6px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mockup-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-faint);
+    opacity: 0.4;
+  }
+
+  .mockup-body {
+    display: grid;
+    grid-template-columns: 60px 1fr 180px;
+    gap: 16px;
+    padding: 20px;
+    min-height: 280px;
+  }
+
+  .mockup-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .mockup-sidebar-item {
+    height: 8px;
+    border-radius: 100px;
+    background: var(--text-faint);
+    opacity: 0.15;
+  }
+
+  .mockup-sidebar-item.active {
+    background: var(--rose-wash);
+    opacity: 0.6;
+  }
+
+  .mockup-main {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mockup-title {
+    height: 12px;
+    width: 60%;
+    border-radius: 100px;
+    background: var(--text);
+    opacity: 0.08;
+  }
+
+  .mockup-line {
+    height: 6px;
+    border-radius: 100px;
+    background: var(--text-faint);
+    opacity: 0.1;
+  }
+
+  .mockup-right {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: flex-start;
+    padding-top: 8px;
+  }
+
+  .mockup-card {
+    padding: 12px;
+    border-radius: 12px;
+    background: var(--bg-warm);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mockup-card-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .mockup-card-line {
+    height: 4px;
+    flex: 1;
+    border-radius: 100px;
+    background: var(--text-faint);
+    opacity: 0.12;
+  }
+
+  /* Watercolor splashes behind mockup */
+  .splash {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(40px);
+    opacity: 0.25;
+    z-index: -1;
+  }
+
+  .splash-1 {
+    width: 200px; height: 200px;
+    background: var(--rose-wash);
+    top: -30px; left: -40px;
+  }
+
+  .splash-2 {
+    width: 180px; height: 160px;
+    background: var(--blue-wash);
+    bottom: -20px; right: -30px;
+  }
+
+  .splash-3 {
+    width: 120px; height: 120px;
+    background: var(--lavender-wash);
+    top: 30%; right: -20px;
+  }
+
+  /* Logos */
+  .logos {
+    padding: 60px 0;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logos p {
+    font-size: 0.9rem;
+    color: var(--text-faint);
+    margin-bottom: 24px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .logos-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    opacity: 0.35;
+  }
+
+  .logo-item {
+    font-family: 'Fraunces', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  /* Section titles */
+  .section-label {
+    font-family: 'Cormorant', serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--rose);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    line-height: 1.15;
+  }
+
+  .section-desc {
+    font-size: 1.15rem;
+    color: var(--text-light);
+    max-width: 560px;
+    font-weight: 300;
+  }
+
+  /* Features */
+  .features {
+    padding: 100px 0;
+  }
+
+  .features-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .features-header .section-desc {
+    margin: 0 auto;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+
+  .feature-card {
+    padding: 36px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--border);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    filter: blur(50px);
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+
+  .feature-card:nth-child(1)::before { background: var(--rose-wash); }
+  .feature-card:nth-child(2)::before { background: var(--blue-wash); }
+  .feature-card:nth-child(3)::before { background: var(--lavender-wash); }
+  .feature-card:nth-child(4)::before { background: var(--sage-wash); }
+  .feature-card:nth-child(5)::before { background: var(--peach-wash); }
+  .feature-card:nth-child(6)::before { background: var(--yellow-wash); }
+
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(61, 53, 53, 0.06);
+  }
+
+  .feature-card:hover::before { opacity: 0.3; }
+
+  .feature-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+
+  .feature-card:nth-child(1) .feature-icon { background: var(--rose-wash); }
+  .feature-card:nth-child(2) .feature-icon { background: var(--blue-wash); }
+  .feature-card:nth-child(3) .feature-icon { background: var(--lavender-wash); }
+  .feature-card:nth-child(4) .feature-icon { background: var(--sage-wash); }
+  .feature-card:nth-child(5) .feature-icon { background: var(--peach-wash); }
+  .feature-card:nth-child(6) .feature-icon { background: var(--yellow-wash); }
+
+  .feature-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .feature-card p {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* Zigzag */
+  .zigzag {
+    padding: 80px 0;
+  }
+
+  .zigzag-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+    padding: 60px 0;
+  }
+
+  .zigzag-row + .zigzag-row {
+    border-top: 1px solid var(--border);
+  }
+
+  .zigzag-row:nth-child(even) .zigzag-visual { order: -1; }
+
+  .zigzag-text .section-label { margin-bottom: 8px; }
+  .zigzag-text h2 {
+    font-size: 2rem;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+
+  .zigzag-text p {
+    color: var(--text-light);
+    font-weight: 300;
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
+  .zigzag-visual {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .zigzag-visual-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .zigzag-visual:nth-child(1) .zigzag-visual-inner,
+  .zigzag-row:nth-child(1) .zigzag-visual-inner {
+    background: linear-gradient(135deg, var(--rose-wash), var(--bg));
+    border: 1px solid var(--border);
+  }
+
+  .zigzag-row:nth-child(2) .zigzag-visual-inner {
+    background: linear-gradient(135deg, var(--blue-wash), var(--bg));
+    border: 1px solid var(--border);
+  }
+
+  .zigzag-row:nth-child(3) .zigzag-visual-inner {
+    background: linear-gradient(135deg, var(--lavender-wash), var(--bg));
+    border: 1px solid var(--border);
+  }
+
+  .zigzag-bar {
+    height: 8px;
+    border-radius: 100px;
+    opacity: 0.3;
+  }
+
+  .zigzag-row:nth-child(1) .zigzag-bar { background: var(--rose); }
+  .zigzag-row:nth-child(2) .zigzag-bar { background: var(--blue); }
+  .zigzag-row:nth-child(3) .zigzag-bar { background: var(--lavender); }
+
+  /* Testimonial */
+  .testimonial {
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+  }
+
+  .testimonial-card {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 48px;
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  .testimonial-card::before {
+    content: '\201C';
+    position: absolute;
+    top: 20px;
+    left: 32px;
+    font-family: 'Fraunces', serif;
+    font-size: 5rem;
+    color: var(--rose-wash);
+    line-height: 1;
+    opacity: 0.6;
+  }
+
+  .testimonial blockquote {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.5;
+    margin-bottom: 24px;
+    color: var(--text);
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .testimonial-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--rose-wash);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+  }
+
+  .testimonial-name {
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  .testimonial-role {
+    font-size: 0.85rem;
+    color: var(--text-faint);
+  }
+
+  /* Pricing */
+  .pricing {
+    padding: 100px 0;
+  }
+
+  .pricing-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .pricing-header .section-desc { margin: 0 auto; }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .pricing-card {
+    padding: 36px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--border);
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+
+  .pricing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(61, 53, 53, 0.06);
+  }
+
+  .pricing-card.featured {
+    background: var(--rose-wash);
+    border-color: var(--rose);
+    position: relative;
+  }
+
+  .pricing-card.featured::after {
+    content: 'Most Popular';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--rose);
+    color: white;
+    padding: 4px 16px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    font-family: 'Cormorant', serif;
+    letter-spacing: 0.03em;
+  }
+
+  .pricing-tier {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .pricing-price {
+    font-family: 'Fraunces', serif;
+    font-size: 3rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    letter-spacing: -0.03em;
+  }
+
+  .pricing-price span {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text-light);
+  }
+
+  .pricing-desc {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 24px;
+    font-weight: 300;
+  }
+
+  .pricing-features {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 28px;
+  }
+
+  .pricing-features li {
+    padding: 8px 0;
+    font-size: 0.92rem;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 400;
+  }
+
+  .pricing-features li::before {
+    content: '\2767';
+    font-size: 0.7rem;
+    color: var(--rose);
+  }
+
+  .pricing-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    border-radius: 100px;
+    font-family: 'Cormorant', serif;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    text-align: center;
+    transition: background 0.3s, transform 0.2s;
+    border: 1px solid var(--border);
+    color: var(--text);
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .pricing-btn:hover {
+    transform: translateY(-1px);
+    border-color: var(--rose-wash);
+  }
+
+  .pricing-card.featured .pricing-btn {
+    background: var(--rose);
+    color: white;
+    border-color: var(--rose);
+  }
+
+  .pricing-card.featured .pricing-btn:hover {
+    background: var(--rose-deep);
+    border-color: var(--rose-deep);
+  }
+
+  /* CTA */
+  .cta {
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+  }
+
+  .cta-inner {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 64px 48px;
+    border-radius: 32px;
+    background: linear-gradient(135deg, var(--rose-wash), var(--lavender-wash), var(--blue-wash));
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-inner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 32px;
+  }
+
+  .cta-inner > * { position: relative; z-index: 1; }
+
+  .cta h2 {
+    font-size: 2.4rem;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+
+  .cta p {
+    font-size: 1.15rem;
+    color: var(--text-light);
+    margin-bottom: 32px;
+    font-weight: 300;
+  }
+
+  /* Footer */
+  footer {
+    padding: 48px 0;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+
+  footer p {
+    font-size: 0.85rem;
+    color: var(--text-faint);
+    font-weight: 300;
+  }
+
+  footer a {
+    color: var(--rose);
+    text-decoration: none;
+  }
+
+  /* Watercolor brush stroke divider */
+  .brush-divider {
+    width: 80px;
+    height: 4px;
+    border-radius: 100px;
+    margin: 0 auto 48px;
+    opacity: 0.4;
+  }
+
+  .features .brush-divider { background: var(--rose); }
+  .pricing .brush-divider { background: var(--lavender); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .features-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+    .zigzag-row { grid-template-columns: 1fr; gap: 32px; }
+    .zigzag-row:nth-child(even) .zigzag-visual { order: 0; }
+    .mockup-body { grid-template-columns: 1fr; }
+    .mockup-sidebar, .mockup-right { display: none; }
+    .nav-links { display: none; }
+    .hero h1 { font-size: 2.4rem; }
+    .testimonial blockquote { font-size: 1.2rem; }
+    .cta-inner { padding: 40px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wash-bg">
+  <div class="wash-blob wash-blob-1"></div>
+  <div class="wash-blob wash-blob-2"></div>
+  <div class="wash-blob wash-blob-3"></div>
+  <div class="wash-blob wash-blob-4"></div>
+  <div class="wash-blob wash-blob-5"></div>
+</div>
+<div class="watercolor-texture"></div>
+
+<nav>
+  <div class="container">
+    <a href="#" class="logo">meet<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#cta" class="nav-cta">Get Started</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Now in public beta &mdash; free for teams under 10</div>
+    <h1>Meetings that feel like<br>a <em>gentle brushstroke</em></h1>
+    <p>Meet schedules, records, and summarizes your meetings so your team spends less time in circles and more time creating.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Start for free &rarr;</a>
+      <a href="#" class="btn-secondary">Watch demo</a>
+    </div>
+
+    <div class="hero-wash-art">
+      <div class="splash splash-1"></div>
+      <div class="splash splash-2"></div>
+      <div class="splash splash-3"></div>
+      <div class="hero-mockup">
+        <div class="mockup-inner">
+          <div class="mockup-topbar">
+            <div class="mockup-dot"></div>
+            <div class="mockup-dot"></div>
+            <div class="mockup-dot"></div>
+          </div>
+          <div class="mockup-body">
+            <div class="mockup-sidebar">
+              <div class="mockup-sidebar-item active" style="width:100%"></div>
+              <div class="mockup-sidebar-item" style="width:80%"></div>
+              <div class="mockup-sidebar-item" style="width:90%"></div>
+              <div class="mockup-sidebar-item" style="width:60%"></div>
+              <div class="mockup-sidebar-item" style="width:75%"></div>
+            </div>
+            <div class="mockup-main">
+              <div class="mockup-title"></div>
+              <div class="mockup-line" style="width:100%"></div>
+              <div class="mockup-line" style="width:85%"></div>
+              <div class="mockup-line" style="width:95%"></div>
+              <div class="mockup-line" style="width:70%"></div>
+              <div class="mockup-line" style="width:90%"></div>
+            </div>
+            <div class="mockup-right">
+              <div class="mockup-card">
+                <div class="mockup-card-dot" style="background:var(--rose)"></div>
+                <div class="mockup-card-line"></div>
+              </div>
+              <div class="mockup-card">
+                <div class="mockup-card-dot" style="background:var(--blue)"></div>
+                <div class="mockup-card-line"></div>
+              </div>
+              <div class="mockup-card">
+                <div class="mockup-card-dot" style="background:var(--lavender)"></div>
+                <div class="mockup-card-line"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="logos">
+  <div class="container">
+    <p>Trusted by creative teams everywhere</p>
+    <div class="logos-row">
+      <span class="logo-item">Pentagram</span>
+      <span class="logo-item">Pentagram</span>
+      <span class="logo-item">Pentagram</span>
+      <span class="logo-item">Pentagram</span>
+      <span class="logo-item">Pentagram</span>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header">
+      <div class="section-label">Features</div>
+      <h2 class="section-title">Every tool, softly applied</h2>
+      <div class="brush-divider"></div>
+      <p class="section-desc">Six capabilities that blend together like watercolor on wet paper &mdash; seamless, natural, beautiful.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <h3>Smart Scheduling</h3>
+        <p>AI reads calendars, finds open slots, and proposes times that work for everyone. No more email ping-pong.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌊</div>
+        <h3>Live Recording</h3>
+        <p>Every meeting captured automatically. Crystal-clear audio, screen share, and face cam &mdash; all in one place.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">✏️</div>
+        <h3>AI Summaries</h3>
+        <p>Get action items, decisions, and key moments transcribed within minutes. Share with anyone who missed it.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌿</div>
+        <h3>Integrations</h3>
+        <p>Slack, Notion, Google Workspace, Figma. Meet meets you where you already work.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🍑</div>
+        <h3>Async Comments</h3>
+        <p>Leave timestamped feedback on recordings. Thread discussions right on the timeline.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌻</div>
+        <h3>Analytics</h3>
+        <p>See who watched, for how long, and what resonated. Understand your meeting culture.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="zigzag">
+  <div class="container">
+    <div class="zigzag-row">
+      <div class="zigzag-text">
+        <div class="section-label">Schedule</div>
+        <h2>Find the perfect<br>time, every time</h2>
+        <p>Meet scans everyone's calendar, respects time zones and focus blocks, and surfaces the ideal slot. One click to confirm. Your team stays in flow.</p>
+      </div>
+      <div class="zigzag-visual">
+        <div class="zigzag-visual-inner">
+          <div class="zigzag-bar" style="width:90%"></div>
+          <div class="zigzag-bar" style="width:75%"></div>
+          <div class="zigzag-bar" style="width:85%"></div>
+          <div class="zigzag-bar" style="width:60%"></div>
+          <div class="zigzag-bar" style="width:95%"></div>
+          <div class="zigzag-bar" style="width:70%"></div>
+          <div class="zigzag-bar" style="width:80%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="zigzag-row">
+      <div class="zigzag-text">
+        <div class="section-label">Record</div>
+        <h2>Capture every<br>nuance</h2>
+        <p>Face cam, screen share, and system audio &mdash; all recorded in HD. No fumbling with start/stop. Meet begins when you do.</p>
+      </div>
+      <div class="zigzag-visual">
+        <div class="zigzag-visual-inner">
+          <div class="zigzag-bar" style="width:100%"></div>
+          <div class="zigzag-bar" style="width:65%"></div>
+          <div class="zigzag-bar" style="width:90%"></div>
+          <div class="zigzag-bar" style="width:50%"></div>
+          <div class="zigzag-bar" style="width:80%"></div>
+          <div class="zigzag-bar" style="width:70%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="zigzag-row">
+      <div class="zigzag-text">
+        <div class="section-label">Summarize</div>
+        <h2>From chaos to<br>clarity, instantly</h2>
+        <p>AI distills 60-minute meetings into 3-minute briefs. Action items highlighted. Decisions logged. Follow-ups assigned. Your team actually reads them.</p>
+      </div>
+      <div class="zigzag-visual">
+        <div class="zigzag-visual-inner">
+          <div class="zigzag-bar" style="width:85%"></div>
+          <div class="zigzag-bar" style="width:70%"></div>
+          <div class="zigzag-bar" style="width:95%"></div>
+          <div class="zigzag-bar" style="width:55%"></div>
+          <div class="zigzag-bar" style="width:80%"></div>
+          <div class="zigzag-bar" style="width:65%"></div>
+          <div class="zigzag-bar" style="width:90%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonial">
+  <div class="container">
+    <div class="section-label">Testimonial</div>
+    <div class="testimonial-card">
+      <blockquote>We replaced three tools with Meet. Our meeting overhead dropped 40% in the first month. It's like someone painted a calmer version of our work week.</blockquote>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">🎨</div>
+        <div>
+          <div class="testimonial-name">Elena Vasquez</div>
+          <div class="testimonial-role">Head of Design, Studio Arc</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="pricing-header">
+      <div class="section-label">Pricing</div>
+      <h2 class="section-title">Simple, transparent</h2>
+      <div class="brush-divider"></div>
+      <p class="section-desc">No hidden layers. Pick the shade that fits your team.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-tier">Sketch</div>
+        <div class="pricing-price">$0 <span>/ mo</span></div>
+        <div class="pricing-desc">For individuals exploring</div>
+        <ul class="pricing-features">
+          <li>5 recordings / month</li>
+          <li>25 min max length</li>
+          <li>Basic AI summary</li>
+          <li>Email support</li>
+        </ul>
+        <a href="#" class="pricing-btn">Get started</a>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="pricing-tier">Palette</div>
+        <div class="pricing-price">$12 <span>/ mo</span></div>
+        <div class="pricing-desc">For growing teams</div>
+        <ul class="pricing-features">
+          <li>Unlimited recordings</li>
+          <li>4 hour max length</li>
+          <li>Advanced AI summaries</li>
+          <li>Scheduling assistant</li>
+          <li>Slack & Notion integrations</li>
+        </ul>
+        <a href="#" class="pricing-btn">Get started</a>
+      </div>
+
+      <div class="pricing-card">
+        <div class="pricing-tier">Gallery</div>
+        <div class="pricing-price">$29 <span>/ mo</span></div>
+        <div class="pricing-desc">For organizations</div>
+        <ul class="pricing-features">
+          <li>Everything in Palette</li>
+          <li>Unlimited length</li>
+          <li>SSO & admin controls</li>
+          <li>Analytics dashboard</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#" class="pricing-btn">Contact sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta" id="cta">
+  <div class="container">
+    <div class="cta-inner">
+      <h2>Ready to paint a<br>better work week?</h2>
+      <p>Join 50,000+ teams who replaced meeting chaos with Meet clarity.</p>
+      <a href="#" class="btn-primary">Start free today &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2026 Meet &mdash; Crafted with care. <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Barlow+Condensed:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #2A2A2A;
+    --bg-light: #333333;
+    --bg-card: #3A3A3A;
+    --bg-card-hover: #424242;
+    --text: #E8E4DE;
+    --text-secondary: #A8A4A0;
+    --text-muted: #7A7672;
+    --yellow: #FFD600;
+    --yellow-dim: #CCAC00;
+    --yellow-pale: #FFD60015;
+    --yellow-stripe: repeating-linear-gradient(
+      -45deg,
+      #2A2A2A,
+      #2A2A2A 8px,
+      #FFD600 8px,
+      #FFD600 16px
+    );
+    --rust: #B87333;
+    --rust-dim: #8B5A2B;
+    --steel: #6B6B6B;
+    --steel-light: #8A8A8A;
+    --concrete: #4A4A4A;
+    --shadow-hard: 4px 4px 0 rgba(0,0,0,0.5);
+    --border-steel: 2px solid var(--steel);
+    --border-thick: 3px solid var(--concrete);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Barlow Condensed', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Concrete noise overlay */
+  body::before {
+    content: '';
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none; z-index: 9999;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+  }
+
+  h1,h2,h3,h4 {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.15;
+    color: var(--text);
+  }
+
+  /* Warning stripe divider */
+  .stripe-divider {
+    height: 16px;
+    background: var(--yellow-stripe);
+    transform: scaleY(1);
+  }
+
+  /* Rivet decoration */
+  .rivet {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, var(--steel-light), var(--concrete));
+    border: 1px solid var(--steel);
+    display: inline-block; flex-shrink: 0;
+  }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 28px; }
+
+  /* Steel plate background shapes */
+  .steel-plate {
+    position: absolute; pointer-events: none; z-index: 0;
+    border: 2px solid var(--concrete);
+    opacity: 0.15;
+  }
+  .plate-1 { width: 300px; height: 200px; top: 100px; right: -80px; transform: rotate(5deg); }
+  .plate-2 { width: 250px; height: 180px; top: 800px; left: -60px; transform: rotate(-3deg); }
+  .plate-3 { width: 200px; height: 280px; top: 1600px; right: -40px; transform: rotate(4deg); }
+  body { position: relative; }
+
+  /* Hazard stripe animation */
+  @keyframes stripe-scroll {
+    0% { background-position: 0 0; }
+    100% { background-position: 32px 0; }
+  }
+  .stripe-animated { animation: stripe-scroll 2s linear infinite; }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(42,42,42,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 3px solid var(--concrete);
+  }
+  nav::after {
+    content: '';
+    display: block; height: 4px;
+    background: var(--yellow-stripe);
+  }
+  nav .container { display: flex; justify-content: space-between; align-items: center; padding: 12px 28px; }
+  .logo {
+    font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 1.5rem;
+    color: var(--text); text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .logo::before {
+    content: ''; display: inline-block; width: 8px; height: 8px;
+    background: var(--yellow); margin-right: 8px; vertical-align: middle;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    color: var(--text-secondary); text-decoration: none; font-size: 0.9rem;
+    font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--yellow); }
+  .btn-nav {
+    background: var(--yellow); color: #1a1a1a !important;
+    padding: 10px 24px; font-size: 0.85rem; font-weight: 600;
+    text-decoration: none; text-transform: uppercase; letter-spacing: 0.08em;
+    border: 2px solid var(--yellow);
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-nav:hover { background: transparent; color: var(--yellow) !important; }
+
+  /* Hero */
+  .hero { padding: 170px 0 100px; position: relative; }
+  .hero-inner { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; text-align: center; }
+  .hero-stamp {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'Oswald', sans-serif; font-size: 0.85rem; font-weight: 600;
+    color: var(--yellow); text-transform: uppercase; letter-spacing: 0.12em;
+    padding: 8px 20px; border: 2px solid var(--yellow);
+    margin-bottom: 28px;
+    background: var(--yellow-pale);
+  }
+  .hero-stamp::before { content: '⚠'; font-size: 1rem; }
+  .hero h1 { font-size: 4rem; margin-bottom: 20px; }
+  .hero h1 em { font-style: normal; color: var(--yellow); }
+  .hero p { font-size: 1.15rem; color: var(--text-secondary); max-width: 560px; margin: 0 auto 36px; font-weight: 300; line-height: 1.7; }
+  .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--yellow); color: #1a1a1a;
+    padding: 16px 36px; font-size: 1rem; font-weight: 600;
+    text-decoration: none; text-transform: uppercase; letter-spacing: 0.08em;
+    border: 2px solid var(--yellow);
+    box-shadow: var(--shadow-hard);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-primary:hover { transform: translate(2px, 2px); box-shadow: none; }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; color: var(--text);
+    padding: 16px 36px; font-size: 1rem; font-weight: 500;
+    text-decoration: none; text-transform: uppercase; letter-spacing: 0.08em;
+    border: 2px solid var(--steel);
+    transition: border-color 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--yellow); color: var(--yellow); }
+
+  /* Hero mockup */
+  .hero-mockup {
+    margin-top: 64px; overflow: hidden;
+    background: var(--bg-card);
+    box-shadow: var(--shadow-hard);
+    padding: 12px;
+    border: 3px solid var(--concrete);
+    position: relative;
+  }
+  /* Rivets on mockup corners */
+  .hero-mockup::before, .hero-mockup::after {
+    content: ''; position: absolute; width: 10px; height: 10px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, var(--steel-light), var(--concrete));
+    border: 1px solid var(--steel); z-index: 2;
+  }
+  .hero-mockup::before { top: 6px; left: 6px; }
+  .hero-mockup::after { top: 6px; right: 6px; }
+  .mockup-bar {
+    display: flex; gap: 6px; padding: 8px 12px; margin-bottom: 8px;
+    background: var(--bg-light); border-bottom: 2px solid var(--concrete);
+  }
+  .mockup-dot { width: 10px; height: 10px; }
+  .mockup-dot:nth-child(1) { background: var(--yellow); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+  .mockup-dot:nth-child(2) { background: var(--steel); }
+  .mockup-dot:nth-child(3) { background: var(--steel); }
+  .mockup-body {
+    display: grid; grid-template-columns: 56px 1fr 140px; gap: 10px; padding: 10px;
+    min-height: 280px;
+  }
+  .mockup-sidebar { display: flex; flex-direction: column; gap: 8px; }
+  .mockup-sidebar-item {
+    height: 14px; background: var(--bg-light); border: 1px solid var(--concrete);
+  }
+  .mockup-sidebar-item.active { background: var(--yellow-pale); border-color: var(--yellow-dim); }
+  .mockup-main { display: flex; flex-direction: column; gap: 8px; }
+  .mockup-line { height: 12px; background: var(--bg-light); border: 1px solid var(--concrete); }
+  .mockup-line.w80 { width: 80%; } .mockup-line.w60 { width: 60%; } .mockup-line.w90 { width: 90%; } .mockup-line.w45 { width: 45%; }
+  .mockup-line.title { height: 18px; width: 70%; background: var(--concrete); border: none; }
+  .mockup-right { display: flex; flex-direction: column; gap: 8px; justify-content: center; }
+  .mockup-avatar {
+    width: 100%; aspect-ratio: 1; background: var(--bg-light);
+    border: 2px solid var(--concrete);
+  }
+
+  /* Logos */
+  .logos { padding: 80px 0; text-align: center; }
+  .logos p {
+    font-family: 'Oswald', sans-serif; font-size: 0.85rem; font-weight: 500;
+    color: var(--text-muted); margin-bottom: 32px; text-transform: uppercase; letter-spacing: 0.15em;
+  }
+  .logos-row { display: flex; justify-content: center; align-items: center; gap: 48px; flex-wrap: wrap; opacity: 0.4; }
+  .logos-row span {
+    font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 1.2rem;
+    color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.08em;
+  }
+
+  /* Features */
+  .features { padding: 100px 0; }
+  .features-header { text-align: center; margin-bottom: 64px; }
+  .features-header h2 { font-size: 2.8rem; margin-bottom: 14px; }
+  .features-header p { font-size: 1.05rem; color: var(--text-secondary); max-width: 520px; margin: 0 auto; font-weight: 300; }
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .feature-card {
+    padding: 32px 24px; text-align: center;
+    background: var(--bg-card);
+    box-shadow: var(--shadow-hard);
+    border: 2px solid var(--concrete);
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.2s;
+    position: relative;
+  }
+  .feature-card:hover { transform: translate(2px, 2px); box-shadow: none; border-color: var(--yellow-dim); }
+  /* Corner rivets on feature cards */
+  .feature-card::before {
+    content: ''; position: absolute; top: 8px; left: 8px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, var(--steel-light), var(--concrete));
+    border: 1px solid var(--steel);
+  }
+  .feature-icon {
+    width: 64px; height: 64px; margin: 0 auto 20px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.6rem;
+    background: var(--bg-light); border: 2px solid var(--concrete);
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .feature-card:hover .feature-icon { transform: rotate(-3deg); border-color: var(--yellow-dim); }
+  .feature-card h3 { font-size: 1.15rem; margin-bottom: 10px; letter-spacing: 0.08em; }
+  .feature-card p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; font-weight: 300; }
+
+  /* Zigzag */
+  .zigzag { padding: 80px 0; }
+  .zigzag-row { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; margin-bottom: 80px; }
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-visual { order: 2; }
+  .zigzag-row.reverse .zigzag-text { order: 1; }
+  .zigzag-text h2 { font-size: 2.2rem; margin-bottom: 14px; }
+  .zigzag-text p { font-size: 1rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px; font-weight: 300; }
+  .zigzag-text ul { list-style: none; padding: 0; }
+  .zigzag-text li { padding: 6px 0; font-size: 0.95rem; color: var(--text-secondary); font-weight: 400; }
+  .zigzag-text li::before { content: '▸ '; color: var(--yellow); font-weight: 600; }
+  .zigzag-visual {
+    aspect-ratio: 4/3;
+    background: var(--bg-card);
+    box-shadow: var(--shadow-hard);
+    border: 3px solid var(--concrete);
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+    position: relative;
+  }
+  /* Rivets on zigzag visuals */
+  .zigzag-visual::before, .zigzag-visual::after {
+    content: ''; position: absolute; width: 10px; height: 10px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, var(--steel-light), var(--concrete));
+    border: 1px solid var(--steel); z-index: 2;
+  }
+  .zigzag-visual::before { top: 6px; left: 6px; }
+  .zigzag-visual::after { bottom: 6px; right: 6px; }
+  .zigzag-visual-inner {
+    width: 80%; height: 70%; display: flex; flex-direction: column; gap: 8px; padding: 16px;
+  }
+  .zigzag-visual .block { flex: 1; background: var(--bg-light); border: 2px solid var(--concrete); }
+  .zigzag-visual .block.highlight { background: var(--yellow-pale); border-color: var(--yellow-dim); }
+
+  /* Testimonial */
+  .testimonial { padding: 100px 0; text-align: center; }
+  .testimonial-card {
+    max-width: 700px; margin: 0 auto; padding: 48px 40px;
+    background: var(--bg-card);
+    box-shadow: var(--shadow-hard);
+    border: 3px solid var(--concrete);
+    position: relative;
+  }
+  .testimonial-card::before {
+    content: '"'; position: absolute; top: 12px; left: 24px;
+    font-family: 'Oswald', sans-serif; font-size: 4rem; color: var(--yellow); opacity: 0.3; line-height: 1;
+  }
+  /* Corner rivets */
+  .testimonial-card::after {
+    content: ''; position: absolute; top: 10px; right: 10px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, var(--steel-light), var(--concrete));
+    border: 1px solid var(--steel);
+  }
+  .testimonial-card .quote { font-size: 1.35rem; font-weight: 400; line-height: 1.65; margin-bottom: 28px; color: var(--text); font-style: italic; }
+  .testimonial-avatar {
+    width: 56px; height: 56px; margin: 0 auto 12px;
+    background: var(--bg-light);
+    border: 2px solid var(--concrete);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+  .testimonial-name { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.08em; }
+  .testimonial-role { font-size: 0.85rem; color: var(--text-muted); font-weight: 300; }
+
+  /* Pricing */
+  .pricing { padding: 100px 0; }
+  .pricing-header { text-align: center; margin-bottom: 56px; }
+  .pricing-header h2 { font-size: 2.8rem; margin-bottom: 14px; }
+  .pricing-header p { font-size: 1.05rem; color: var(--text-secondary); font-weight: 300; }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 960px; margin: 0 auto; }
+  .pricing-card {
+    padding: 32px 24px; text-align: center;
+    background: var(--bg-card);
+    box-shadow: var(--shadow-hard);
+    border: 2px solid var(--concrete);
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative;
+  }
+  .pricing-card:hover { transform: translate(2px, 2px); box-shadow: none; }
+  .pricing-card.featured {
+    background: var(--yellow);
+    color: #1a1a1a;
+    border: 3px solid var(--yellow);
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.6);
+  }
+  .pricing-card.featured * { color: #1a1a1a; }
+  .pricing-card.featured .pricing-btn {
+    background: #1a1a1a; color: var(--yellow) !important; border-color: #1a1a1a;
+  }
+  .pricing-badge {
+    position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+    background: #1a1a1a; color: var(--yellow);
+    font-family: 'Oswald', sans-serif; font-size: 0.7rem; font-weight: 600;
+    padding: 4px 16px; text-transform: uppercase; letter-spacing: 0.12em;
+  }
+  .pricing-label { font-family: 'Oswald', sans-serif; font-size: 0.85rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 8px; color: var(--text-muted); }
+  .pricing-price { font-family: 'Oswald', sans-serif; font-size: 3rem; font-weight: 700; margin-bottom: 4px; }
+  .pricing-price span { font-size: 1rem; font-weight: 400; }
+  .pricing-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px; font-weight: 300; }
+  .pricing-features { list-style: none; padding: 0; margin-bottom: 28px; text-align: left; }
+  .pricing-features li { padding: 8px 0; font-size: 0.9rem; color: var(--text-secondary); border-bottom: 1px solid var(--concrete); font-weight: 300; }
+  .pricing-features li:last-child { border: none; }
+  .pricing-features li::before { content: '▸ '; color: var(--yellow); font-weight: 600; }
+  .pricing-card.featured .pricing-features li { border-bottom-color: rgba(26,26,26,0.15); }
+  .pricing-btn {
+    display: block; padding: 14px 28px; text-decoration: none;
+    font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.9rem;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    background: transparent; color: var(--text);
+    border: 2px solid var(--steel);
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .pricing-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+
+  /* Final CTA */
+  .final-cta { padding: 100px 0; text-align: center; }
+  .final-cta-inner {
+    padding: 64px 48px; position: relative; overflow: hidden;
+    background: var(--bg-card);
+    border: 3px solid var(--concrete);
+    box-shadow: var(--shadow-hard);
+  }
+  /* Hazard stripe top/bottom */
+  .final-cta-inner::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 12px;
+    background: var(--yellow-stripe);
+  }
+  .final-cta-inner::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 12px;
+    background: var(--yellow-stripe);
+  }
+  .final-cta h2 { font-size: 2.8rem; margin-bottom: 16px; position: relative; z-index: 1; }
+  .final-cta p { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 32px; position: relative; z-index: 1; font-weight: 300; }
+  .final-cta .btn-primary { position: relative; z-index: 1; }
+
+  /* Footer */
+  footer { padding: 48px 0; border-top: 3px solid var(--concrete); }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+  .footer-brand {
+    font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 1.1rem;
+    color: var(--text); text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .footer-links { display: flex; gap: 28px; }
+  .footer-links a {
+    color: var(--text-muted); text-decoration: none; font-size: 0.85rem;
+    font-weight: 400; text-transform: uppercase; letter-spacing: 0.08em;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--yellow); }
+  .footer-copy { font-size: 0.8rem; color: var(--text-muted); margin-top: 24px; text-align: center; font-weight: 300; }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 2.6rem; }
+    .features-grid { grid-template-columns: 1fr; }
+    .zigzag-row { grid-template-columns: 1fr; gap: 32px; }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .zigzag-row.reverse .zigzag-text { order: 0; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 380px; }
+    .mockup-body { grid-template-columns: 1fr; }
+    .mockup-sidebar, .mockup-right { display: none; }
+    .nav-links { display: none; }
+    .footer-inner { flex-direction: column; text-align: center; }
+    .final-cta-inner { padding: 40px 24px; }
+    .final-cta h2 { font-size: 2.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="steel-plate plate-1"></div>
+<div class="steel-plate plate-2"></div>
+<div class="steel-plate plate-3"></div>
+
+<nav>
+  <div class="container">
+    <a href="#" class="logo">meet</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="btn-nav">Deploy Now</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-stamp">Public Beta — Phase 4</div>
+      <h1>Meetings that <em>actually</em> end on time</h1>
+      <p>Meet AI joins your meetings, takes notes, assigns tasks, and sends summaries — so you can focus on the conversation, not the clipboard.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn-primary">Start Free Trial →</a>
+        <a href="#" class="btn-secondary">View Specs</a>
+      </div>
+      <div class="hero-mockup">
+        <div class="mockup-bar">
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-sidebar">
+            <div class="mockup-sidebar-item active" style="width:80%"></div>
+            <div class="mockup-sidebar-item" style="width:60%"></div>
+            <div class="mockup-sidebar-item" style="width:90%"></div>
+            <div class="mockup-sidebar-item" style="width:50%"></div>
+            <div class="mockup-sidebar-item" style="width:70%"></div>
+          </div>
+          <div class="mockup-main">
+            <div class="mockup-line title"></div>
+            <div class="mockup-line w90"></div>
+            <div class="mockup-line w80"></div>
+            <div class="mockup-line w60"></div>
+            <div class="mockup-line w45"></div>
+            <div class="mockup-line w90"></div>
+            <div class="mockup-line w80"></div>
+          </div>
+          <div class="mockup-right">
+            <div class="mockup-avatar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stripe-divider"></div>
+
+<section class="logos reveal">
+  <div class="container">
+    <p>Deployed at</p>
+    <div class="logos-row">
+      <span>Stripe</span>
+      <span>Notion</span>
+      <span>Vercel</span>
+      <span>Linear</span>
+      <span>Figma</span>
+      <span>Raycast</span>
+    </div>
+  </div>
+</section>
+
+<div class="stripe-divider"></div>
+
+<section class="features reveal" id="features">
+  <div class="container">
+    <div class="features-header">
+      <h2>Spec Sheet</h2>
+      <p>One tool replaces your meeting notes, task manager, and recap email.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🎙️</div>
+        <h3>Live Transcripts</h3>
+        <p>Real-time transcription with speaker detection. Every word captured, searchable forever.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📋</div>
+        <h3>Auto Summaries</h3>
+        <p>AI-generated meeting summaries sent within minutes. Decisions, blockers, next steps — all organized.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">✅</div>
+        <h3>Task Extraction</h3>
+        <p>Action items detected automatically and pushed to your favorite project tool. No manual copy-paste.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔗</div>
+        <h3>Integrations</h3>
+        <p>Slack, Notion, Linear, Jira, Asana. Meet meets where your team already works.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⏱️</div>
+        <h3>Time Tracking</h3>
+        <p>Know exactly how long meetings run. Spot patterns. Reclaim your week with data-driven insights.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Enterprise Ready</h3>
+        <p>SSO, SCIM, SOC 2 Type II. Your meeting data stays yours. Always.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stripe-divider"></div>
+
+<section class="zigzag reveal">
+  <div class="container">
+    <div class="zigzag-row">
+      <div class="zigzag-text">
+        <h2>Never recap a meeting again</h2>
+        <p>Meet listens to every call and produces a polished summary before the last person leaves the room. Share it with anyone who missed the call.</p>
+        <ul>
+          <li>Key decisions highlighted automatically</li>
+          <li>Action items with owners and deadlines</li>
+          <li>Timestamped links to important moments</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <div class="zigzag-visual-inner">
+          <div class="block highlight" style="flex:2"></div>
+          <div style="display:flex;gap:8px;flex:1">
+            <div class="block"></div>
+            <div class="block"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="zigzag-row reverse">
+      <div class="zigzag-text">
+        <h2>Tasks that actually get done</h2>
+        <p>Every action item detected by Meet becomes a tracked task. Assigned, dated, and synced to your project tool — zero manual effort.</p>
+        <ul>
+          <li>Auto-assign to the right person</li>
+          <li>Smart deadline suggestions</li>
+          <li>Follow-up reminders built in</li>
+        </ul>
+      </div>
+      <div class="zigzag-visual">
+        <div class="zigzag-visual-inner">
+          <div class="block" style="flex:1"></div>
+          <div class="block highlight" style="flex:1"></div>
+          <div class="block" style="flex:2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stripe-divider"></div>
+
+<section class="testimonial reveal">
+  <div class="container">
+    <div class="testimonial-card">
+      <div class="quote">We cut our meeting follow-up time by 80%. Meet handles the boring stuff so we can focus on building.</div>
+      <div class="testimonial-avatar"></div>
+      <div class="testimonial-name">Sarah Chen</div>
+      <div class="testimonial-role">VP of Engineering, TechCorp</div>
+    </div>
+  </div>
+</section>
+
+<div class="stripe-divider"></div>
+
+<section class="pricing reveal" id="pricing">
+  <div class="container">
+    <div class="pricing-header">
+      <h2>Select Your Plan</h2>
+      <p>Start free. Scale when you're ready.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-label">Starter</div>
+        <div class="pricing-price">$0<span>/mo</span></div>
+        <div class="pricing-desc">For individuals getting started</div>
+        <ul class="pricing-features">
+          <li>5 meetings per month</li>
+          <li>Basic transcripts</li>
+          <li>Email summaries</li>
+        </ul>
+        <a href="#" class="pricing-btn">Get Started</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">Most Popular</div>
+        <div class="pricing-label">Pro</div>
+        <div class="pricing-price">$12<span>/mo</span></div>
+        <div class="pricing-desc">For growing teams</div>
+        <ul class="pricing-features">
+          <li>Unlimited meetings</li>
+          <li>AI summaries &amp; tasks</li>
+          <li>All integrations</li>
+          <li>Team analytics</li>
+        </ul>
+        <a href="#" class="pricing-btn">Get Started</a>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-label">Enterprise</div>
+        <div class="pricing-price">Custom</div>
+        <div class="pricing-desc">For large organizations</div>
+        <ul class="pricing-features">
+          <li>SSO &amp; SCIM</li>
+          <li>Dedicated support</li>
+          <li>Custom integrations</li>
+          <li>SOC 2 compliance</li>
+        </ul>
+        <a href="#" class="pricing-btn">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stripe-divider"></div>
+
+<section class="final-cta reveal">
+  <div class="container">
+    <div class="final-cta-inner">
+      <h2>Ready to ship?</h2>
+      <p>Join thousands of teams who stopped wasting time on meeting follow-ups.</p>
+      <a href="#" class="btn-primary">Start Your Free Trial →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">meet</div>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Twitter</a>
+        <a href="#">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-copy">© 2026 Meet. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

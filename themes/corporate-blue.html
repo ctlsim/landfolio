@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Corporate Blue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0D1B2A;
+    --navy-light: #1B2D45;
+    --navy-lighter: #243B55;
+    --blue-accent: #3B82F6;
+    --blue-light: #60A5FA;
+    --blue-pale: #DBEAFE;
+    --white: #FFFFFF;
+    --gray-100: #F1F5F9;
+    --gray-200: #E2E8F0;
+    --gray-400: #94A3B8;
+    --gray-500: #64748B;
+    --gray-600: #475569;
+    --text-dark: #0F172A;
+    --text-body: #334155;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+    background: var(--white);
+    color: var(--text-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 0 48px;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    font-size: 1.25rem; font-weight: 700; color: var(--navy);
+    letter-spacing: -0.03em; text-decoration: none;
+  }
+  .nav-logo span { color: var(--blue-accent); }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    font-size: 0.875rem; font-weight: 500; color: var(--gray-600);
+    text-decoration: none; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--navy); }
+  .nav-cta {
+    background: var(--navy) !important; color: var(--white) !important;
+    padding: 8px 20px; border-radius: var(--radius); font-weight: 600 !important;
+    transition: background 0.2s, transform 0.15s !important;
+  }
+  .nav-cta:hover { background: var(--navy-light) !important; transform: translateY(-1px); }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 160px 48px 100px;
+    text-align: center;
+    background: linear-gradient(180deg, var(--gray-100) 0%, var(--white) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 0.8rem; font-weight: 600; color: var(--blue-accent);
+    background: var(--blue-pale); padding: 6px 16px; border-radius: 100px;
+    margin-bottom: 24px; letter-spacing: 0.02em;
+  }
+  .hero-badge::before { content: ''; width: 6px; height: 6px; background: var(--blue-accent); border-radius: 50%; }
+  .hero h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700; color: var(--navy);
+    letter-spacing: -0.035em; line-height: 1.1;
+    max-width: 700px; margin: 0 auto 20px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--blue-accent), var(--blue-light));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    font-size: 1.15rem; color: var(--gray-500); max-width: 520px;
+    margin: 0 auto 36px; line-height: 1.7;
+  }
+  .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--blue-accent); color: var(--white);
+    padding: 14px 32px; border-radius: var(--radius); font-weight: 600;
+    font-size: 0.95rem; text-decoration: none; border: none; cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover {
+    background: #2563EB; transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(59,130,246,0.3);
+  }
+  .btn-secondary {
+    background: var(--white); color: var(--navy);
+    padding: 14px 32px; border-radius: var(--radius); font-weight: 600;
+    font-size: 0.95rem; text-decoration: none;
+    border: 1px solid var(--gray-200); cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-secondary:hover {
+    border-color: var(--blue-accent); transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+
+  .hero-mockup {
+    max-width: 900px; margin: 60px auto 0;
+    background: var(--navy);
+    border-radius: var(--radius-lg);
+    padding: 3px;
+    box-shadow: 0 25px 60px rgba(13,27,42,0.15), 0 0 0 1px rgba(13,27,42,0.05);
+  }
+  .mockup-inner {
+    background: var(--navy-light);
+    border-radius: calc(var(--radius-lg) - 1px);
+    overflow: hidden;
+  }
+  .mockup-bar {
+    display: flex; align-items: center; gap: 6px;
+    padding: 12px 16px; border-bottom: 1px solid var(--navy-lighter);
+  }
+  .mockup-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--navy-lighter);
+  }
+  .mockup-content {
+    padding: 24px; display: grid; grid-template-columns: 180px 1fr; gap: 20px;
+    min-height: 280px;
+  }
+  .mockup-sidebar {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .mockup-sidebar-item {
+    height: 10px; background: var(--navy-lighter); border-radius: 4px;
+  }
+  .mockup-sidebar-item.active { background: var(--blue-accent); opacity: 0.7; }
+  .mockup-main { display: flex; flex-direction: column; gap: 10px; }
+  .mockup-chart {
+    flex: 1; background: var(--navy-lighter); border-radius: 8px;
+    display: flex; align-items: flex-end; gap: 6px; padding: 16px;
+  }
+  .mockup-bar-item {
+    flex: 1; background: var(--blue-accent); border-radius: 3px 3px 0 0; opacity: 0.5;
+  }
+  .mockup-bar-item:nth-child(odd) { opacity: 0.35; background: var(--blue-light); }
+
+  /* ===== LOGOS ===== */
+  .logos {
+    padding: 60px 48px;
+    text-align: center;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .logos p {
+    font-size: 0.8rem; font-weight: 600; color: var(--gray-400);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 28px;
+  }
+  .logos-row {
+    display: flex; justify-content: center; align-items: center;
+    gap: 48px; flex-wrap: wrap; opacity: 0.4;
+  }
+  .logo-item {
+    font-size: 1.1rem; font-weight: 700; color: var(--navy);
+    letter-spacing: -0.02em;
+  }
+
+  /* ===== FEATURES ===== */
+  .features {
+    padding: 100px 48px;
+    background: var(--white);
+  }
+  .section-label {
+    font-size: 0.75rem; font-weight: 700; color: var(--blue-accent);
+    text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 12px;
+  }
+  .section-title {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 700; color: var(--navy);
+    letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 16px;
+  }
+  .section-desc {
+    font-size: 1.05rem; color: var(--gray-500); max-width: 560px;
+    line-height: 1.7; margin-bottom: 56px;
+  }
+  .features-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px; max-width: 1100px;
+  }
+  .feature-card {
+    padding: 32px;
+    background: var(--gray-100);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  }
+  .feature-card:hover {
+    border-color: var(--blue-pale);
+    box-shadow: 0 8px 24px rgba(59,130,246,0.08);
+    transform: translateY(-2px);
+  }
+  .feature-icon {
+    width: 44px; height: 44px;
+    background: var(--blue-pale);
+    border-radius: var(--radius);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; margin-bottom: 20px;
+  }
+  .feature-card h3 {
+    font-size: 1.1rem; font-weight: 700; color: var(--navy);
+    margin-bottom: 8px; letter-spacing: -0.01em;
+  }
+  .feature-card p {
+    font-size: 0.9rem; color: var(--gray-500); line-height: 1.6;
+  }
+
+  /* ===== ZIGZAG ===== */
+  .zigzag { padding: 100px 48px; background: var(--gray-100); }
+  .zigzag-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+    align-items: center; max-width: 1100px; margin: 0 auto 80px;
+  }
+  .zigzag-row:last-child { margin-bottom: 0; }
+  .zigzag-row.reverse .zigzag-visual { order: -1; }
+  .zigzag-text .section-label { margin-bottom: 12px; }
+  .zigzag-text h2 {
+    font-size: 1.75rem; font-weight: 700; color: var(--navy);
+    letter-spacing: -0.025em; line-height: 1.25; margin-bottom: 16px;
+  }
+  .zigzag-text p {
+    font-size: 1rem; color: var(--gray-500); line-height: 1.7; margin-bottom: 20px;
+  }
+  .zigzag-text ul {
+    list-style: none; display: flex; flex-direction: column; gap: 10px;
+  }
+  .zigzag-text li {
+    font-size: 0.925rem; color: var(--text-body);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .zigzag-text li::before {
+    content: '✓'; color: var(--blue-accent); font-weight: 700; font-size: 0.85rem;
+    width: 22px; height: 22px; background: var(--blue-pale);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .zigzag-visual {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  }
+  .visual-placeholder {
+    background: linear-gradient(135deg, var(--blue-pale), var(--gray-100));
+    border-radius: var(--radius);
+    height: 240px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem; opacity: 0.6;
+  }
+
+  /* ===== TESTIMONIAL ===== */
+  .testimonial {
+    padding: 100px 48px;
+    background: var(--navy);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .testimonial::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(59,130,246,0.12) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .testimonial blockquote {
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    font-weight: 400; color: var(--white);
+    max-width: 700px; margin: 0 auto 32px;
+    line-height: 1.6; font-style: italic;
+    position: relative;
+  }
+  .testimonial blockquote::before {
+    content: '"';
+    font-size: 4rem; color: var(--blue-accent); opacity: 0.4;
+    position: absolute; top: -20px; left: -24px; font-style: normal;
+    line-height: 1;
+  }
+  .testimonial-author {
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+  }
+  .testimonial-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--navy-lighter);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    border: 2px solid var(--blue-accent);
+  }
+  .testimonial-info { text-align: left; }
+  .testimonial-name { font-weight: 700; color: var(--white); font-size: 0.95rem; }
+  .testimonial-role { font-size: 0.85rem; color: var(--gray-400); }
+
+  /* ===== PRICING ===== */
+  .pricing {
+    padding: 100px 48px;
+    background: var(--white);
+    text-align: center;
+  }
+  .pricing .section-desc { margin-left: auto; margin-right: auto; }
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px; max-width: 900px; margin: 0 auto;
+  }
+  .price-card {
+    padding: 36px 32px;
+    background: var(--gray-100);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    text-align: left;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+    position: relative;
+  }
+  .price-card:hover {
+    border-color: var(--blue-pale);
+    box-shadow: 0 8px 24px rgba(59,130,246,0.08);
+    transform: translateY(-2px);
+  }
+  .price-card.featured {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: var(--white);
+  }
+  .price-card.featured:hover {
+    box-shadow: 0 12px 32px rgba(13,27,42,0.2);
+  }
+  .price-card.featured .price-label,
+  .price-card.featured .price-features li { color: var(--gray-400); }
+  .price-card.featured .price-name { color: var(--white); }
+  .price-badge {
+    position: absolute; top: -10px; right: 24px;
+    background: var(--blue-accent); color: var(--white);
+    font-size: 0.7rem; font-weight: 700; padding: 4px 12px;
+    border-radius: 100px; text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .price-name {
+    font-size: 1rem; font-weight: 700; color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .price-label {
+    font-size: 0.85rem; color: var(--gray-500); margin-bottom: 20px;
+  }
+  .price-amount {
+    font-size: 2.5rem; font-weight: 700; color: var(--navy);
+    letter-spacing: -0.03em; margin-bottom: 4px;
+  }
+  .price-amount span { font-size: 0.9rem; font-weight: 500; color: var(--gray-400); }
+  .price-card.featured .price-amount { color: var(--white); }
+  .price-features {
+    list-style: none; margin: 24px 0; display: flex; flex-direction: column; gap: 10px;
+  }
+  .price-features li {
+    font-size: 0.9rem; color: var(--text-body);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .price-features li::before {
+    content: '✓'; color: var(--blue-accent); font-weight: 700; font-size: 0.8rem;
+  }
+  .price-btn {
+    display: block; width: 100%; padding: 12px; text-align: center;
+    border-radius: var(--radius); font-weight: 600; font-size: 0.9rem;
+    text-decoration: none; transition: all 0.2s;
+  }
+  .price-card .price-btn {
+    background: var(--white); color: var(--navy);
+    border: 1px solid var(--gray-200);
+  }
+  .price-card .price-btn:hover {
+    border-color: var(--blue-accent); background: var(--blue-pale);
+  }
+  .price-card.featured .price-btn {
+    background: var(--blue-accent); color: var(--white); border: none;
+  }
+  .price-card.featured .price-btn:hover {
+    background: #2563EB;
+  }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    padding: 100px 48px;
+    text-align: center;
+    background: linear-gradient(180deg, var(--gray-100) 0%, var(--white) 100%);
+  }
+  .final-cta h2 {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 700; color: var(--navy);
+    letter-spacing: -0.03em; margin-bottom: 16px;
+  }
+  .final-cta p {
+    font-size: 1.05rem; color: var(--gray-500); margin-bottom: 32px;
+    max-width: 480px; margin-left: auto; margin-right: auto;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 48px;
+    background: var(--navy);
+    border-top: 1px solid var(--navy-lighter);
+  }
+  .footer-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 24px;
+  }
+  .footer-brand {
+    font-size: 1.1rem; font-weight: 700; color: var(--white);
+    letter-spacing: -0.02em;
+  }
+  .footer-brand span { color: var(--blue-accent); }
+  .footer-links { display: flex; gap: 28px; }
+  .footer-links a {
+    font-size: 0.85rem; color: var(--gray-400); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--white); }
+  .footer-copy {
+    width: 100%; text-align: center; margin-top: 32px;
+    font-size: 0.8rem; color: var(--gray-400);
+    padding-top: 24px; border-top: 1px solid var(--navy-lighter);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 130px 20px 60px; }
+    .features, .zigzag, .testimonial, .pricing, .final-cta { padding: 60px 20px; }
+    .zigzag-row { grid-template-columns: 1fr; gap: 32px; }
+    .zigzag-row.reverse .zigzag-visual { order: 0; }
+    .mockup-content { grid-template-columns: 1fr; }
+    .mockup-sidebar { display: none; }
+    .logos-row { gap: 24px; }
+    .footer-inner { flex-direction: column; text-align: center; }
+    .footer-links { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">meet<span>.</span></a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#contact">Contact</a>
+    <a href="#" class="nav-cta">Get Started</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">Now in General Availability</div>
+  <h1>Build faster with <em>enterprise-grade</em> infrastructure</h1>
+  <p>Meet gives your team a reliable, scalable platform to ship products. Trusted by over 2,000 companies worldwide.</p>
+  <div class="hero-actions">
+    <a href="#" class="btn-primary">Start Free Trial →</a>
+    <a href="#" class="btn-secondary">Book a Demo</a>
+  </div>
+  <div class="hero-mockup">
+    <div class="mockup-inner">
+      <div class="mockup-bar">
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+      </div>
+      <div class="mockup-content">
+        <div class="mockup-sidebar">
+          <div class="mockup-sidebar-item active" style="width:70%"></div>
+          <div class="mockup-sidebar-item" style="width:55%"></div>
+          <div class="mockup-sidebar-item" style="width:85%"></div>
+          <div class="mockup-sidebar-item" style="width:45%"></div>
+          <div class="mockup-sidebar-item" style="width:65%"></div>
+        </div>
+        <div class="mockup-main">
+          <div style="height:10px;background:var(--navy-lighter);border-radius:4px;width:40%"></div>
+          <div style="height:8px;background:var(--navy-lighter);border-radius:4px;width:60%;opacity:0.5"></div>
+          <div class="mockup-chart">
+            <div class="mockup-bar-item" style="height:40%"></div>
+            <div class="mockup-bar-item" style="height:65%"></div>
+            <div class="mockup-bar-item" style="height:50%"></div>
+            <div class="mockup-bar-item" style="height:80%"></div>
+            <div class="mockup-bar-item" style="height:55%"></div>
+            <div class="mockup-bar-item" style="height:90%"></div>
+            <div class="mockup-bar-item" style="height:70%"></div>
+            <div class="mockup-bar-item" style="height:95%"></div>
+            <div class="mockup-bar-item" style="height:60%"></div>
+            <div class="mockup-bar-item" style="height:75%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<section class="logos">
+  <p>Trusted by industry leaders</p>
+  <div class="logos-row">
+    <span class="logo-item">Stripe</span>
+    <span class="logo-item">Vercel</span>
+    <span class="logo-item">Linear</span>
+    <span class="logo-item">Notion</span>
+    <span class="logo-item">Figma</span>
+    <span class="logo-item">Slack</span>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div style="max-width:1100px;margin:0 auto">
+    <div class="section-label">Features</div>
+    <div class="section-title">Everything your team needs to scale</div>
+    <div class="section-desc">From day one, Meet provides the tools, integrations, and reliability your organization demands.</div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Real-time Analytics</h3>
+        <p>Monitor performance metrics with live dashboards. Track uptime, latency, and user engagement across all services.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Enterprise Security</h3>
+        <p>SOC 2 Type II compliant. SSO, RBAC, audit logs, and end-to-end encryption built in from the start.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Global Edge Network</h3>
+        <p>Deploy to 40+ regions worldwide. Sub-50ms response times guaranteed with our intelligent routing layer.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔗</div>
+        <h3>Seamless Integrations</h3>
+        <p>Connect with Slack, Jira, GitHub, and 200+ tools. REST APIs and webhooks for custom workflows.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📋</div>
+        <h3>Automated Workflows</h3>
+        <p>Build CI/CD pipelines, approval chains, and incident response flows with our visual workflow builder.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h3>99.99% Uptime SLA</h3>
+        <p>Backed by redundant infrastructure across multiple availability zones. Financial penalties if we miss our target.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZIGZAG -->
+<section class="zigzag">
+  <div class="zigzag-row">
+    <div class="zigzag-text">
+      <div class="section-label">Collaboration</div>
+      <h2>Work together, ship together</h2>
+      <p>Real-time collaboration tools that keep your entire team aligned. No more siloed information or missed updates.</p>
+      <ul>
+        <li>Shared workspaces with role-based access</li>
+        <li>Live cursors and presence indicators</li>
+        <li>Comment threads on any component</li>
+        <li>Version history with instant rollback</li>
+      </ul>
+    </div>
+    <div class="zigzag-visual">
+      <div class="visual-placeholder">👥</div>
+    </div>
+  </div>
+  <div class="zigzag-row reverse">
+    <div class="zigzag-text">
+      <div class="section-label">Developer Experience</div>
+      <h2>Built for engineers, by engineers</h2>
+      <p>Every API endpoint is documented. Every response is typed. Every error message tells you exactly what to fix.</p>
+      <ul>
+        <li>OpenAPI-spec compliant REST & GraphQL APIs</li>
+        <li>SDKs for Python, Node, Go, and Rust</li>
+        <li>Local development sandbox with mock data</li>
+        <li>Comprehensive webhook event system</li>
+      </ul>
+    </div>
+    <div class="zigzag-visual">
+      <div class="visual-placeholder">⌨️</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial">
+  <blockquote>
+    Switching to Meet cut our deployment time by 60% and reduced infrastructure costs by a third. It's the most reliable platform we've used in ten years.
+  </blockquote>
+  <div class="testimonial-author">
+    <div class="testimonial-avatar">👤</div>
+    <div class="testimonial-info">
+      <div class="testimonial-name">Sarah Chen</div>
+      <div class="testimonial-role">VP of Engineering, TechCorp</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="section-label">Pricing</div>
+  <div class="section-title">Simple, transparent pricing</div>
+  <div class="section-desc">No hidden fees. No surprises. Scale up or down at any time.</div>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-name">Starter</div>
+      <div class="price-label">For small teams getting started</div>
+      <div class="price-amount">$29<span>/mo</span></div>
+      <ul class="price-features">
+        <li>Up to 5 team members</li>
+        <li>10 GB storage</li>
+        <li>Basic analytics</li>
+        <li>Email support</li>
+        <li>Community access</li>
+      </ul>
+      <a href="#" class="price-btn">Get Started</a>
+    </div>
+    <div class="price-card featured">
+      <div class="price-badge">Most Popular</div>
+      <div class="price-name">Professional</div>
+      <div class="price-label">For growing organizations</div>
+      <div class="price-amount">$79<span>/mo</span></div>
+      <ul class="price-features">
+        <li>Up to 25 team members</li>
+        <li>100 GB storage</li>
+        <li>Advanced analytics & reports</li>
+        <li>Priority support (4hr SLA)</li>
+        <li>SSO & audit logs</li>
+        <li>Custom integrations</li>
+      </ul>
+      <a href="#" class="price-btn">Get Started</a>
+    </div>
+    <div class="price-card">
+      <div class="price-name">Enterprise</div>
+      <div class="price-label">For large-scale operations</div>
+      <div class="price-amount">Custom</div>
+      <ul class="price-features">
+        <li>Unlimited team members</li>
+        <li>Unlimited storage</li>
+        <li>Dedicated account manager</li>
+        <li>24/7 phone support (1hr SLA)</li>
+        <li>On-premise deployment option</li>
+        <li>Custom SLA & compliance</li>
+      </ul>
+      <a href="#" class="price-btn">Contact Sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" id="contact">
+  <h2>Ready to build something great?</h2>
+  <p>Start your 14-day free trial. No credit card required. Full access to every feature.</p>
+  <a href="#" class="btn-primary">Start Your Free Trial →</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">meet<span>.</span></div>
+    <div class="footer-links">
+      <a href="#">Documentation</a>
+      <a href="#">API Reference</a>
+      <a href="#">Status</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+    <div class="footer-copy">© 2026 Meet, Inc. All rights reserved.</div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;500;600;700&family=Cinzel:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --smoke: rgba(180,180,190,0.15);
+    --smoke-light: rgba(200,200,210,0.08);
+    --smoke-pale: rgba(200,200,210,0.04);
+    --gold: #C9A96E;
+    --gold-light: rgba(201,169,110,0.15);
+    --gold-faint: rgba(201,169,110,0.06);
+    --violet: rgba(140,120,180,0.2);
+    --violet-faint: rgba(140,120,180,0.06);
+    --bg: #0D0D12;
+    --bg-alt: #111118;
+    --text: rgba(220,220,230,0.75);
+    --text-secondary: rgba(220,220,230,0.35);
+    --text-muted: rgba(220,220,230,0.15);
+    --border: rgba(220,220,230,0.04);
+    --border-gold: rgba(201,169,110,0.08);
+    --shadow-fog: 0 4px 30px rgba(0,0,0,0.3);
+    --shadow-gold: 0 0 20px rgba(201,169,110,0.06);
+    --radius: 0px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Raleway', sans-serif; background: var(--bg); color: var(--text); line-height: 1.55; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse at 30% 20%, var(--violet) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, var(--smoke) 0%, transparent 45%), radial-gradient(ellipse at 50% 50%, var(--smoke-light) 0%, transparent 60%); pointer-events: none; z-index: 0; }
+  body::after { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='40' cy='40' r='0.5' fill='rgba(220,220,230,0.03)'/%3E%3Ccircle cx='10' cy='10' r='0.3' fill='rgba(220,220,230,0.02)'/%3E%3Ccircle cx='70' cy='70' r='0.3' fill='rgba(220,220,230,0.02)'/%3E%3C/svg%3E"); background-size: 80px 80px; pointer-events: none; z-index: 0; }
+  h1, h2, h3, h4 { font-family: 'Cinzel', serif; font-weight: 400; line-height: 1.2; letter-spacing: 0.04em; color: var(--text); }
+  h1 { font-size: clamp(2rem, 4.5vw, 3.2rem); }
+  h2 { font-size: clamp(1.4rem, 2.8vw, 2.2rem); }
+  h3 { font-size: clamp(0.72rem, 1.3vw, 0.85rem); font-weight: 500; letter-spacing: 0.08em; }
+  h4 { font-size: 0.68rem; font-weight: 400; }
+  p { color: var(--text-secondary); font-family: 'Raleway', sans-serif; }
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+  nav { padding: 16px 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(13,13,18,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 100; }
+  .nav-logo { font-family: 'Cinzel', serif; font-size: 1.3rem; font-weight: 500; color: var(--gold); letter-spacing: 0.08em; }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a { font-family: 'Raleway', sans-serif; font-size: 0.68rem; font-weight: 400; color: var(--text-muted); text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.3s; }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-cta { font-size: 0.62rem !important; font-weight: 500 !important; color: var(--bg) !important; background: var(--gold); padding: 10px 22px; letter-spacing: 0.1em !important; transition: box-shadow 0.3s; }
+  .nav-cta:hover { box-shadow: var(--shadow-gold); }
+  .hero { padding: 96px 0 76px; text-align: center; position: relative; }
+  .hero-eyebrow { font-family: 'Raleway', sans-serif; font-size: 0.58rem; font-weight: 400; color: var(--text-muted); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 14px; }
+  .hero h1 { max-width: 640px; margin: 0 auto 16px; }
+  .hero h1 .highlight { color: var(--gold); }
+  .hero-sub { font-family: 'Raleway', sans-serif; font-size: clamp(0.78rem, 1.1vw, 0.88rem); max-width: 420px; margin: 0 auto 34px; line-height: 1.6; font-weight: 300; }
+  .hero-actions { display: flex; gap: 14px; justify-content: center; align-items: center; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 8px; font-family: 'Cinzel', serif; font-size: 0.72rem; font-weight: 500; color: var(--bg); background: var(--gold); padding: 13px 30px; text-decoration: none; border: none; cursor: pointer; letter-spacing: 0.08em; transition: box-shadow 0.3s; }
+  .btn-primary:hover { box-shadow: var(--shadow-gold); }
+  .btn-secondary { display: inline-flex; align-items: center; gap: 8px; font-family: 'Raleway', sans-serif; font-size: 0.68rem; font-weight: 400; color: var(--text); background: transparent; padding: 13px 30px; text-decoration: none; border: 1px solid var(--border); cursor: pointer; letter-spacing: 0.1em; text-transform: uppercase; transition: border-color 0.3s; }
+  .btn-secondary:hover { border-color: var(--border-gold); }
+  .hero-visual { margin-top: 52px; box-shadow: var(--shadow-fog); }
+  .hero-mockup { width: 100%; aspect-ratio: 16/9; background: var(--bg-alt); display: flex; flex-direction: column; border: 1px solid var(--border); }
+  .mockup-bar { height: 30px; background: var(--smoke-pale); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 12px; gap: 8px; }
+  .mockup-dot { width: 5px; height: 5px; background: var(--border); }
+  .mockup-dot:nth-child(1) { background: var(--gold-faint); }
+  .mockup-dot:nth-child(2) { background: var(--smoke); }
+  .mockup-dot:nth-child(3) { background: var(--violet-faint); }
+  .mockup-body { flex: 1; display: flex; padding: 14px; gap: 12px; }
+  .mockup-sidebar { width: 130px; display: flex; flex-direction: column; gap: 6px; }
+  .mockup-sidebar-item { height: 5px; background: var(--smoke-pale); }
+  .mockup-sidebar-item.active { background: var(--gold-faint); width: 80%; }
+  .mockup-main { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+  .mockup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .mockup-card { flex: 1; background: var(--smoke-pale); border: 1px solid var(--border); padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .mockup-card-line { height: 4px; background: var(--smoke-pale); }
+  .mockup-card-line.short { width: 60%; }
+  .mockup-card-line.medium { width: 80%; }
+  .logos { padding: 44px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg-alt); }
+  .logos-label { text-align: center; font-family: 'Raleway', sans-serif; font-size: 0.55rem; font-weight: 300; color: var(--text-muted); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 20px; }
+  .logos-row { display: flex; justify-content: center; align-items: center; gap: 36px; flex-wrap: wrap; }
+  .logo-item { font-family: 'Cinzel', serif; font-size: 0.75rem; font-weight: 400; letter-spacing: 0.06em; color: var(--text-muted); transition: color 0.3s; }
+  .logo-item:hover { color: var(--gold); }
+  .features { padding: 76px 0; }
+  .section-header { text-align: center; margin-bottom: 52px; }
+  .section-header h2 { margin-bottom: 10px; }
+  .section-header p { max-width: 380px; margin: 0 auto; font-size: 0.78rem; line-height: 1.6; font-weight: 300; }
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .feature-card { padding: 24px 20px; border: 1px solid var(--border); background: rgba(17,17,24,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: border-color 0.3s, box-shadow 0.3s; }
+  .feature-card:hover { border-color: var(--border-gold); box-shadow: var(--shadow-gold); }
+  .feature-icon { width: 36px; height: 36px; background: var(--smoke-pale); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1rem; margin-bottom: 12px; }
+  .feature-card h3 { margin-bottom: 6px; }
+  .feature-card p { font-family: 'Raleway', sans-serif; font-size: 0.75rem; line-height: 1.55; color: var(--text-secondary); font-weight: 300; }
+  .zigzag { padding: 0 0 76px; }
+  .zigzag-row { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: center; padding: 44px 0; }
+  .zigzag-row + .zigzag-row { border-top: 1px solid var(--border); }
+  .zigzag-row.reverse .zigzag-visual { order: -1; }
+  .zigzag-content h3 { margin-bottom: 10px; font-size: 0.95rem; }
+  .zigzag-content p { font-family: 'Raleway', sans-serif; font-size: 0.78rem; line-height: 1.6; margin-bottom: 14px; font-weight: 300; }
+  .zigzag-link { font-family: 'Raleway', sans-serif; font-size: 0.68rem; font-weight: 500; color: var(--gold); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; letter-spacing: 0.08em; text-transform: uppercase; transition: gap 0.3s; }
+  .zigzag-link:hover { gap: 14px; }
+  .zigzag-visual { aspect-ratio: 4/3; background: var(--bg-alt); border: 1px solid var(--border); box-shadow: var(--shadow-fog); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .zigzag-visual-inner { width: 75%; height: 65%; display: flex; flex-direction: column; gap: 8px; padding: 14px; }
+  .zigzag-visual-line { height: 8px; background: var(--smoke-pale); }
+  .zigzag-visual-line:nth-child(1) { width: 45%; background: var(--gold-faint); }
+  .zigzag-visual-line:nth-child(2) { width: 100%; }
+  .zigzag-visual-line:nth-child(3) { width: 85%; }
+  .zigzag-visual-line:nth-child(4) { width: 70%; }
+  .zigzag-visual-line:nth-child(5) { width: 90%; }
+  .testimonial { padding: 76px 0; text-align: center; background: var(--bg-alt); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .testimonial-quote { font-family: 'Cinzel', serif; font-size: clamp(0.82rem, 1.4vw, 1.05rem); max-width: 580px; margin: 0 auto 20px; line-height: 1.4; color: var(--text); font-weight: 400; }
+  .testimonial-quote::before { content: "\201C"; color: var(--gold); font-size: 1.3em; margin-right: 4px; }
+  .testimonial-author { font-family: 'Raleway', sans-serif; font-size: 0.75rem; font-weight: 500; color: var(--text); letter-spacing: 0.06em; text-transform: uppercase; }
+  .testimonial-role { font-family: 'Raleway', sans-serif; font-size: 0.68rem; color: var(--text-muted); margin-top: 4px; font-weight: 300; }
+  .testimonial-avatar { width: 36px; height: 36px; background: var(--smoke-pale); border: 1px solid var(--border); margin: 0 auto 14px; }
+  .pricing { padding: 76px 0; }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 880px; margin: 0 auto; }
+  .pricing-card { padding: 24px 18px; border: 1px solid var(--border); background: rgba(17,17,24,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); text-align: center; transition: border-color 0.3s, box-shadow 0.3s; }
+  .pricing-card:hover { border-color: var(--border-gold); box-shadow: var(--shadow-gold); }
+  .pricing-card.featured { border-color: var(--border-gold); box-shadow: var(--shadow-gold); }
+  .pricing-badge { display: inline-block; font-family: 'Raleway', sans-serif; font-size: 0.5rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); margin-bottom: 10px; padding: 3px 10px; border: 1px solid var(--gold-faint); }
+  .pricing-card h3 { margin-bottom: 8px; }
+  .pricing-amount { font-family: 'Cinzel', serif; font-size: 1.8rem; font-weight: 400; margin: 12px 0 4px; color: var(--gold); }
+  .pricing-amount span { font-size: 0.65rem; font-weight: 400; color: var(--text-muted); }
+  .pricing-desc { font-family: 'Raleway', sans-serif; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 16px; font-weight: 300; }
+  .pricing-features { list-style: none; text-align: left; margin-bottom: 18px; }
+  .pricing-features li { font-family: 'Raleway', sans-serif; font-size: 0.72rem; color: var(--text-secondary); padding: 5px 0; display: flex; align-items: center; gap: 8px; font-weight: 300; }
+  .pricing-features li::before { content: "—"; font-size: 0.6rem; color: var(--gold); }
+  .pricing-btn { display: block; width: 100%; padding: 11px; font-family: 'Raleway', sans-serif; font-size: 0.62rem; font-weight: 500; text-decoration: none; text-align: center; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; border: 1px solid var(--border); transition: border-color 0.3s, box-shadow 0.3s; }
+  .pricing-btn-outline { color: var(--text); background: transparent; }
+  .pricing-btn-outline:hover { border-color: var(--border-gold); }
+  .pricing-btn-primary { color: var(--bg); background: var(--gold); border: none; }
+  .pricing-btn-primary:hover { box-shadow: var(--shadow-gold); }
+  .final-cta { padding: 76px 0; text-align: center; background: var(--bg-alt); border-top: 1px solid var(--border); }
+  .final-cta h2 { margin-bottom: 12px; }
+  .final-cta p { max-width: 380px; margin: 0 auto 26px; font-size: 0.78rem; line-height: 1.6; font-weight: 300; }
+  footer { padding: 26px 0; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .footer-copy { font-family: 'Raleway', sans-serif; font-size: 0.62rem; font-weight: 300; color: var(--text-muted); letter-spacing: 0.06em; }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-links a { font-family: 'Raleway', sans-serif; font-size: 0.62rem; font-weight: 300; color: var(--text-muted); text-decoration: none; letter-spacing: 0.06em; transition: color 0.3s; }
+  .footer-links a:hover { color: var(--gold); }
+  .fade-in { opacity: 0; transform: translateY(14px); transition: opacity 0.4s ease, transform 0.4s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+  @media (max-width: 900px) { .features-grid, .pricing-grid { grid-template-columns: 1fr; } .pricing-grid { max-width: 320px; } .zigzag-row { grid-template-columns: 1fr; gap: 30px; } .zigzag-row.reverse .zigzag-visual { order: 0; } .hero { padding: 64px 0 48px; } .hero-actions { flex-direction: column; } .mockup-grid { grid-template-columns: 1fr; } .mockup-sidebar { display: none; } nav { padding: 12px 0; } footer { flex-direction: column; gap: 12px; text-align: center; } }
+  @media (max-width: 600px) { .container { padding: 0 20px; } h1 { font-size: 1.8rem; } .logos-row { gap: 20px; } .hero-visual { margin-top: 36px; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <nav>
+    <div class="nav-logo">Meet</div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="nav-cta">Get Started</a>
+    </div>
+  </nav>
+  <section class="hero">
+    <div class="hero-eyebrow">Now in public beta</div>
+    <h1>Meetings that <span class="highlight">respect your time</span></h1>
+    <p class="hero-sub">Schedule, run, and follow up — all in one clean workspace. No clutter. No noise. Just meetings that work.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Start free trial</a>
+      <a href="#" class="btn-secondary">Watch demo</a>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-mockup">
+        <div class="mockup-bar"><div class="mockup-dot"></div><div class="mockup-dot"></div><div class="mockup-dot"></div></div>
+        <div class="mockup-body">
+          <div class="mockup-sidebar"><div class="mockup-sidebar-item active"></div><div class="mockup-sidebar-item"></div><div class="mockup-sidebar-item"></div><div class="mockup-sidebar-item"></div></div>
+          <div class="mockup-main"><div class="mockup-grid"><div class="mockup-card"><div class="mockup-card-line short"></div><div class="mockup-card-line"></div><div class="mockup-card-line medium"></div></div><div class="mockup-card"><div class="mockup-card-line short"></div><div class="mockup-card-line"></div><div class="mockup-card-line medium"></div></div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<section class="logos">
+  <div class="container">
+    <div class="logos-label">Trusted by teams at</div>
+    <div class="logos-row"><div class="logo-item">Vercel</div><div class="logo-item">Linear</div><div class="logo-item">Notion</div><div class="logo-item">Figma</div><div class="logo-item">Stripe</div><div class="logo-item">Raycast</div></div>
+  </div>
+</section>
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-header fade-in"><h2>Everything you need. Nothing you don't.</h2><p>Five tools that replace your entire meeting stack.</p></div>
+    <div class="features-grid">
+      <div class="feature-card fade-in"><div class="feature-icon">📅</div><h3>Smart Scheduling</h3><p>AI reads your calendar and finds the perfect slot. No more back-and-forth emails.</p></div>
+      <div class="feature-card fade-in"><div class="feature-icon">📝</div><h3>Auto Agendas</h3><p>Every meeting gets a structured agenda, generated from your project context.</p></div>
+      <div class="feature-card fade-in"><div class="feature-icon">⏱️</div><h3>Time Boxes</h3><p>Hard stops enforced gently. Meetings end on time, every time.</p></div>
+      <div class="feature-card fade-in"><div class="feature-icon">🎙️</div><h3>Live Transcripts</h3><p>Real-time transcription with action items extracted automatically.</p></div>
+      <div class="feature-card fade-in"><div class="feature-icon">📊</div><h3>Meeting Analytics</h3><p>See where your team's time actually goes. Cut waste, keep what works.</p></div>
+      <div class="feature-card fade-in"><div class="feature-icon">🔗</div><h3>Integrations</h3><p>Slack, Notion, GitHub, Jira — Meet connects to your existing tools.</p></div>
+    </div>
+  </div>
+</section>
+<section class="zigzag">
+  <div class="container">
+    <div class="zigzag-row fade-in">
+      <div class="zigzag-content"><h3>One click to schedule</h3><p>Share a link. Your teammates pick a time that works. Meet handles time zones, availability, and room booking automatically.</p><a href="#" class="zigzag-link">Learn more <span>→</span></a></div>
+      <div class="zigzag-visual"><div class="zigzag-visual-inner"><div class="zigzag-visual-line"></div><div class="zigzag-visual-line"></div><div class="zigzag-visual-line"></div><div class="zigzag-visual-line"></div><div class="zigzag-visual-line"></div></div></div>
+    </div>
+    <div class="zigzag-row reverse fade-in">
+      <div class="zigzag-content"><h3>Follow-ups that actually happen</h3><p>Action items assigned during the meeting. Due dates set. Reminders sent. Nothing falls through the cracks.</p><a href="#" class="zigzag-link">See how it works <span>→</span></a></div>
+      <div class="zigzag-visual"><div class="zigzag-visual-inner"><div class="zigzag-visual-line"></div><div class="zigzag-visual-line"></div><div class="zigzag-visual-line"></div><div class="zigzag-visual-line"></div><div class="zigzag-visual-line"></div></div></div>
+    </div>
+  </div>
+</section>
+<section class="testimonial">
+  <div class="container">
+    <div class="testimonial-avatar"></div>
+    <p class="testimonial-quote fade-in">We cut our meeting time by 40% in the first month. Meet made our weekly syncs actually useful instead of just another thing on the calendar.</p>
+    <div class="testimonial-author">Sarah Chen</div>
+    <div class="testimonial-role">Head of Operations, Linear</div>
+  </div>
+</section>
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-header fade-in"><h2>Simple pricing</h2><p>Start free. Upgrade when you need more.</p></div>
+    <div class="pricing-grid">
+      <div class="pricing-card fade-in"><h3>Free</h3><div class="pricing-amount">$0<span>/mo</span></div><p class="pricing-desc">For individuals and small teams</p><ul class="pricing-features"><li>5 meetings per month</li><li>Basic scheduling</li><li>Email summaries</li></ul><a href="#" class="pricing-btn pricing-btn-outline">Get started</a></div>
+      <div class="pricing-card featured fade-in"><div class="pricing-badge">Most popular</div><h3>Pro</h3><div class="pricing-amount">$12<span>/mo</span></div><p class="pricing-desc">For growing teams</p><ul class="pricing-features"><li>Unlimited meetings</li><li>AI agendas & transcripts</li><li>Action item tracking</li><li>Analytics dashboard</li></ul><a href="#" class="pricing-btn pricing-btn-primary">Start free trial</a></div>
+      <div class="pricing-card fade-in"><h3>Enterprise</h3><div class="pricing-amount">Custom</div><p class="pricing-desc">For large organizations</p><ul class="pricing-features"><li>Everything in Pro</li><li>SSO & SAML</li><li>Dedicated support</li><li>Custom integrations</li></ul><a href="#" class="pricing-btn pricing-btn-outline">Contact sales</a></div>
+    </div>
+  </div>
+</section>
+<section class="final-cta">
+  <div class="container"><h2 class="fade-in">Ready to reclaim your week?</h2><p class="fade-in">Join thousands of teams who stopped wasting time in meetings.</p><a href="#" class="btn-primary fade-in">Start your free trial</a></div>
+</section>
+<div class="container">
+  <footer><div class="footer-copy">© 2024 Meet. All rights reserved.</div><div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Twitter</a></div></footer>
+</div>
+<script>const observer=new IntersectionObserver((entries)=>{entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('visible')})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});document.querySelectorAll('.fade-in').forEach(el=>observer.observe(el))</script>
+</body>
+</html>
