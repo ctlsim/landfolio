@@ -3,6 +3,8 @@
 200 landing page templates carefully brewed by **local AI only - no cloud, no api**.
 Files are standalone, zero build step. Code is meh, I only cared about agent harnessing and visual diversity.
 
+**👀 Live Demo:** [ctlsim.github.io/landfolio](https://ctlsim.github.io/landfolio/)
+
 ## 🎨 Why this exists
 
 Most landing page templates are hand-crafted, expensive, or locked behind paywalls.
