@@ -54,7 +54,9 @@ header.scrolled .header-row { margin-top: 12px; }
     box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 0 1px var(--accent);
   }
     .card-info { padding: 20px; }
-  .card-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.01em; }
+  .card-name-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .card-name-row .card-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; margin-bottom: 0; }
+  .card-number { display: inline-block; padding: 2px 8px; border-radius: 999px; background: rgba(255,255,255,0.06); color: #888; font-size: 11px; font-weight: 500; font-family: 'JetBrains Mono', monospace; }
   .card-desc { font-size: 0.82rem; color: var(--text-dim); margin-bottom: 12px; line-height: 1.5; }
   .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
   .tag {

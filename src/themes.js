@@ -2627,7 +2627,7 @@ function renderCards() {
   const grid = document.querySelector('.grid');
   if (!grid) return;
   
-  grid.innerHTML = themes.map(t => {
+  grid.innerHTML = themes.map((t, i) => {
     const targetAttr = t.target ? ` target="${t.target}"` : '';
     const tagsHtml = t.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
     return `<a href="${t.href}" class="card"${targetAttr}>
@@ -2635,7 +2635,10 @@ function renderCards() {
         ${previewMockup}
       </div>
       <div class="card-info">
-        <div class="card-name">${t.name}</div>
+        <div class="card-name-row">
+          <div class="card-name">${t.name}</div>
+          <span class="card-number">${i + 1}</span>
+        </div>
         <div class="card-desc">${t.desc}</div>
         <div class="card-tags">${tagsHtml}</div>
       </div>
