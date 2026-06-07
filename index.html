@@ -29,18 +29,13 @@
         <h1>Landfolio <span>.</span> Theme Gallery</h1>
         <p>Same content. Completely different design directions.</p>
       </div>
-      <div class="search-wrapper">
-        <div class="search-bar">
-          <input type="text" id="search" placeholder="Search themes,tags…" autocomplete="off">
-          <button type="button" class="search-clear" id="search-clear" aria-label="Clear search">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <line x1="3" y1="3" x2="13" y2="13"/>
-              <line x1="13" y1="3" x2="3" y2="13"/>
-            </svg>
-          </button>
-        </div>
-        <span id="result-count"></span>
-      </div>
+      <button type="button" class="search-trigger" id="search-trigger" aria-label="Search themes">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <kbd>⌘K</kbd>
+      </button>
     </div>
   </div>
 </header>
@@ -60,6 +55,25 @@
     <polyline points="18 15 12 9 6 15"/>
   </svg>
 </button>
+
+<!-- Command Palette Overlay -->
+<div class="palette-backdrop" id="palette-backdrop"></div>
+<div class="palette" id="palette" role="dialog" aria-label="Search themes">
+  <div class="palette-input-wrapper">
+    <svg class="palette-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <circle cx="11" cy="11" r="8"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input type="text" id="palette-search" placeholder="Search themes…" autocomplete="off" spellcheck="false">
+    <button type="button" class="palette-esc" id="palette-esc" aria-label="Close">esc</button>
+  </div>
+  <div class="palette-results" id="palette-results"></div>
+  <div class="palette-footer">
+    <span>↑↓ navigate</span>
+    <span>↵ open</span>
+    <span>esc close</span>
+  </div>
+</div>
 
 <script src="src/themes.js"></script>
 <script src="src/gallery.js"></script>
