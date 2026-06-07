@@ -2593,6 +2593,19 @@ const themes = [
     "gradient": "linear-gradient(135deg,#FDF8F0,#7BA372,#E8A0BF,#F0D68A)"
   },
   {
+    "href": "themes/constructivist.html",
+    "name": "Constructivist / Soviet",
+    "desc": "Bold red/black/cream, diagonal compositions, geometric propaganda poster aesthetic, heavy borders, uppercase Anton typography. Anton + Barlow Condensed.",
+    "tags": [
+      "bold",
+      "geometric",
+      "red"
+    ],
+    "target": "",
+    "previewClass": "p-constructivist",
+    "gradient": "linear-gradient(135deg,#F2E8D5,#C41E1E,#1A1A1A,#E8B830)"
+  },
+  {
     "href": "themes/final-boss.html",
     "name": "Final Boss",
     "desc": "All themes combined: chaotic color clash, glitch + neon + pixel + grunge mashup, ultimate crossover experiment. Space Mono + Anton.",

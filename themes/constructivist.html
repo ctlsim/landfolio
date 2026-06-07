@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet — Meetings that don't waste your week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #C41E1E;
+    --red-dark: #8B0000;
+    --red-light: #E83535;
+    --black: #1A1A1A;
+    --black-soft: #2D2D2D;
+    --cream: #F2E8D5;
+    --cream-dark: #D9CDB8;
+    --yellow: #E8B830;
+    --yellow-dark: #C49A20;
+    --white: #FAF6EF;
+    --text: var(--black);
+    --text-on-red: var(--cream);
+    --text-muted: rgba(26,26,26,0.45);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Barlow Condensed', sans-serif; background: var(--cream); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(90deg, transparent, transparent 120px, rgba(26,26,26,0.015) 120px, rgba(26,26,26,0.015) 121px), repeating-linear-gradient(0deg, transparent, transparent 120px, rgba(26,26,26,0.015) 120px, rgba(26,26,26,0.015) 121px); pointer-events: none; z-index: 0; }
+  h1, h2, h3, h4 { font-family: 'Anton', sans-serif; text-transform: uppercase; letter-spacing: 0.06em; line-height: 1.05; color: var(--text); }
+  h1 { font-size: clamp(2.4rem, 5.5vw, 4.2rem); }
+  h2 { font-size: clamp(1.4rem, 2.8vw, 2.2rem); }
+  h3 { font-size: clamp(0.7rem, 1.1vw, 0.85rem); letter-spacing: 0.1em; }
+  h4 { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; }
+  p { font-family: 'Barlow Condensed', sans-serif; font-weight: 400; font-size: clamp(0.72rem, 0.9vw, 0.85rem); color: rgba(26,26,26,0.6); }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+  nav { padding: 14px 0; border-bottom: 4px solid var(--black); position: sticky; top: 0; background: var(--cream); z-index: 100; }
+  .nav-inner { display: flex; justify-content: space-between; align-items: center; }
+  .nav-logo { font-family: 'Anton', sans-serif; font-size: 1.3rem; letter-spacing: 0.08em; color: var(--red); }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a { font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--red); }
+  .nav-cta { font-size: 0.6rem !important; font-weight: 700 !important; color: var(--cream) !important; background: var(--red); padding: 8px 18px; text-decoration: none; transition: background 0.2s; }
+  .nav-cta:hover { background: var(--red-dark); }
+  .hero { padding: 72px 0 56px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -40%; right: -10%; width: 60%; height: 180%; background: var(--red); transform: rotate(-8deg); z-index: 0; }
+  .hero::after { content: ''; position: absolute; top: 10%; right: 5%; width: 120px; height: 120px; border: 4px solid var(--yellow); transform: rotate(45deg); z-index: 0; }
+  .hero-content { position: relative; z-index: 1; }
+  .hero-eyebrow { font-family: 'Barlow Condensed', sans-serif; font-size: 0.6rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .hero-eyebrow::before { content: ''; display: inline-block; width: 24px; height: 3px; background: var(--red); }
+  .hero h1 { margin-bottom: 16px; max-width: 640px; }
+  .hero h1 .accent { color: var(--red); }
+  .hero-sub { font-size: clamp(0.82rem, 1vw, 0.95rem); max-width: 420px; margin-bottom: 28px; line-height: 1.55; font-weight: 400; color: rgba(26,26,26,0.55); }
+  .hero-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 8px; font-family: 'Anton', sans-serif; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cream); background: var(--red); padding: 12px 28px; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s; }
+  .btn-primary:hover { background: var(--red-dark); }
+  .btn-secondary { display: inline-flex; align-items: center; gap: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text); background: transparent; padding: 12px 28px; text-decoration: none; border: 3px solid var(--black); cursor: pointer; transition: background 0.2s, color 0.2s; }
+  .btn-secondary:hover { background: var(--black); color: var(--cream); }
+  .hero-visual { margin-top: 48px; position: relative; z-index: 1; }
+  .hero-mockup { width: 100%; aspect-ratio: 16/9; background: var(--white); display: flex; flex-direction: column; border: 4px solid var(--black); overflow: hidden; }
+  .mockup-bar { height: 28px; background: var(--black); display: flex; align-items: center; padding: 0 12px; gap: 8px; }
+  .mockup-dot { width: 7px; height: 7px; background: var(--red); }
+  .mockup-dot:nth-child(2) { background: var(--yellow); }
+  .mockup-dot:nth-child(3) { background: var(--cream-dark); }
+  .mockup-body { flex: 1; display: flex; padding: 14px; gap: 12px; }
+  .mockup-sidebar { width: 120px; display: flex; flex-direction: column; gap: 6px; }
+  .mockup-sidebar-item { height: 6px; background: rgba(26,26,26,0.08); }
+  .mockup-sidebar-item.active { background: var(--red); width: 75%; }
+  .mockup-main { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+  .mockup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: 1; }
+  .mockup-card { background: rgba(26,26,26,0.03); border: 2px solid rgba(26,26,26,0.08); padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .mockup-card-title { height: 6px; width: 60%; background: rgba(26,26,26,0.15); }
+  .mockup-card-line { height: 4px; width: 100%; background: rgba(26,26,26,0.06); }
+  .mockup-card-line.short { width: 70%; }
+  .mockup-chart { flex: 1; display: flex; align-items: flex-end; gap: 6px; padding-top: 10px; }
+  .mockup-bar-inner { flex: 1; background: var(--red); opacity: 0.7; }
+  .mockup-bar-inner:nth-child(2) { background: var(--yellow); height: 60%; }
+  .mockup-bar-inner:nth-child(3) { background: var(--red-dark); height: 80%; }
+  .mockup-bar-inner:nth-child(4) { height: 45%; }
+  .mockup-bar-inner:nth-child(5) { background: var(--yellow-dark); height: 70%; }
+  .mockup-bar-inner:nth-child(6) { height: 55%; }
+  .logos { padding: 48px 0; border-top: 4px solid var(--black); border-bottom: 4px solid var(--black); background: var(--white); }
+  .logos-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; color: var(--text-muted); text-align: center; margin-bottom: 20px; }
+  .logos-row { display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap; }
+  .logo-item { font-family: 'Anton', sans-serif; font-size: 0.9rem; letter-spacing: 0.08em; color: var(--text-muted); text-transform: uppercase; }
+  .features { padding: 64px 0; position: relative; }
+  .features-header { text-align: center; margin-bottom: 48px; }
+  .features-header h2 { margin-bottom: 8px; }
+  .features-header p { max-width: 480px; margin: 0 auto; }
+  .features-header .rule { width: 60px; height: 4px; background: var(--red); margin: 16px auto 0; }
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .feature-card { padding: 28px; border: 3px solid var(--black); background: var(--white); position: relative; transition: transform 0.2s; }
+  .feature-card:hover { transform: translate(-2px, -2px); }
+  .feature-card::before { content: attr(data-number); position: absolute; top: -14px; left: 14px; font-family: 'Anton', sans-serif; font-size: 0.7rem; letter-spacing: 0.1em; color: var(--cream); background: var(--red); padding: 2px 8px; }
+  .feature-icon { width: 36px; height: 36px; margin-bottom: 14px; position: relative; }
+  .feature-icon::before { content: ''; position: absolute; inset: 0; background: var(--red); transform: rotate(45deg); }
+  .feature-card h3 { margin-bottom: 8px; }
+  .feature-card p { font-size: 0.72rem; line-height: 1.5; }
+  .highlight-section { padding: 64px 0; background: var(--red); position: relative; overflow: hidden; }
+  .highlight-section::before { content: ''; position: absolute; top: -50%; left: -20%; width: 140%; height: 200%; background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(0,0,0,0.04) 20px, rgba(0,0,0,0.04) 40px); }
+  .highlight-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; position: relative; z-index: 1; }
+  .highlight-text h2 { color: var(--cream); margin-bottom: 14px; }
+  .highlight-text p { color: rgba(242,232,213,0.7); margin-bottom: 20px; line-height: 1.6; }
+  .highlight-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+  .highlight-list li { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 500; color: var(--cream); display: flex; align-items: center; gap: 10px; }
+  .highlight-list li::before { content: '◆'; color: var(--yellow); font-size: 0.6rem; }
+  .btn-on-red { display: inline-flex; align-items: center; gap: 8px; font-family: 'Anton', sans-serif; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--red); background: var(--cream); padding: 12px 28px; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s; }
+  .btn-on-red:hover { background: var(--yellow); }
+  .highlight-visual { aspect-ratio: 4/3; background: var(--black); border: 4px solid var(--yellow); display: flex; flex-direction: column; padding: 16px; gap: 10px; }
+  .highlight-visual .bar { height: 8px; background: var(--red); }
+  .highlight-visual .bar:nth-child(2) { height: 12px; background: var(--yellow); width: 80%; }
+  .highlight-visual .bar:nth-child(3) { height: 6px; background: var(--cream-dark); width: 60%; }
+  .highlight-visual .bar:nth-child(4) { flex: 1; background: repeating-linear-gradient(0deg, var(--red) 0px, var(--red) 3px, transparent 3px, transparent 8px); opacity: 0.3; }
+  .highlight-visual .circle { width: 60px; height: 60px; border: 4px solid var(--yellow); border-radius: 50%; align-self: center; margin-top: auto; }
+  .stats { padding: 56px 0; border-bottom: 4px solid var(--black); }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; text-align: center; }
+  .stat-item { padding: 20px; }
+  .stat-number { font-family: 'Anton', sans-serif; font-size: clamp(2rem, 3.5vw, 2.8rem); color: var(--red); line-height: 1; margin-bottom: 6px; }
+  .stat-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-muted); }
+  .testimonials { padding: 64px 0; background: var(--white); border-bottom: 4px solid var(--black); }
+  .testimonials-header { text-align: center; margin-bottom: 40px; }
+  .testimonials-header h2 { margin-bottom: 8px; }
+  .testimonials-header .rule { width: 60px; height: 4px; background: var(--red); margin: 16px auto 0; }
+  .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .testimonial-card { padding: 24px; border: 3px solid var(--black); background: var(--cream); position: relative; }
+  .testimonial-card::before { content: '"'; position: absolute; top: 8px; left: 14px; font-family: 'Anton', sans-serif; font-size: 2.4rem; color: var(--red); line-height: 1; }
+  .testimonial-text { font-size: 0.72rem; line-height: 1.6; margin-bottom: 16px; padding-top: 20px; font-style: italic; color: rgba(26,26,26,0.7); }
+  .testimonial-author { font-family: 'Barlow Condensed', sans-serif; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+  .testimonial-role { font-size: 0.58rem; color: var(--text-muted); }
+  .pricing { padding: 64px 0; }
+  .pricing-header { text-align: center; margin-bottom: 40px; }
+  .pricing-header h2 { margin-bottom: 8px; }
+  .pricing-header p { max-width: 440px; margin: 0 auto; }
+  .pricing-header .rule { width: 60px; height: 4px; background: var(--red); margin: 16px auto 0; }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .pricing-card { padding: 28px; border: 3px solid var(--black); background: var(--white); position: relative; }
+  .pricing-card.featured { background: var(--black); border-color: var(--red); }
+  .pricing-card.featured h3, .pricing-card.featured .price, .pricing-card.featured .price-period { color: var(--cream); }
+  .pricing-card.featured p.feature-desc { color: rgba(242,232,213,0.5); }
+  .pricing-card.featured .pricing-features li { color: rgba(242,232,213,0.7); }
+  .pricing-card.featured .pricing-features li::before { color: var(--yellow); }
+  .pricing-badge { position: absolute; top: -12px; right: 16px; font-family: 'Anton', sans-serif; font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--black); background: var(--yellow); padding: 3px 10px; }
+  .pricing-card h3 { margin-bottom: 6px; }
+  .feature-desc { font-size: 0.68rem; margin-bottom: 16px; }
+  .price { font-family: 'Anton', sans-serif; font-size: 2.2rem; color: var(--text); line-height: 1; }
+  .price-period { font-family: 'Barlow Condensed', sans-serif; font-size: 0.6rem; color: var(--text-muted); margin-bottom: 20px; display: block; }
+  .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+  .pricing-features li { font-size: 0.7rem; color: rgba(26,26,26,0.6); display: flex; align-items: center; gap: 8px; }
+  .pricing-features li::before { content: '◆'; font-size: 0.5rem; color: var(--red); }
+  .btn-pricing { display: block; text-align: center; font-family: 'Anton', sans-serif; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cream); background: var(--red); padding: 10px 20px; text-decoration: none; border: none; cursor: pointer; width: 100%; transition: background 0.2s; }
+  .btn-pricing:hover { background: var(--red-dark); }
+  .btn-pricing.outline { color: var(--text); background: transparent; border: 3px solid var(--black); }
+  .btn-pricing.outline:hover { background: var(--black); color: var(--cream); }
+  .cta { padding: 72px 0; text-align: center; position: relative; overflow: hidden; }
+  .cta::before { content: ''; position: absolute; bottom: -30%; left: -10%; width: 50%; height: 160%; background: var(--red); transform: rotate(6deg); z-index: 0; opacity: 0.06; }
+  .cta-content { position: relative; z-index: 1; }
+  .cta h2 { margin-bottom: 12px; }
+  .cta p { max-width: 440px; margin: 0 auto 24px; }
+  .footer { padding: 40px 0; border-top: 4px solid var(--black); background: var(--black); }
+  .footer-inner { display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; flex-wrap: wrap; }
+  .footer-brand { font-family: 'Anton', sans-serif; font-size: 1.1rem; letter-spacing: 0.08em; color: var(--red); margin-bottom: 8px; }
+  .footer-tagline { font-size: 0.6rem; color: rgba(242,232,213,0.35); max-width: 200px; line-height: 1.5; }
+  .footer-columns { display: flex; gap: 48px; }
+  .footer-col h4 { color: var(--cream); margin-bottom: 10px; font-size: 0.55rem; }
+  .footer-col a { display: block; font-size: 0.62rem; color: rgba(242,232,213,0.4); text-decoration: none; margin-bottom: 6px; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--yellow); }
+  .footer-bottom { margin-top: 32px; padding-top: 20px; border-top: 1px solid rgba(242,232,213,0.08); text-align: center; font-size: 0.55rem; color: rgba(242,232,213,0.2); }
+  @media (max-width: 768px) {
+    .features-grid, .testimonials-grid, .pricing-grid { grid-template-columns: 1fr; }
+    .highlight-inner { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero::before { width: 100%; right: -30%; }
+    .footer-columns { gap: 28px; }
+    .nav-links { gap: 16px; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <div class="container nav-inner">
+    <div class="nav-logo">MEET</div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="nav-cta">Start Free</a>
+    </div>
+  </div>
+</nav>
+<section class="hero">
+  <div class="container hero-content">
+    <div class="hero-eyebrow">Scheduling Platform</div>
+    <h1>Meetings that <span class="accent">don't waste</span> your week</h1>
+    <p class="hero-sub">One link. Zero back-and-forth. Your calendar handles the rest — automatically.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Get Started Free →</a>
+      <a href="#" class="btn-secondary">Watch Demo</a>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-mockup">
+        <div class="mockup-bar">
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+          <div class="mockup-dot"></div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-sidebar">
+            <div class="mockup-sidebar-item active"></div>
+            <div class="mockup-sidebar-item"></div>
+            <div class="mockup-sidebar-item"></div>
+            <div class="mockup-sidebar-item"></div>
+            <div class="mockup-sidebar-item"></div>
+          </div>
+          <div class="mockup-main">
+            <div class="mockup-grid">
+              <div class="mockup-card">
+                <div class="mockup-card-title"></div>
+                <div class="mockup-card-line"></div>
+                <div class="mockup-card-line short"></div>
+              </div>
+              <div class="mockup-card">
+                <div class="mockup-card-title"></div>
+                <div class="mockup-card-line"></div>
+                <div class="mockup-card-line short"></div>
+              </div>
+              <div class="mockup-card" style="grid-column: span 2;">
+                <div class="mockup-chart">
+                  <div class="mockup-bar-inner" style="height:50%"></div>
+                  <div class="mockup-bar-inner"></div>
+                  <div class="mockup-bar-inner"></div>
+                  <div class="mockup-bar-inner"></div>
+                  <div class="mockup-bar-inner"></div>
+                  <div class="mockup-bar-inner"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="logos">
+  <div class="container">
+    <div class="logos-label">Trusted by forward-thinking teams</div>
+    <div class="logos-row">
+      <span class="logo-item">Acme</span>
+      <span class="logo-item">Global</span>
+      <span class="logo-item">Vertex</span>
+      <span class="logo-item">Orbit</span>
+      <span class="logo-item">Pinnacle</span>
+      <span class="logo-item">Forge</span>
+    </div>
+  </div>
+</section>
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header">
+      <h2>Built for speed</h2>
+      <p>Every feature designed to eliminate friction from your scheduling workflow.</p>
+      <div class="rule"></div>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card" data-number="01">
+        <div class="feature-icon"></div>
+        <h3>Smart Scheduling</h3>
+        <p>AI finds the perfect time slot across time zones, preferences, and availability — no manual work.</p>
+      </div>
+      <div class="feature-card" data-number="02">
+        <div class="feature-icon"></div>
+        <h3>One-Link Share</h3>
+        <p>Send a single link. Recipients pick their slot. Calendar updates instantly. Done.</p>
+      </div>
+      <div class="feature-card" data-number="03">
+        <div class="feature-icon"></div>
+        <h3>Team Calendars</h3>
+        <p>Shared visibility across your org. Find group openings in seconds, not hours of email.</p>
+      </div>
+      <div class="feature-card" data-number="04">
+        <div class="feature-icon"></div>
+        <h3>Auto Reminders</h3>
+        <p>Smart notifications that adapt to meeting urgency. No more no-shows or wasted prep time.</p>
+      </div>
+      <div class="feature-card" data-number="05">
+        <div class="feature-icon"></div>
+        <h3>Analytics</h3>
+        <p>Track meeting efficiency, identify bottlenecks, and reclaim hours every week with data.</p>
+      </div>
+      <div class="feature-card" data-number="06">
+        <div class="feature-icon"></div>
+        <h3>Integrations</h3>
+        <p>Slack, Zoom, Google, Outlook — connects to everything your team already uses daily.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="highlight-section">
+  <div class="container highlight-inner">
+    <div class="highlight-text">
+      <h2>Reclaim 12 hours every week</h2>
+      <p>The average knowledge worker spends 31 hours a month in meetings. Meet cuts that by 60% through intelligent scheduling.</p>
+      <ul class="highlight-list">
+        <li>Auto-reschedule when conflicts arise</li>
+        <li>Timezone-aware smart suggestions</li>
+        <li>Meeting cost calculator built in</li>
+        <li>Focus time protection enabled</li>
+      </ul>
+      <a href="#" class="btn-on-red">See How It Works →</a>
+    </div>
+    <div class="highlight-visual">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="circle"></div>
+    </div>
+  </div>
+</section>
+<section class="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number">2M+</div>
+        <div class="stat-label">Meetings Scheduled</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">14M</div>
+        <div class="stat-label">Hours Saved</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">98%</div>
+        <div class="stat-label">Satisfaction Rate</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">50K</div>
+        <div class="stat-label">Teams Worldwide</div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="testimonials">
+  <div class="container">
+    <div class="testimonials-header">
+      <h2>What teams say</h2>
+      <div class="rule"></div>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <p class="testimonial-text">We cut our scheduling emails by 90%. The team literally laughs at how fast meetings get set up now.</p>
+        <div class="testimonial-author">Sarah Chen</div>
+        <div class="testimonial-role">VP of Operations, TechCorp</div>
+      </div>
+      <div class="testimonial-card">
+        <p class="testimonial-text">The timezone handling alone saved us. We have teams across 6 zones and it just works every time.</p>
+        <div class="testimonial-author">Marcus Rivera</div>
+        <div class="testimonial-role">CTO, GlobalStart</div>
+      </div>
+      <div class="testimonial-card">
+        <p class="testimonial-text">Simple, fast, and actually beautiful. Our clients comment on how professional our booking links look.</p>
+        <div class="testimonial-author">Emma Lindström</div>
+        <div class="testimonial-role">Founder, DesignLab</div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="pricing-header">
+      <h2>Plans</h2>
+      <p>Start free. Scale when you're ready. No credit card required.</p>
+      <div class="rule"></div>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <h3>Starter</h3>
+        <p class="feature-desc">For individuals and small projects</p>
+        <div class="price">Free</div>
+        <span class="price-period">Forever</span>
+        <ul class="pricing-features">
+          <li>Up to 50 meetings/month</li>
+          <li>Basic scheduling link</li>
+          <li>Google Calendar sync</li>
+          <li>Email notifications</li>
+        </ul>
+        <a href="#" class="btn-pricing outline">Get Started</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">Popular</div>
+        <h3>Team</h3>
+        <p class="feature-desc">For growing teams that move fast</p>
+        <div class="price">$12</div>
+        <span class="price-period">Per user / month</span>
+        <ul class="pricing-features">
+          <li>Unlimited meetings</li>
+          <li>Team calendar views</li>
+          <li>All integrations</li>
+          <li>Analytics dashboard</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#" class="btn-pricing">Start Free Trial</a>
+      </div>
+      <div class="pricing-card">
+        <h3>Enterprise</h3>
+        <p class="feature-desc">For organizations at scale</p>
+        <div class="price">$29</div>
+        <span class="price-period">Per user / month</span>
+        <ul class="pricing-features">
+          <li>Everything in Team</li>
+          <li>SSO & SAML</li>
+          <li>Custom branding</li>
+          <li>Dedicated account manager</li>
+          <li>SLA guarantee</li>
+        </ul>
+        <a href="#" class="btn-pricing outline">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="cta">
+  <div class="container cta-content">
+    <h2>Stop wasting time on scheduling</h2>
+    <p>Join 50,000+ teams who've reclaimed their week. Free to start, no credit card needed.</p>
+    <a href="#" class="btn-primary">Start Scheduling Free →</a>
+  </div>
+</section>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">MEET</div>
+        <p class="footer-tagline">Meetings that don't waste your week. Built for teams who value time.</p>
+      </div>
+      <div class="footer-columns">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="#">Features</a>
+          <a href="#">Pricing</a>
+          <a href="#">Integrations</a>
+          <a href="#">Changelog</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About</a>
+          <a href="#">Blog</a>
+          <a href="#">Careers</a>
+          <a href="#">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Security</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2025 Meet. All rights reserved.</div>
+  </div>
+</footer>
+</body>
+</html>

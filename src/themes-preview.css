@@ -4376,6 +4376,32 @@
   --preview-action-line-background: rgba(61,53,40,0.04);
 }
 
+.p-constructivist {
+  --preview-mockup-background: #FAF6EF;
+  --preview-mockup-border: 3px solid #1A1A1A;
+  --preview-topbar-background: #1A1A1A;
+  --preview-topbar-border-bottom: 3px solid #1A1A1A;
+  --preview-dot-background: rgba(26,26,26,0.15);
+  --preview-dot-border-radius: 0;
+  --preview-dot-one-background: #C41E1E;
+  --preview-dot-two-background: #E8B830;
+  --preview-dot-three-background: #D9CDB8;
+  --preview-sidebar-background: rgba(26,26,26,0.08);
+  --preview-sidebar-border-radius: 0;
+  --preview-sidebar-active-background: #C41E1E;
+  --preview-line-background: rgba(26,26,26,0.06);
+  --preview-line-border: none;
+  --preview-line-border-radius: 0;
+  --preview-line-title-background: #C41E1E;
+  --preview-line-title-width: 45%;
+  --preview-action-background: #FAF6EF;
+  --preview-action-border: 2px solid #1A1A1A;
+  --preview-action-border-radius: 0;
+  --preview-action-dot-background: #C41E1E;
+  --preview-action-dot-border-radius: 0;
+  --preview-action-line-background: rgba(26,26,26,0.06);
+}
+
 .p-final-boss {
   --preview-mockup-background: #111111;
   --preview-mockup-border: 2px solid rgba(240,240,240,0.06);

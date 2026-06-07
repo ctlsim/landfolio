@@ -1,6 +1,6 @@
 # Landfolio
 
-200 landing page templates carefully brewed by **local AI only - no cloud, no api**.
+201 landing page templates carefully brewed by **local AI only - no cloud, no api**.
 Files are standalone, zero build step. Code is meh, I only cared about agent harnessing and visual diversity.
 
 **👀 Live Demo:** [ctlsim.github.io/landfolio](https://ctlsim.github.io/landfolio/)
@@ -223,7 +223,8 @@ dependencies, no install.
 197. [**Neon Bounce** (`neon-bounce.html`)](themes/neon-bounce.html) — Bouncy ball animations, saturated rainbow highlights, playful physics feel, cartoon-meets-digital energy. Fredoka One + Baloo 2.
 198. [**Obsidian** (`obsidian.html`)](themes/obsidian.html) — Pure black volcanic glass, subtle rainbow edge reflections, sharp geometric cuts, ultra-premium darkness. Inter + Instrument Sans.
 199. [**Wildflower Meadow** (`wildflower-meadow.html`)](themes/wildflower-meadow.html) — Scattered floral SVGs, soft cream/green base, gentle swaying animations, countryside freedom. Cormorant + Quicksand.
-200. [**Final Boss** (`final-boss.html`)](themes/final-boss.html) — All themes combined: chaotic color clash, glitch + neon + pixel + grunge mashup, ultimate crossover experiment. Space Mono + Anton.
+200. [**Constructivist / Soviet** (`constructivist.html`)](themes/constructivist.html) — Bold red/black/cream, diagonal compositions, geometric propaganda poster aesthetic, heavy borders, uppercase Anton typography. Anton + Barlow Condensed.
+201. [**Final Boss** (`final-boss.html`)](themes/final-boss.html) — All themes combined: chaotic color clash, glitch + neon + pixel + grunge mashup, ultimate crossover experiment. Space Mono + Anton.
 
 ## 📄 License
 
