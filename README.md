@@ -5,6 +5,8 @@ Files are standalone, zero build step. Code is meh, I only cared about agent har
 
 **👀 Live Demo:** [ctlsim.github.io/landfolio](https://ctlsim.github.io/landfolio/)
 
+![landfolio preview](images/preview.png)
+
 ## 🎨 Why this exists
 
 Most landing page templates are hand-crafted, expensive, or locked behind paywalls.
